@@ -24,3 +24,18 @@ Stage Summary:
 - Data & konfigurasi toko dapat diubah penuh dari dashboard (tanpa coding).
 - Artefak utama: prisma/schema.prisma, src/app/api/**, src/components/site/**, src/components/admin/**, scripts/seed.ts, TUTORIAL.md.
 - Catatan deploy: butuh hosting berfitur Node.js App (bukan PHP-only); backup rutin public/uploads + db/custom.db.
+
+---
+Task ID: 2
+Agent: Z.ai Code (main)
+Task: Membuat README.md terlengkap berbahasa Indonesia untuk website Berkat Mandiri Pendingin.
+
+Work Log:
+- Membaca worklog Task 1, package.json, prisma/schema.prisma, TUTORIAL.md, dan scripts/seed.ts untuk memastikan semua fakta README akurat.
+- Inventarisasi 14 file route API + metode HTTP (GET/POST/PUT/DELETE) dari source code.
+- Menulis README.md (624 baris, 22 bagian utama) berisi: banner ASCII + badge, daftar isi, tentang proyek, fitur lengkap (publik + admin), login default (admin/admin123), tabel teknologi (Next.js 16, TS 5, React 19, Tailwind 4, Prisma 6 + SQLite), diagram arsitektur ASCII, struktur folder lengkap, instalasi 5 langkah, tabel 8 perintah npm, skema 5 tabel database, dokumentasi API lengkap dengan contoh curl, panduan admin kilat, ringkasan deploy (cPanel Node.js App + VPS), checklist keamanan, tabel troubleshooting 8 kasus, FAQ 6 pertanyaan (details/summary), roadmap, kontribusi, lisensi, kontak.
+
+Stage Summary:
+- README.md jadi: 624 baris, seluruhnya berbahasa Indonesia, akurat terhadap codebase (endpoint, model DB, skrip, kredensial diverifikasi dari source).
+- Melengkapi TUTORIAL.md (step-by-step operasional) dengan README (referensi teknis: API docs, schema DB, struktur folder, troubleshooting).
+- Tidak ada perubahan kode aplikasi; situs tetap berjalan normal.
