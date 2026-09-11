@@ -1,0 +1,79 @@
+{
+  "success": true,
+  "query": "refrigeration filter dryer copper part product",
+  "count": 10,
+  "ranked": false,
+  "captioned_count": 0,
+  "results": [
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b4dc192ba9e7.png",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "960px",
+      "original_height": "960px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/a9608c71d93f.jpg",
+      "caption": "",
+      "source": "Express Parts Direct",
+      "original_width": "1500px",
+      "original_height": "787px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/4c38404cfd89.jpeg",
+      "caption": "",
+      "source": "eBay",
+      "original_width": "1001px",
+      "original_height": "1001px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/71c66b4477ba.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "2000px",
+      "original_height": "2000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/fd66ea040057.jpg",
+      "caption": "",
+      "source": "Samsung Parts",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/4f4e7395faf3.jpg",
+      "caption": "",
+      "source": "Shopee Malaysia",
+      "original_width": "1024px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/3336797f4861.jpg",
+      "caption": "",
+      "source": "Hisense Parts and Accessories",
+      "original_width": "1024px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/e1383ec60515.jpg",
+      "caption": "",
+      "source": "Bed Bath & Beyond",
+      "original_width": "2000px",
+      "original_height": "2000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/cc65db961e58.jpg",
+      "caption": "",
+      "source": "McCombs Supply",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/fee99769f01c.jpg",
+      "caption": "",
+      "source": "Sears Parts Direct",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    }
+  ]
+}

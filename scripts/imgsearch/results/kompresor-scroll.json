@@ -1,0 +1,79 @@
+{
+  "success": true,
+  "query": "scroll compressor HVAC product photo",
+  "count": 10,
+  "ranked": false,
+  "captioned_count": 0,
+  "results": [
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/cccd9051933f.jpg",
+      "caption": "",
+      "source": "North America HVAC",
+      "original_width": "1200px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b9c17db2c30c.jpg",
+      "caption": "",
+      "source": "Shenzhen Sino-Australia Refrigeration Equipment Co., Ltd.",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/7268508a4202.jpg",
+      "caption": "",
+      "source": "Amazon.com",
+      "original_width": "1024px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/a34ad6a336dc.jpg",
+      "caption": "",
+      "source": "HVACparts",
+      "original_width": "1558px",
+      "original_height": "2000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/7709e7ba7f5f.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1070px",
+      "original_height": "1070px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/81d748082525.png",
+      "caption": "",
+      "source": "Furnace Part Source",
+      "original_width": "1280px",
+      "original_height": "1280px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/9fc14312cca4.jpg",
+      "caption": "",
+      "source": "eBay",
+      "original_width": "900px",
+      "original_height": "1200px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/08fa10287307.jpg",
+      "caption": "",
+      "source": "Allpoints",
+      "original_width": "1280px",
+      "original_height": "1280px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f52b315e83d1.png",
+      "caption": "",
+      "source": "HVAC Know It All",
+      "original_width": "1280px",
+      "original_height": "720px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/9a31e63d252d.jpg",
+      "caption": "",
+      "source": "Plumbonline",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    }
+  ]
+}

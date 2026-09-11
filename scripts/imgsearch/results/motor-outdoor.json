@@ -1,0 +1,79 @@
+{
+  "success": true,
+  "query": "air conditioner outdoor condenser fan motor",
+  "count": 10,
+  "ranked": false,
+  "captioned_count": 0,
+  "results": [
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/23cc30cf712e.jpg",
+      "caption": "",
+      "source": "Edmondson Supply",
+      "original_width": "2760px",
+      "original_height": "1840px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ca8eda20ea03.png",
+      "caption": "",
+      "source": "Sylvane",
+      "original_width": "1200px",
+      "original_height": "1200px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/4318b955e0b1.png",
+      "caption": "",
+      "source": "Open To Public HVAC Parts",
+      "original_width": "1672px",
+      "original_height": "941px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/bfc23795670f.jpg",
+      "caption": "",
+      "source": "Grainger",
+      "original_width": "2000px",
+      "original_height": "2000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/6f0a462449fa.jpg",
+      "caption": "",
+      "source": "RecPro",
+      "original_width": "1280px",
+      "original_height": "1280px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b86ae43c18ad.jpg",
+      "caption": "",
+      "source": "Technical Hot & Cold Parts",
+      "original_width": "1920px",
+      "original_height": "1280px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/6740fd5b945d.jpg",
+      "caption": "",
+      "source": "Ecoxline",
+      "original_width": "1500px",
+      "original_height": "1500px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/edc203c001e3.jpg",
+      "caption": "",
+      "source": "LG Parts",
+      "original_width": "1024px",
+      "original_height": "1024px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b3e8b189f01d.jpg",
+      "caption": "",
+      "source": "eBay",
+      "original_width": "900px",
+      "original_height": "1200px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1e2215784e7c.jpeg",
+      "caption": "",
+      "source": "Walmart",
+      "original_width": "1842px",
+      "original_height": "1068px"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "success": true,
+  "query": "refrigerator compressor hermetic product photo",
+  "count": 10,
+  "ranked": false,
+  "captioned_count": 0,
+  "results": [
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/420175d324cb.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1500px",
+      "original_height": "1500px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1ca302b9fe07.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/bbc6cd9b8485.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/3cbf39769602.jpg",
+      "caption": "",
+      "source": "Alibaba",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/87c306edb9f9.png",
+      "caption": "",
+      "source": "الاداء العالي العالمي",
+      "original_width": "1280px",
+      "original_height": "1280px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/647e1cf99a91.png",
+      "caption": "",
+      "source": "Johnson Controls",
+      "original_width": "1380px",
+      "original_height": "1037px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/444152117845.jpg",
+      "caption": "",
+      "source": "Truckliner Parts",
+      "original_width": "1329px",
+      "original_height": "1317px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/6d9ac7f2c8d5.jpg",
+      "caption": "",
+      "source": "Truckliner Parts",
+      "original_width": "891px",
+      "original_height": "1314px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/40072e37f464.webp",
+      "caption": "",
+      "source": "Genemco",
+      "original_width": "1200px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b6b7924ff118.jpg",
+      "caption": "",
+      "source": "Amazon.com",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    }
+  ]
+}

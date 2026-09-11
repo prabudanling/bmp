@@ -1,0 +1,79 @@
+{
+  "success": true,
+  "query": "air conditioner run capacitor product photo",
+  "count": 10,
+  "ranked": false,
+  "captioned_count": 0,
+  "results": [
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/2178f48eb41d.jpg",
+      "caption": "",
+      "source": "YouTube",
+      "original_width": "1280px",
+      "original_height": "720px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/25ca35524a90.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1254px",
+      "original_height": "1254px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/dc2b96111581.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1060px",
+      "original_height": "1060px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/00bb990488da.jpg",
+      "caption": "",
+      "source": "S&S Electrical Supply",
+      "original_width": "1200px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/3999fc414571.jpg",
+      "caption": "",
+      "source": "Accent My Ride",
+      "original_width": "1219px",
+      "original_height": "1280px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/195849e269a1.jpg",
+      "caption": "",
+      "source": "Harfington",
+      "original_width": "1400px",
+      "original_height": "1400px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/166e418bf3a2.jpg",
+      "caption": "",
+      "source": "Alibaba.com",
+      "original_width": "1500px",
+      "original_height": "1500px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1b29063f74e6.jpg",
+      "caption": "",
+      "source": "Diymore.cc",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f77dbee234f8.jpg",
+      "caption": "",
+      "source": "Dayton Industries",
+      "original_width": "1000px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/126ad5ae902e.jpeg",
+      "caption": "",
+      "source": "High Sky RV Parts",
+      "original_width": "1024px",
+      "original_height": "1024px"
+    }
+  ]
+}

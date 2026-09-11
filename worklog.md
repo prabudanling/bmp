@@ -56,3 +56,23 @@ Work Log:
 Stage Summary:
 - Kredit Digiman + juraganwebsite.web.id kini tampil di 3 titik UI (footer publik, login admin, sidebar dashboard) + README.
 - Konsisten tema teal, responsif penuh mobile→desktop, aksesibel (aria-hidden pada separator, rel noopener, title tooltip).
+
+---
+Task ID: 4
+Agent: Z.ai Code (main)
+Task: Mengisi katalog hingga 1000 produk lengkap dengan gambar asli dari internet + deskripsi lengkap.
+
+Work Log:
+- Desain matriks produk: 13 kategori × merek × tipe × kapasitas (989 generator + 16 existing).
+- Image-search skill: 18 query keluarga produk (kompresor rotary/scroll/kulkas/mobil/industri/angin, motor fan, kapasitor, termostat, freon, fitting, dryer, relay, oli, evaporator, kondensor, manifold), 10 gambar per query.
+- Fix infrastruktur: flag `-o` CLI image-search tidak menulis file → redirect stdout + ekstraksi JSON (buang banner emoji); proses background dibunuh sandbox → runner diganti foreground per chunk; path cwd saat menjalankan script dari subfolder.
+- Download 177 foto internet ke public/uploads/products/ (51MB, 0 gagal, validasi min 4KB) + image-map.json.
+- scripts/seed-1000.ts: generator deterministik (LCG) — nama, SKU, slug unik, harga realistis IDR (bug parseFloat('1/8')→1 dan harga AC 5PK 180 juta diperbaiki dengan price map), stok (6% habis), 3 foto/p_produk dari pool, deskripsi multi-paragraf (intro 3 varian + garansi + tips teknisi + pengiriman), spesifikasi JSON per keluarga; insert createMany batch 200; dedupe slug vs DB.
+- Perbaikan data: 2 produk lama tanpa gambar diberi foto; kurasi ulang 29 produk unggulan (kompresor-ac 12, kulkas 3, mobil 3, industri 2, angin 3, freon 2, kapasitor 2, motor 2) agar beranda menampilkan produk bintang.
+- Verifikasi E2E: API total=1000, pencarian "kompresor angin"=76, filter mobil=84, paginasi page=2 OK; browser: katalog "12 dari 1000 produk" + foto asli tampil, filter kategori, detail Sanden 7H13 (deskripsi+tab spesifikasi lengkap), dashboard "1000 Total Produk/1000 Aktif", beranda unggulan kompresor angin asli, mobile 390px grid + paginasi 84 halaman, 0 console error, lint bersih.
+
+Stage Summary:
+- KATALOG 1000 PRODUK TERCAPAI: 13 kategori, semua bergambar foto asli internet (177 foto, 51MB).
+- Kategori baru: Kulkas & Freezer, AC Mobil, Komersial & Industri, Angin/Piston, Sparepart Kompresor, Oli & Kimia, Evaporator & Kondensor.
+- Script reusable: scripts/imgsearch/{queries.tsv,run.sh,download.ts} + scripts/seed-1000.ts (idempotent, selalu menyetel total ke 1000).
+- Catatan deploy: folder public/uploads/products/ ikut dalam backup rutin (51MB).
