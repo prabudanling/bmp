@@ -34,7 +34,7 @@ dari katalog produk, upload barang, sampai pesanan WhatsApp, semua dalam satu ap
 
 ---
 
-📖 **Dokumentasi Lain:** [Tutorial Lengkap (TUTORIAL.md)](./TUTORIAL.md) ·
+📖 **Dokumentasi Lain:** [Tutorial Upload Produk (TUTORIAL-UPLOAD-PRODUK.md)](./TUTORIAL-UPLOAD-PRODUK.md) · [Tutorial Lengkap (TUTORIAL.md)](./TUTORIAL.md) ·
 Panduan admin & deploy langkah-demi-langkah tersedia di dalam dashboard (menu *Panduan*).
 
 </div>
@@ -196,6 +196,7 @@ Setelah instalasi selesai ([lihat di bawah](#-instalasi-5-langkah)), buka `http:
 berkat-mandiri-pendingin/
 ├── 📄 README.md                  ← File yang sedang Anda baca
 ├── 📘 TUTORIAL.md                ← Tutorial lengkap & deploy langkah demi langkah
+├── 📦 TUTORIAL-UPLOAD-PRODUK.md  ← Tutorial lengkap mengupload barang (pemula)
 ├── 📦 package.json               ← Daftar dependensi & skrip npm
 │
 ├── 🗄️ prisma/

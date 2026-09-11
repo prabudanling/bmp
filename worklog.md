@@ -76,3 +76,20 @@ Stage Summary:
 - Kategori baru: Kulkas & Freezer, AC Mobil, Komersial & Industri, Angin/Piston, Sparepart Kompresor, Oli & Kimia, Evaporator & Kondensor.
 - Script reusable: scripts/imgsearch/{queries.tsv,run.sh,download.ts} + scripts/seed-1000.ts (idempotent, selalu menyetel total ke 1000).
 - Catatan deploy: folder public/uploads/products/ ikut dalam backup rutin (51MB).
+
+---
+Task ID: 5
+Agent: Z.ai Code (main)
+Task: Membuat tutorial lengkap mengupload barang/produk (dokumen + terintegrasi di dashboard admin).
+
+Work Log:
+- Membaca worklog, product-form.tsx, products-manager.tsx, panduan.tsx, api/upload/route.ts, dan query DB aktual (13 kategori, 1000 produk) agar semua fakta tutorial sesuai UI asli.
+- Menulis TUTORIAL-UPLOAD-PRODUK.md (~480 baris, 13 bagian berbahasa Indonesia): persiapan & login, daftar 13 kategori + keterangan, anatomi form produk (ASCII diagram + tabel arti tiap kolom), tutorial inti 10 langkah dengan contoh nyata, panduan foto (6 aturan emas, cara foto HP, kompres tinypng, konversi HEIC iPhone, urutan foto), menulis deskripsi yang menjual (template siap salin + 3 contoh jadi + kata yang dihindari), contoh spesifikasi per kategori, strategi harga & stok & satuan, edit/sembunyikan/hapus produk, workflow upload batch (spreadsheet + folder foto), checklist 10 centang, troubleshooting 9 kasus, FAQ 8 details/summary, cheat sheet ASCII 1 halaman siap cetak, bagian kredit Digiman + juraganwebsite.web.id.
+- Rombak src/components/admin/panduan.tsx: alert rujukan ke TUTORIAL-UPLOAD-PRODUK.md & TUTORIAL.md; stepper "Upload Barang dalam 8 Langkah" (8 kartu berikon + nomor + badge durasi + tips teal); kartu Standar Foto LAKUKAN (teal) vs HINDARI (rose); kartu "Template Siap Salin" berisi 3 template (nama, deskripsi singkat, deskripsi lengkap) dengan tombol Salin (navigator.clipboard + toast sonner + state copied); accordion "Topik Lainnya" 7 topik (kategori, pesan, pengaturan toko, password, status aktif/unggulan, troubleshooting foto gagal baru, tips jualan).
+- README.md: tautkan TUTORIAL-UPLOAD-PRODUK.md di baris dokumentasi + struktur folder.
+- Verifikasi E2E Agent Browser: login admin → menu Panduan; konten kunci terverifikasi (8 langkah, LAKUKAN/HINDARI, template, badge durasi); tombol Salin → toast "Template nama produk tersalin ke clipboard!"; accordion "Foto gagal diunggah" terbuka; screenshot desktop 1280px full-page, mobile 390px full-page (1 kolom rapi), dark mode OK; 0 console error; lint bersih; dev.log bersih; browser ditutup, scripts/tmp dibersihkan.
+
+Stage Summary:
+- Tutorial upload produk kini ada di 2 tempat: file TUTORIAL-UPLOAD-PRODUK.md (cetak/arsip, 13 bagian) dan halaman Panduan di dashboard admin (interaktif: stepper, do/don't foto, template 1-klik salin, accordion).
+- Semua instruksi 100% akurat terhadap UI asli (label tombol, batas 3MB, 160 karakter, satuan, 13 kategori, perilaku foto utama, "Hubungi Kami", label "Stok Habis").
+- Artefak: TUTORIAL-UPLOAD-PRODUK.md, src/components/admin/panduan.tsx, README.md (2 tautan baru), screenshot tests/panduan-*.png.
