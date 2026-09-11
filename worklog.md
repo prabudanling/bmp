@@ -39,3 +39,20 @@ Stage Summary:
 - README.md jadi: 624 baris, seluruhnya berbahasa Indonesia, akurat terhadap codebase (endpoint, model DB, skrip, kredensial diverifikasi dari source).
 - Melengkapi TUTORIAL.md (step-by-step operasional) dengan README (referensi teknis: API docs, schema DB, struktur folder, troubleshooting).
 - Tidak ada perubahan kode aplikasi; situs tetap berjalan normal.
+
+---
+Task ID: 3
+Agent: Z.ai Code (main)
+Task: Menambahkan kredit "Developed by PT Digital Bisnis Manajemen (Digiman)" dan "Hosting & Domain by juraganwebsite.web.id" ke footer + titik strategis lain.
+
+Work Log:
+- Footer publik (src/components/site/footer.tsx): credit strip baru di bawah copyright dengan hairline gradient teal premium, chip kredit berikon Code2 (Digiman) & Globe (juraganwebsite.web.id, link https://juraganwebsite.web.id target _blank + noopener), hover glow teal, tooltip title.
+- Halaman login admin (src/components/site/login-view.tsx): baris kredit di bawah kartu login.
+- Sidebar dashboard admin (src/components/admin/admin-app.tsx): kredit mini "by Digiman · juraganwebsite.web.id" di bawah kotak profil user.
+- README.md: bagian baru "🏆 Kredit" berisi tabel peran developer & hosting.
+- Bugfix responsivitas: chip footer awalnya overflow di 390px (tertutup tombol WA float) → name/link dibuat basis-full wrap 2 baris di mobile, kembali inline 1 baris di sm+.
+- Verifikasi E2E Agent Browser: footer desktop 1280px (1 baris elegan + hairline gradient), footer mobile 390px (2 baris terpusat, tidak tertutup WA float), login page, sidebar admin (login admin sukses), dark mode OK, href & rel link benar, lint bersih, tanpa error console/dev.log.
+
+Stage Summary:
+- Kredit Digiman + juraganwebsite.web.id kini tampil di 3 titik UI (footer publik, login admin, sidebar dashboard) + README.
+- Konsisten tema teal, responsif penuh mobile→desktop, aksesibel (aria-hidden pada separator, rel noopener, title tooltip).

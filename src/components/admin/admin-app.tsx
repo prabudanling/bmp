@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import {
+  Code2,
   ExternalLink,
+  Globe,
   HelpCircle,
   Inbox,
   LayoutGrid,
@@ -147,6 +149,25 @@ function SidebarContent({ path, unread }: { path: string; unread: number }) {
           >
             <LogOut className="h-4 w-4" />
           </button>
+        </div>
+        {/* Kredit — Developer & Hosting */}
+        <div className="mt-3 flex items-center justify-center gap-1.5 border-t border-white/5 pt-2.5 text-[10px] text-slate-500">
+          <Code2 className="h-3 w-3 shrink-0 text-teal-400/70" />
+          <span className="truncate">
+            by <span className="font-medium text-slate-400">Digiman</span>
+          </span>
+          <span aria-hidden="true" className="text-slate-600">
+            ·
+          </span>
+          <Globe className="h-3 w-3 shrink-0 text-teal-400/70" />
+          <a
+            href="https://juraganwebsite.web.id"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="truncate transition-colors hover:text-teal-300"
+          >
+            juraganwebsite.web.id
+          </a>
         </div>
       </div>
     </div>

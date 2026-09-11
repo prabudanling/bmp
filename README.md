@@ -593,6 +593,20 @@ Bebas digunakan dan dimodifikasi untuk kepentingan pemilik toko. 🧊
 
 ---
 
+## 🏆 Kredit
+
+Karya ini lahir dari kolaborasi para ahli:
+
+| Peran | Pelaku |
+|-------|--------|
+| 💻 **Pengembangan Aplikasi** | **PT Digital Bisnis Manajemen (Digiman)** |
+| 🌐 **Hosting & Domain** | [**juraganwebsite.web.id**](https://juraganwebsite.web.id) |
+
+> Kredit ini juga tampil elegan di **footer website**, **halaman login admin**,
+> dan **sidebar dashboard** — menghormati siapa pun yang berada di balik layar. 🙏
+
+---
+
 ## 📞 Kontak
 
 <div align="center">

@@ -2,6 +2,8 @@
 
 import {
   Clock,
+  Code2,
+  Globe,
   LayoutDashboard,
   Mail,
   MapPin,
@@ -138,6 +140,46 @@ export function SiteFooter() {
             Seluruh hak cipta dilindungi.
           </span>
           <span>Kompresor & Sparepart AC — Original & Bergaransi</span>
+        </div>
+      </div>
+
+      {/* Kredit — Developer & Hosting */}
+      <div className="relative bg-black/25">
+        {/* Hairline gradient pemberi kesan premium */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-500/50 to-transparent"
+        />
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-x-6 gap-y-2 px-4 py-3.5 text-[11px] text-slate-500 sm:flex-row lg:px-8">
+          <span
+            className="group inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 text-center transition-colors"
+            title="Dikembangkan oleh PT Digital Bisnis Manajemen (Digiman)"
+          >
+            <Code2 className="h-3.5 w-3.5 text-teal-400/80 transition-transform group-hover:-rotate-6" />
+            <span>Dikembangkan oleh</span>
+            <span className="w-full basis-full text-center font-semibold text-slate-400 transition-colors group-hover:text-teal-300 sm:w-auto sm:basis-auto sm:text-left">
+              PT Digital Bisnis Manajemen (Digiman)
+            </span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="hidden h-3 w-px bg-white/15 sm:block"
+          />
+          <span
+            className="group inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 text-center transition-colors"
+            title="Layanan hosting & domain oleh juraganwebsite.web.id"
+          >
+            <Globe className="h-3.5 w-3.5 text-teal-400/80 transition-transform group-hover:rotate-12" />
+            <span>Hosting & Domain oleh</span>
+            <a
+              href="https://juraganwebsite.web.id"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full basis-full justify-center text-center font-semibold text-slate-400 underline decoration-dotted decoration-teal-400/40 underline-offset-2 transition-colors hover:text-teal-300 sm:w-auto sm:basis-auto sm:justify-start sm:text-left"
+            >
+              juraganwebsite.web.id
+            </a>
+          </span>
         </div>
       </div>
     </footer>

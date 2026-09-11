@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import {
+  Code2,
   Eye,
   EyeOff,
+  Globe,
   KeyRound,
   LayoutDashboard,
   Loader2,
@@ -145,6 +147,32 @@ export function LoginView() {
             </Button>
           </CardContent>
         </Card>
+
+        {/* Kredit — Developer & Hosting */}
+        <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <Code2 className="h-3 w-3 text-primary/70" />
+            Dikembangkan oleh{' '}
+            <span className="font-semibold text-foreground/70">
+              PT Digital Bisnis Manajemen (Digiman)
+            </span>
+          </span>
+          <span aria-hidden="true" className="hidden text-border sm:inline">
+            ·
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Globe className="h-3 w-3 text-primary/70" />
+            Hosting & Domain oleh{' '}
+            <a
+              href="https://juraganwebsite.web.id"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-foreground/70 underline decoration-dotted underline-offset-2 transition-colors hover:text-primary"
+            >
+              juraganwebsite.web.id
+            </a>
+          </span>
+        </p>
       </div>
     </div>
   )
