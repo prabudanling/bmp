@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Admin / pemilik toko yang bisa login ke dashboard
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String // bcrypt hash
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Kategori produk (Kompresor AC, Kapasitor, dll)
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  icon      String    @default("package")
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+// Produk kompresor & sparepart AC
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  sku         String?
+  brand       String?
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  price       Int? // dalam Rupiah, null = harga on request
+  unit        String    @default("pcs")
+  stock       Int       @default(0)
+  shortDesc   String?
+  description String    @default("")
+  specs       String    @default("[]") // JSON array [{k,v}]
+  images      String    @default("[]") // JSON array url gambar
+  isFeatured  Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  views       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([isActive, isFeatured])
+}
+
+// Pesan dari form kontak pelanggan
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// Pengaturan toko (nama, WA, alamat, dll) - key/value
+model Setting {
+  key   String @id
+  value String
+}
