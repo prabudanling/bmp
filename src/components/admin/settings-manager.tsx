@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import {
+  AppWindow,
   Building2,
   Eye,
   EyeOff,
@@ -11,8 +12,10 @@ import {
   KeyRound,
   Loader2,
   Save,
+  Snowflake,
   Store,
   Trash2,
+  X,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -68,6 +71,18 @@ function baseName(file: File): string {
   return file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim()
 }
 
+/** Perbarui ikon tab browser secara langsung (tanpa reload halaman) */
+function applyFavicon(url: string) {
+  if (typeof document === 'undefined') return
+  let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
+  if (!link) {
+    link = document.createElement('link')
+    link.rel = 'icon'
+    document.head.appendChild(link)
+  }
+  link.href = url
+}
+
 export function SettingsManager() {
   const settings = useSettings()
   const [form, setForm] = useState<StoreSettings | null>(null)
@@ -89,6 +104,10 @@ export function SettingsManager() {
   const [partners, setPartners] = useState<PartnerLogo[]>([])
   const [partnerUploading, setPartnerUploading] = useState(0)
   const partnerRef = useRef<HTMLInputElement>(null)
+
+  // ---- Favicon ----
+  const [favUploading, setFavUploading] = useState(false)
+  const favRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (settings && !form) {
@@ -151,6 +170,40 @@ export function SettingsManager() {
       await persist({ logoUrl: '' })
       setForm((f) => (f ? { ...f, logoUrl: '' } : f))
       toast.success('Logo perusahaan dihapus — kembali ke ikon bawaan.')
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
+  // ---- Favicon ----
+  const uploadFavicon = async (file: File) => {
+    if (!validateImage(file)) return
+    setFavUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const { url } = await api<{ url: string }>('/api/upload', {
+        method: 'POST',
+        body: fd,
+      })
+      await persist({ faviconUrl: url })
+      setForm((f) => (f ? { ...f, faviconUrl: url } : f))
+      applyFavicon(url)
+      toast.success('Favicon berhasil diperbarui — lihat tab browser!')
+    } catch (e) {
+      toast.error((e as Error).message)
+    } finally {
+      setFavUploading(false)
+      if (favRef.current) favRef.current.value = ''
+    }
+  }
+
+  const removeFavicon = async () => {
+    try {
+      await persist({ faviconUrl: '' })
+      setForm((f) => (f ? { ...f, faviconUrl: '' } : f))
+      applyFavicon(form?.logoUrl || '/favicon.svg')
+      toast.success('Favicon dihapus — kembali mengikuti logo perusahaan / ikon bawaan.')
     } catch (e) {
       toast.error((e as Error).message)
     }
@@ -226,6 +279,9 @@ export function SettingsManager() {
       </div>
     )
   }
+
+  /** Favicon efektif: unggahan khusus → logo perusahaan → placeholder */
+  const faviconSrc = form.faviconUrl || form.logoUrl
 
   return (
     <div className="space-y-6">
@@ -372,6 +428,117 @@ export function SettingsManager() {
                 Saran ukuran persegi 256×256px atau lebih, rasio 1:1. Logo
                 langsung tersimpan begitu diunggah — tidak perlu klik
                 &quot;Simpan Pengaturan&quot;.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Favicon website */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <AppWindow className="h-4 w-4 text-primary" />
+            Favicon Website
+          </CardTitle>
+          <CardDescription>
+            Ikon kecil yang tampil di tab browser, bookmark, dan hasil
+            pencarian Google. Jika dikosongkan, favicon otomatis memakai logo
+            perusahaan — bila keduanya kosong, memakai ikon salju bawaan.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-5">
+            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-white shadow-sm">
+              {faviconSrc ? (
+                <Image
+                  src={faviconSrc}
+                  alt="Favicon website"
+                  fill
+                  sizes="64px"
+                  className="object-contain p-1.5"
+                />
+              ) : (
+                <ImagePlus className="h-6 w-6 text-muted-foreground/40" />
+              )}
+              {favUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-background/70">
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                </div>
+              )}
+            </div>
+            <div className="min-w-0 flex-1 space-y-2.5">
+              {/* Pratinjau tampilan di tab browser */}
+              <div
+                className="inline-flex max-w-full items-center gap-2 rounded-lg border bg-muted/50 px-3 py-2 text-xs text-muted-foreground shadow-sm"
+                title="Pratinjau tampilan di tab browser"
+              >
+                <span className="relative h-4 w-4 shrink-0" aria-hidden>
+                  {faviconSrc ? (
+                    <Image
+                      src={faviconSrc}
+                      alt=""
+                      fill
+                      sizes="16px"
+                      className="object-contain"
+                    />
+                  ) : (
+                    <Snowflake className="h-4 w-4 text-teal-600" />
+                  )}
+                </span>
+                <span className="max-w-48 truncate">
+                  {form.storeName || 'Berkat Mandiri Pendingin'}
+                </span>
+                <X className="h-3 w-3 shrink-0 opacity-50" aria-hidden />
+                <span className="sr-only">Pratinjau tab browser</span>
+              </div>
+              <input
+                ref={favRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) uploadFavicon(file)
+                }}
+                aria-label="Upload favicon"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={favUploading}
+                  onClick={() => favRef.current?.click()}
+                >
+                  {favUploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Mengunggah...
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus className="h-4 w-4" />
+                      {form.faviconUrl ? 'Ganti Favicon' : 'Pilih Favicon'}
+                    </>
+                  )}
+                </Button>
+                {form.faviconUrl && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
+                    disabled={favUploading}
+                    onClick={removeFavicon}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Hapus
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Saran: PNG persegi 64×64px atau 256×256px dengan latar
+                transparan. Langsung tersimpan begitu diunggah — ikon di tab
+                browser ikut diperbarui tanpa reload.
               </p>
             </div>
           </div>

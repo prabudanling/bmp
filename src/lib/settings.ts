@@ -15,6 +15,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     'Berkat Mandiri Pendingin adalah toko spesialis kompresor dan sparepart AC yang telah dipercaya teknisi, bengkel AC, dan pemilik rumah di seluruh Indonesia. Kami menyediakan ribuan item sparepart AC mulai dari kompresor, motor fan, kapasitor, termostat, freon, hingga fitting dan aksesoris pendukung — semuanya original dan bergaransi.',
   logoUrl: '',
   partnerLogos: '[]',
+  faviconUrl: '',
 }
 
 /** Parse JSON daftar logo mitra dengan aman (fallback ke array kosong) */

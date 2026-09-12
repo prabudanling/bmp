@@ -71,6 +71,8 @@ export interface StoreSettings {
   logoUrl: string
   /** JSON string array PartnerLogo — disimpan sebagai teks di tabel Setting */
   partnerLogos: string
+  /** URL favicon website (kosong = mengikuti logo perusahaan / ikon bawaan) */
+  faviconUrl: string
 }
 
 /** Satu logo mitra/distributor pada strip mitra beranda */

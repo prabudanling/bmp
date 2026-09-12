@@ -116,3 +116,22 @@ Stage Summary:
 - Admin kini bisa mengunggah logo perusahaan (header, menu mobile, footer) dan logo mitra (strip beranda jadi grid mitra) sepenuhnya dari dashboard tanpa coding; logo tersimpan via /api/upload + tabel Setting.
 - Fallback elegan: tanpa logo → ikon salju & chip merek teks seperti semula.
 - Data demo terpasang: logo BMP + 2 mitra (CV Sumber Dingin Teknik, PT Prima Kompresor Nusantara).
+
+---
+Task ID: 7
+Agent: Z.ai Code (main)
+Task: Menambahkan favicon dinamis — upload favicon dari dashboard admin yang otomatis dipakai di tab browser.
+
+Work Log:
+- types.ts: field baru StoreSettings.faviconUrl (kosong = mengikuti logo perusahaan); settings.ts: default faviconUrl:'' — PUT /api/settings otomatis mendukung key baru tanpa ubah route.
+- layout.tsx: metadata statis diubah menjadi generateMetadata() — getFaviconUrl() membaca tabel Setting tiap request dengan urutan fallback faviconUrl → logoUrl → /favicon.svg; MIME type disetel otomatis dari ekstensi (png/jpg/webp/gif/svg/ico); ikon dirender sebagai <link rel="icon"> + apple-touch-icon.
+- settings-manager.tsx: kartu "Favicon Website" (ikon AppWindow) di antara Logo Perusahaan & Logo Mitra — preview 64px + mock tab browser (favicon + nama toko + ×) agar admin lihat konteks nyata; tombol Pilih/Ganti/Hapus; auto-persist PUT; helper applyFavicon() memperbarui link[rel=icon] di tab saat ini TANPA reload; toast sukses.
+- panduan.tsx: accordion "mengubah informasi toko" ditambah langkah favicon.
+- README.md: baris fitur Pengaturan Toko + tabel model Setting kini menyebut favicon dinamis & contoh key faviconUrl.
+- Favicon uji dibuat via sharp (teal snowflake 256px) → scripts/tmp dibersihkan setelah selesai.
+- Verifikasi E2E Agent Browser: upload favicon → toast "Favicon berhasil diperbarui" + link[rel=icon] berubah LIVE tanpa reload + setting tersimpan; reload → SSR HTML merender <link rel="icon" href="/uploads/...-favicon-test.png" type="image/png">; tombol Hapus → fallback LIVE ke logo perusahaan, SSR setelah reload juga logo; pasang ulang favicon (state demo final terpasang); beranda publik memuat favicon unggahan; screenshot desktop 1280px / mobile 390px (stacking rapi) / dark mode (localStorage theme=dark); 0 console error; lint bersih; dev.log bersih.
+
+Stage Summary:
+- Favicon kini dinamis penuh: admin unggah ikon dari Pengaturan → tab browser, bookmark & apple-touch-icon otomatis mengikuti (tanpa deploy ulang, tanpa ganti file manual).
+- Fallback berlapis: favicon khusus → logo perusahaan → ikon salju bawaan; perubahan live di tab saat ini via applyFavicon.
+- Artefak: src/app/layout.tsx (generateMetadata), settings-manager.tsx (kartu Favicon), types.ts/settings.ts (faviconUrl), panduan.tsx + README.md; screenshot tests/favicon-card-{desktop,mobile,dark}.png + favicon-public-home.png; faviconUrl demo terisi /uploads/1789185031598-favicon-test.png.

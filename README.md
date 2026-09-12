@@ -97,7 +97,7 @@ fitting, dan lainnya). Dirancang agar pemilik toko **tanpa keahlian coding** bis
 | 👁️ **Sembunyikan / Tampilkan** | Switch aktif per produk + tandai **Unggulan** untuk beranda |
 | 🗂️ **Kelola Kategori** | CRUD kategori + pilih ikon (terlindungi dari hapus jika masih ada produk) |
 | 📨 **Kotak Pesan** | Filter belum-dibaca, tandai dibaca, hapus, **balas 1-klik** via WhatsApp/Email |
-| ⚙️ **Pengaturan Toko** | Nama toko, nomor WA, alamat, jam buka, teks hero — **live update tanpa deploy ulang** + ubah password admin |
+| ⚙️ **Pengaturan Toko** | Nama toko, nomor WA, alamat, jam buka, teks hero, **logo perusahaan**, **logo mitra**, **favicon dinamis** — **live update tanpa deploy ulang** + ubah password admin |
 | 📚 **Panduan Terpasang** | Tutorial 8 topik berbentuk accordion di dalam dashboard |
 | 🛡️ **Notifikasi Stok Menipis** | Produk dengan stok ≤ 5 otomatis muncul di dashboard |
 
@@ -364,7 +364,7 @@ Database SQLite berisi **5 tabel** (dikelola oleh Prisma):
 ### ⚙️ `Setting` — Pengaturan toko (key-value)
 | Kolom | Tipe | Keterangan |
 |-------|------|-----------|
-| `key` / `value` | String | Misal: `store_name`, `whatsapp`, `address`, `hero_title` |
+| `key` / `value` | String | Contoh: `storeName`, `whatsapp`, `heroTitle`, `logoUrl`, `partnerLogos` (JSON), `faviconUrl` |
 
 > 🌱 **Data awal dari seed:** 1 admin, 6 kategori (Kompresor AC, Motor & Fan,
 > Kapasitor, Termostat & Sensor, Freon & Gas, Fitting & Aksesoris),
