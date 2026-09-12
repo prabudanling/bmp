@@ -93,3 +93,26 @@ Stage Summary:
 - Tutorial upload produk kini ada di 2 tempat: file TUTORIAL-UPLOAD-PRODUK.md (cetak/arsip, 13 bagian) dan halaman Panduan di dashboard admin (interaktif: stepper, do/don't foto, template 1-klik salin, accordion).
 - Semua instruksi 100% akurat terhadap UI asli (label tombol, batas 3MB, 160 karakter, satuan, 13 kategori, perilaku foto utama, "Hubungi Kami", label "Stok Habis").
 - Artefak: TUTORIAL-UPLOAD-PRODUK.md, src/components/admin/panduan.tsx, README.md (2 tautan baru), screenshot tests/panduan-*.png.
+
+---
+Task ID: 6
+Agent: Z.ai Code (main)
+Task: Menambahkan pengaturan upload Logo Perusahaan & Logo Mitra di admin dashboard.
+
+Work Log:
+- types.ts: StoreSettings + logoUrl & partnerLogos (JSON string); interface baru PartnerLogo {url, name}.
+- lib/settings.ts: default logoUrl='' & partnerLogos='[]' + helper parsePartners() (aman terhadap JSON rusak).
+- API /api/settings PUT otomatis mendukung key baru (iterasi DEFAULT_SETTINGS) — tanpa perubahan route.
+- settings-manager.tsx: kartu "Logo Perusahaan" (preview 96px bg-white, tombol Pilih/Ganti/Hapus, upload via /api/upload lalu auto-persist PUT settings, spinner overlay) + kartu "Logo Mitra" (badge jumlah, grid thumbnail hover-hapus, input nama mitra auto-save on blur, area unggah multi-file, auto-persist JSON). Validasi gambar & 3MB sama seperti form produk.
+- Bugfix ditemukan saat E2E: kondisi onBlur nama mitra selalu false (state sudah re-render) → nama tidak tersimpan; diperbaiki menjadi savePartners tanpa kondisi.
+- site-header.tsx: logo custom (Image object-contain bg-white rounded-xl) menggantikan ikon Snowflake di header desktop + SheetTitle mobile jika logoUrl ada.
+- footer.tsx: logo custom dengan border-white/15 bg-white menggantikan ikon salju teal jika logoUrl ada.
+- home-view.tsx: strip "Sparepart untuk Berbagai Merek AC" jadi dinamis — jika ada logo mitra, tampil grid "Mitra & Distributor Kami" (2 kolom mobile / 5 desktop, logo + nama); fallback ke chip merek teks bila kosong.
+- panduan.tsx: accordion "mengubah informasi toko" + langkah upload logo perusahaan & mitra.
+- Demo assets: generate 3 logo AI (tests/logo-company.png BMP snowflake, logo-mitra-1/2.png distributor fiksi).
+- Verifikasi E2E Agent Browser: upload logo perusahaan → toast sukses + API logoUrl terisi; upload 2 mitra multi-file → tersimpan; ubah nama mitra (bugfix onBlur) → tersimpan; header/footer/strip mitra tampil logo di desktop 1280px & mobile 390px; hapus mitra (2→1) + unggah ulang (1→2) OK; console 0 error; lint bersih; dev.log bersih. Screenshot: tests/settings-logo-full.png, public-header-logo.png, public-mitra-strip.png, public-footer-logo.png, public-mitra-mobile.png.
+
+Stage Summary:
+- Admin kini bisa mengunggah logo perusahaan (header, menu mobile, footer) dan logo mitra (strip beranda jadi grid mitra) sepenuhnya dari dashboard tanpa coding; logo tersimpan via /api/upload + tabel Setting.
+- Fallback elegan: tanpa logo → ikon salju & chip merek teks seperti semula.
+- Data demo terpasang: logo BMP + 2 mitra (CV Sumber Dingin Teknik, PT Prima Kompresor Nusantara).

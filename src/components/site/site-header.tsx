@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import {
@@ -85,9 +86,22 @@ export function SiteHeader() {
             onClick={() => navigate('/')}
             aria-label="Ke beranda"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <Snowflake className="h-5 w-5" />
-            </span>
+            {/* Logo — custom jika diunggah, ikon salju jika belum */}
+            {settings?.logoUrl ? (
+              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-white shadow-sm">
+                <Image
+                  src={settings.logoUrl}
+                  alt={settings?.storeName || 'Logo toko'}
+                  fill
+                  sizes="40px"
+                  className="object-contain p-1"
+                />
+              </span>
+            ) : (
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                <Snowflake className="h-5 w-5" />
+              </span>
+            )}
             <span className="leading-tight">
               <span className="block text-[15px] font-extrabold tracking-tight">
                 {settings?.storeName || 'Berkat Mandiri Pendingin'}
@@ -173,7 +187,19 @@ export function SiteHeader() {
               </SheetTrigger>
               <SheetContent side="right" className="w-72">
                 <SheetTitle className="flex items-center gap-2 text-base font-bold">
-                  <Snowflake className="h-5 w-5 text-primary" />
+                  {settings?.logoUrl ? (
+                    <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border bg-white">
+                      <Image
+                        src={settings.logoUrl}
+                        alt={settings?.storeName || 'Logo toko'}
+                        fill
+                        sizes="32px"
+                        className="object-contain p-0.5"
+                      />
+                    </span>
+                  ) : (
+                    <Snowflake className="h-5 w-5 text-primary" />
+                  )}
                   {settings?.storeName || 'Berkat Mandiri Pendingin'}
                 </SheetTitle>
                 <nav className="mt-6 flex flex-col gap-1" aria-label="Menu mobile">

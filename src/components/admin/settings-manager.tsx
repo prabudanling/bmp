@@ -1,7 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Eye, EyeOff, KeyRound, Loader2, Save, Store } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import {
+  Building2,
+  Eye,
+  EyeOff,
+  Handshake,
+  ImagePlus,
+  KeyRound,
+  Loader2,
+  Save,
+  Store,
+  Trash2,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,7 +28,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/lib/client'
 import { clearSettingsCache, useSettings } from '@/hooks/use-settings'
-import type { StoreSettings } from '@/lib/types'
+import { parsePartners } from '@/lib/settings'
+import type { PartnerLogo, StoreSettings } from '@/lib/types'
 
 const FIELDS: {
   key: keyof StoreSettings
@@ -37,6 +50,24 @@ const FIELDS: {
   { key: 'about', label: 'Tentang Kami (tampil di beranda)', type: 'textarea' },
 ]
 
+/** Validasi file gambar sama seperti form produk */
+function validateImage(file: File): boolean {
+  if (!file.type.startsWith('image/')) {
+    toast.error(`"${file.name}" bukan file gambar.`)
+    return false
+  }
+  if (file.size > 3 * 1024 * 1024) {
+    toast.error(`"${file.name}" melebihi 3MB. Kompres dulu di tinypng.com.`)
+    return false
+  }
+  return true
+}
+
+/** Nama file tanpa ekstensi → nama mitra bawaan */
+function baseName(file: File): string {
+  return file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim()
+}
+
 export function SettingsManager() {
   const settings = useSettings()
   const [form, setForm] = useState<StoreSettings | null>(null)
@@ -50,9 +81,30 @@ export function SettingsManager() {
   const [showPw, setShowPw] = useState(false)
   const [changing, setChanging] = useState(false)
 
+  // ---- Logo perusahaan ----
+  const [logoUploading, setLogoUploading] = useState(false)
+  const logoRef = useRef<HTMLInputElement>(null)
+
+  // ---- Logo mitra ----
+  const [partners, setPartners] = useState<PartnerLogo[]>([])
+  const [partnerUploading, setPartnerUploading] = useState(0)
+  const partnerRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
-    if (settings && !form) setForm({ ...settings })
+    if (settings && !form) {
+      setForm({ ...settings })
+      setPartners(parsePartners(settings.partnerLogos))
+    }
   }, [settings, form])
+
+  /** Simpan sebagian kolom pengaturan (untuk logo) */
+  const persist = async (patch: Partial<StoreSettings>) => {
+    await api<StoreSettings>('/api/settings', {
+      method: 'PUT',
+      body: JSON.stringify(patch),
+    })
+    clearSettingsCache()
+  }
 
   const saveSettings = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,6 +122,72 @@ export function SettingsManager() {
     } finally {
       setSaving(false)
     }
+  }
+
+  // ---- Upload logo perusahaan ----
+  const uploadLogo = async (file: File) => {
+    if (!validateImage(file)) return
+    setLogoUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const { url } = await api<{ url: string }>('/api/upload', {
+        method: 'POST',
+        body: fd,
+      })
+      await persist({ logoUrl: url })
+      setForm((f) => (f ? { ...f, logoUrl: url } : f))
+      toast.success('Logo perusahaan berhasil diperbarui!')
+    } catch (e) {
+      toast.error((e as Error).message)
+    } finally {
+      setLogoUploading(false)
+      if (logoRef.current) logoRef.current.value = ''
+    }
+  }
+
+  const removeLogo = async () => {
+    try {
+      await persist({ logoUrl: '' })
+      setForm((f) => (f ? { ...f, logoUrl: '' } : f))
+      toast.success('Logo perusahaan dihapus — kembali ke ikon bawaan.')
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
+  // ---- Logo mitra ----
+  const savePartners = async (list: PartnerLogo[], silent = false) => {
+    setPartners(list)
+    try {
+      await persist({ partnerLogos: JSON.stringify(list) })
+      if (!silent) toast.success('Daftar logo mitra tersimpan!')
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
+  const uploadPartners = async (files: FileList) => {
+    const next = [...partners]
+    for (const file of Array.from(files)) {
+      if (!validateImage(file)) continue
+      try {
+        setPartnerUploading((u) => u + 1)
+        const fd = new FormData()
+        fd.append('file', file)
+        const { url } = await api<{ url: string }>('/api/upload', {
+          method: 'POST',
+          body: fd,
+        })
+        next.push({ url, name: baseName(file).slice(0, 40) })
+      } catch (e) {
+        toast.error((e as Error).message)
+      } finally {
+        setPartnerUploading((u) => u - 1)
+      }
+    }
+    if (next.length !== partners.length) await savePartners(next)
+    if (partnerRef.current) partnerRef.current.value = ''
   }
 
   const changePassword = async (e: React.FormEvent) => {
@@ -170,6 +288,196 @@ export function SettingsManager() {
               )}
             </Button>
           </form>
+        </CardContent>
+      </Card>
+
+      {/* Logo perusahaan */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Building2 className="h-4 w-4 text-primary" />
+            Logo Perusahaan
+          </CardTitle>
+          <CardDescription>
+            Tampil di pojok kiri atas header website (menggantikan ikon
+            salju), menu mobile, dan footer. PNG transparan paling disarankan,
+            maks 3MB.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-5">
+            <div className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-white shadow-sm">
+              {form.logoUrl ? (
+                <Image
+                  src={form.logoUrl}
+                  alt="Logo perusahaan"
+                  fill
+                  sizes="96px"
+                  className="object-contain p-2"
+                />
+              ) : (
+                <ImagePlus className="h-8 w-8 text-muted-foreground/40" />
+              )}
+              {logoUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-background/70">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              )}
+            </div>
+            <div className="min-w-0 flex-1 space-y-2.5">
+              <input
+                ref={logoRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) uploadLogo(file)
+                }}
+                aria-label="Upload logo perusahaan"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={logoUploading}
+                  onClick={() => logoRef.current?.click()}
+                >
+                  {logoUploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Mengunggah...
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus className="h-4 w-4" />
+                      {form.logoUrl ? 'Ganti Logo' : 'Pilih Logo'}
+                    </>
+                  )}
+                </Button>
+                {form.logoUrl && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
+                    disabled={logoUploading}
+                    onClick={removeLogo}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Hapus
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Saran ukuran persegi 256×256px atau lebih, rasio 1:1. Logo
+                langsung tersimpan begitu diunggah — tidak perlu klik
+                &quot;Simpan Pengaturan&quot;.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Logo mitra */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Handshake className="h-4 w-4 text-primary" />
+            Logo Mitra{' '}
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+              {partners.length} logo
+            </span>
+          </CardTitle>
+          <CardDescription>
+            Tampil di strip &quot;Mitra Kami&quot; pada beranda, menggantikan
+            daftar nama merek teks. Unggah PNG transparan agar rapi, maks 3MB
+            per logo.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {partners.length === 0 && partnerUploading === 0 && (
+            <p className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">
+              Belum ada logo mitra. Klik tombol di bawah untuk mengunggah.
+            </p>
+          )}
+
+          {partners.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {partners.map((p, i) => (
+                <div key={p.url + i} className="space-y-2 rounded-xl border p-3">
+                  <div className="group relative flex h-16 items-center justify-center overflow-hidden rounded-lg border bg-white">
+                    <Image
+                      src={p.url}
+                      alt={p.name || `Logo mitra ${i + 1}`}
+                      fill
+                      sizes="160px"
+                      className="object-contain p-1.5"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-1 top-1 rounded bg-rose-600 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                      onClick={() =>
+                        savePartners(partners.filter((_, idx) => idx !== i))
+                      }
+                      aria-label={`Hapus logo ${p.name || i + 1}`}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                  <Input
+                    value={p.name}
+                    placeholder="Nama mitra"
+                    className="h-8 text-xs"
+                    onChange={(e) => {
+                      const next = [...partners]
+                      next[i] = { ...next[i], name: e.target.value }
+                      setPartners(next)
+                    }}
+                    onBlur={() => savePartners(partners, true)}
+                    aria-label={`Nama mitra ${i + 1}`}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <input
+            ref={partnerRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.length) uploadPartners(e.target.files)
+            }}
+            aria-label="Upload logo mitra"
+          />
+          <button
+            type="button"
+            onClick={() => partnerRef.current?.click()}
+            disabled={partnerUploading > 0}
+            className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed p-5 text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+          >
+            {partnerUploading > 0 ? (
+              <>
+                <Loader2 className="h-6 w-6 animate-spin" />
+                <span className="text-xs font-medium">
+                  Mengunggah {partnerUploading} logo...
+                </span>
+              </>
+            ) : (
+              <>
+                <ImagePlus className="h-6 w-6" />
+                <span className="text-xs font-medium">
+                  Klik untuk pilih logo mitra (bisa banyak sekaligus)
+                </span>
+              </>
+            )}
+          </button>
+          <p className="text-xs text-muted-foreground">
+            Logo otomatis tersimpan setelah diunggah. Nama mitra akan tampil
+            di bawah logo — ubah lalu klik di luar kolom untuk menyimpan.
+          </p>
         </CardContent>
       </Card>
 

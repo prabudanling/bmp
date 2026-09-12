@@ -147,7 +147,9 @@ const ACCORDION: { q: string; steps: string[] }[] = [
     steps: [
       'Buka menu "Pengaturan" di sidebar.',
       'Ubah nama toko, tagline, judul banner, nomor WhatsApp, telepon, email, alamat, jam operasional, dan teks "Tentang Kami".',
-      'Klik "Simpan Pengaturan" — perubahan langsung tampil di semua halaman website.',
+      'Unggah logo perusahaan lewat kartu "Logo Perusahaan" — logo langsung tampil di header & footer begitu diunggah (PNG transparan paling bagus).',
+      'Tambahkan logo distributor/supplier di kartu "Logo Mitra" — strip di beranda otomatis berubah menjadi grid logo mitra.',
+      'Klik "Simpan Pengaturan" untuk data teks; logo tersimpan otomatis setelah diunggah.',
       'PENTING: pastikan nomor WhatsApp benar karena semua tombol pesan mengarah ke nomor ini.',
     ],
   },

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import {
   Clock,
   Code2,
@@ -31,9 +32,21 @@ export function SiteFooter() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500 text-slate-900">
-              <Snowflake className="h-5 w-5" />
-            </span>
+            {settings?.logoUrl ? (
+              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-white">
+                <Image
+                  src={settings.logoUrl}
+                  alt={settings?.storeName || 'Logo toko'}
+                  fill
+                  sizes="40px"
+                  className="object-contain p-1"
+                />
+              </span>
+            ) : (
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500 text-slate-900">
+                <Snowflake className="h-5 w-5" />
+              </span>
+            )}
             <span className="text-base font-extrabold text-white">
               {settings?.storeName || 'Berkat Mandiri Pendingin'}
             </span>

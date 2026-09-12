@@ -17,6 +17,7 @@ import { ProductCard, ProductCardSkeleton } from './product-card'
 import { ContactSection, TrustRow } from './contact-section'
 import { useApi } from '@/hooks/use-api'
 import { useSettings } from '@/hooks/use-settings'
+import { parsePartners } from '@/lib/settings'
 import { waLink } from '@/lib/format'
 import { useApp } from '@/lib/store'
 import type { CategoryDTO, ProductsResponse } from '@/lib/types'
@@ -60,6 +61,7 @@ const BRANDS = [
 export function HomeView() {
   const navigate = useApp((s) => s.navigate)
   const settings = useSettings()
+  const partnerLogos = parsePartners(settings?.partnerLogos)
   const { data: categories, loading: catLoading } = useApi<{
     items: CategoryDTO[]
   }>('/api/categories')
@@ -328,21 +330,49 @@ export function HomeView() {
         </div>
       </section>
 
-      {/* ===== MEREK ===== */}
+      {/* ===== MEREK / MITRA ===== */}
       <section className="mx-auto w-full max-w-7xl px-4 py-12 lg:px-8">
         <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Sparepart untuk Berbagai Merek AC
+          {partnerLogos.length > 0
+            ? 'Mitra & Distributor Kami'
+            : 'Sparepart untuk Berbagai Merek AC'}
         </p>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-          {BRANDS.map((b) => (
-            <span
-              key={b}
-              className="rounded-full border bg-card px-4 py-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-            >
-              {b}
-            </span>
-          ))}
-        </div>
+        {partnerLogos.length > 0 ? (
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {partnerLogos.map((p, i) => (
+              <div
+                key={p.url + i}
+                className="group flex flex-col items-center gap-2.5 rounded-xl border bg-card p-4 transition-colors hover:border-primary/40"
+              >
+                <div className="relative flex h-12 w-full items-center justify-center">
+                  <Image
+                    src={p.url}
+                    alt={p.name || `Logo mitra ${i + 1}`}
+                    fill
+                    sizes="200px"
+                    className="object-contain"
+                  />
+                </div>
+                {p.name && (
+                  <p className="text-center text-xs font-semibold text-muted-foreground transition-colors group-hover:text-primary">
+                    {p.name}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+            {BRANDS.map((b) => (
+              <span
+                key={b}
+                className="rounded-full border bg-card px-4 py-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
+              >
+                {b}
+              </span>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ===== CTA ===== */}

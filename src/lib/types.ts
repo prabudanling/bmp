@@ -67,6 +67,16 @@ export interface StoreSettings {
   address: string
   hours: string
   about: string
+  /** URL logo perusahaan (kosong = ikon bawaan) */
+  logoUrl: string
+  /** JSON string array PartnerLogo — disimpan sebagai teks di tabel Setting */
+  partnerLogos: string
+}
+
+/** Satu logo mitra/distributor pada strip mitra beranda */
+export interface PartnerLogo {
+  url: string
+  name: string
 }
 
 export interface StatsDTO {
