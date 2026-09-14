@@ -7,6 +7,7 @@ import { SiteFooter } from './footer'
 import { HomeView } from './home-view'
 import { CatalogView } from './catalog-view'
 import { ProductDetailView } from './product-detail'
+import { PageView } from './page-view'
 import { LoginView } from './login-view'
 import { WhatsAppFloat } from './whatsapp-float'
 import { ContactSection } from './contact-section'
@@ -39,6 +40,9 @@ export function PublicSite() {
   } else if (path.startsWith('/produk/')) {
     const slug = decodeURIComponent(path.replace('/produk/', '').split('?')[0])
     content = <ProductDetailView slug={slug} />
+  } else if (path.startsWith('/p/')) {
+    const slug = decodeURIComponent(path.replace('/p/', '').split('?')[0])
+    content = <PageView slug={slug} />
   } else if (path === '/masuk') {
     content = <LoginView />
   } else if (path === '/kontak') {

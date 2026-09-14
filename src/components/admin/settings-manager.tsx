@@ -51,6 +51,10 @@ const FIELDS: {
   { key: 'address', label: 'Alamat Toko', type: 'textarea' },
   { key: 'hours', label: 'Jam Operasional', placeholder: 'Senin - Sabtu: 08.00 - 17.00 WIB' },
   { key: 'about', label: 'Tentang Kami (tampil di beranda)', type: 'textarea' },
+  { key: 'instagram', label: 'Instagram', placeholder: 'https://instagram.com/tokoanda', hint: 'Kosongkan bila tidak dipakai' },
+  { key: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/tokoanda' },
+  { key: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/@tokoanda' },
+  { key: 'tiktok', label: 'TikTok', placeholder: 'https://tiktok.com/@tokoanda' },
 ]
 
 /** Validasi file gambar sama seperti form produk */

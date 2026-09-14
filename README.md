@@ -97,6 +97,8 @@ fitting, dan lainnya). Dirancang agar pemilik toko **tanpa keahlian coding** bis
 | 👁️ **Sembunyikan / Tampilkan** | Switch aktif per produk + tandai **Unggulan** untuk beranda |
 | 🗂️ **Kelola Kategori** | CRUD kategori + pilih ikon (terlindungi dari hapus jika masih ada produk) |
 | 📨 **Kotak Pesan** | Filter belum-dibaca, tandai dibaca, hapus, **balas 1-klik** via WhatsApp/Email |
+| 📄 **Halaman CMS** | **Editor WYSIWYG ala WordPress**: buat halaman bebas (Tentang, FAQ, kebijakan), tayangkan di menu "Informasi" & footer, mode draf/terbit, mode HTML |
+| 🖼️ **Perpustakaan Media** | Grid semua gambar terunggah: cari, unggah, **salin URL 1-klik**, hapus; ikon media sosial (Instagram/Facebook/TikTok/YouTube) di footer |
 | ⚙️ **Pengaturan Toko** | Nama toko, nomor WA, alamat, jam buka, teks hero, **logo perusahaan**, **logo mitra**, **favicon dinamis** — **live update tanpa deploy ulang** + ubah password admin |
 | 📚 **Panduan Terpasang** | Tutorial 8 topik berbentuk accordion di dalam dashboard |
 | 🛡️ **Notifikasi Stok Menipis** | Produk dengan stok ≤ 5 otomatis muncul di dashboard |
@@ -366,6 +368,16 @@ Database SQLite berisi **5 tabel** (dikelola oleh Prisma):
 |-------|------|-----------|
 | `key` / `value` | String | Contoh: `storeName`, `whatsapp`, `heroTitle`, `logoUrl`, `partnerLogos` (JSON), `faviconUrl` |
 
+### 📄 `Page` — Halaman konten CMS
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| `title` / `slug` | String | Judul + alamat (`/p/slug`, unik) |
+| `content` | String | HTML dari editor WYSIWYG |
+| `excerpt` | String | Ringkasan singkat (opsional) |
+| `isPublished` | Boolean | `false` = draf, belum tampil di publik |
+| `showInMenu` | Boolean | Masuk menu "Informasi" & footer |
+| `sortOrder` / `views` | Int | Urutan menu / counter pembaca |
+
 > 🌱 **Data awal dari seed:** 1 admin, 6 kategori (Kompresor AC, Motor & Fan,
 > Kapasitor, Termostat & Sensor, Freon & Gas, Fitting & Aksesoris),
 > 14 produk contoh lengkap dengan spesifikasi & deskripsi, 2 pesan contoh.
@@ -429,6 +441,12 @@ curl "http://localhost:3000/api/products?q=kompresor&sort=price-asc&page=1&limit
 | `PUT` | `/api/settings` | 🔒 | Simpan pengaturan (batch key-value) |
 | `GET` | `/api/stats` | 🔒 | Statistik dashboard (jumlah produk, pesan belum dibaca, stok menipis, produk terbaru) |
 | `POST` | `/api/upload` | 🔒 | Upload foto (maks **3MB**, validasi tipe file) → `{"url":"/uploads/..."}` |
+| `GET` | `/api/pages` | — | Daftar halaman CMS terbit (`?menu=1` khusus menu, `?all=1` 🔒 termasuk draf) |
+| `POST` | `/api/pages` | 🔒 | Buat halaman (slug otomatis dari judul) |
+| `GET/PUT/DELETE` | `/api/pages/:id` | 🔒 | Detail / ubah / hapus halaman |
+| `GET` | `/api/pages/slug/:slug` | — | Halaman per slug (counter views naik otomatis) |
+| `GET` | `/api/media` | 🔒 | Daftar semua file di folder uploads (nama, ukuran, tanggal) |
+| `DELETE` | `/api/media?url=` | 🔒 | Hapus file media (proteksi path traversal) |
 | `GET` | `/api` | — | Cek status API (health check) |
 
 > 🔒 = butuh login admin (cookie JWT dikirim otomatis oleh browser setelah login)

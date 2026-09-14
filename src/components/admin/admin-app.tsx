@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import {
   Code2,
   ExternalLink,
+  FileText,
   Globe,
   HelpCircle,
+  Images,
   Inbox,
   LayoutGrid,
   Loader2,
@@ -35,6 +37,8 @@ import { ProductsManager } from './products-manager'
 import { ProductForm } from './product-form'
 import { CategoriesManager } from './categories-manager'
 import { MessagesManager } from './messages-manager'
+import { PagesManager } from './pages-manager'
+import { MediaManager } from './media-manager'
 import { SettingsManager } from './settings-manager'
 import { PanduanView } from './panduan'
 
@@ -43,6 +47,8 @@ const NAV = [
   { path: '/admin/produk', label: 'Produk', icon: Package, match: (p: string) => p.startsWith('/admin/produk') },
   { path: '/admin/kategori', label: 'Kategori', icon: Tags, match: (p: string) => p.startsWith('/admin/kategori') },
   { path: '/admin/pesan', label: 'Pesan', icon: Inbox, match: (p: string) => p.startsWith('/admin/pesan') },
+  { path: '/admin/halaman', label: 'Halaman', icon: FileText, match: (p: string) => p.startsWith('/admin/halaman') },
+  { path: '/admin/media', label: 'Media', icon: Images, match: (p: string) => p.startsWith('/admin/media') },
   { path: '/admin/pengaturan', label: 'Pengaturan', icon: Settings, match: (p: string) => p.startsWith('/admin/pengaturan') },
   { path: '/admin/panduan', label: 'Panduan', icon: HelpCircle, match: (p: string) => p.startsWith('/admin/panduan') },
 ]
@@ -231,6 +237,8 @@ export function AdminApp() {
     view = <ProductForm editId={path.split('/')[3]} />
   else if (path === '/admin/kategori') view = <CategoriesManager />
   else if (path === '/admin/pesan') view = <MessagesManager />
+  else if (path === '/admin/halaman') view = <PagesManager />
+  else if (path === '/admin/media') view = <MediaManager />
   else if (path === '/admin/pengaturan') view = <SettingsManager />
   else if (path === '/admin/panduan') view = <PanduanView />
   else view = <Dashboard />

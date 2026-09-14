@@ -155,6 +155,17 @@ const ACCORDION: { q: string; steps: string[] }[] = [
     ],
   },
   {
+    q: 'Cara membuat halaman baru & mengelola media (CMS)',
+    steps: [
+      'Buka menu "Halaman" di sidebar untuk membuat halaman bebas seperti "Tips Merawat AC" atau "Kebijakan Garansi".',
+      'Klik "Halaman Baru", tulis judul (alamat /p/... otomatis dibuat), lalu isi konten pakai editor mirip Microsoft Word: tebal, daftar poin, kutipan, hingga menyisipkan foto dari tombol ikon gambar.',
+      'Aktifkan "Tampilkan di Menu" agar halaman masuk ke menu "Informasi" dan footer website — langsung terlihat pengunjung.',
+      'Switch "Terbitkan" bisa dimatikan untuk menyimpan draf — halaman belum tampil di publik sampai diterbitkan.',
+      'Menu "Media" adalah gudang semua foto yang pernah diunggah (termasuk foto produk). Salin URL gambar untuk dipakai di mana saja, atau hapus yang tidak terpakai.',
+      'Isi kolom Instagram / Facebook / TikTok / YouTube di Pengaturan agar ikon media sosial tampil di footer website.',
+    ],
+  },
+  {
     q: 'Cara mengganti password admin',
     steps: [
       'Buka menu "Pengaturan", cari kartu "Ubah Password Admin".',

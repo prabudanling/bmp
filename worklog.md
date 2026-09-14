@@ -135,3 +135,28 @@ Stage Summary:
 - Favicon kini dinamis penuh: admin unggah ikon dari Pengaturan → tab browser, bookmark & apple-touch-icon otomatis mengikuti (tanpa deploy ulang, tanpa ganti file manual).
 - Fallback berlapis: favicon khusus → logo perusahaan → ikon salju bawaan; perubahan live di tab saat ini via applyFavicon.
 - Artefak: src/app/layout.tsx (generateMetadata), settings-manager.tsx (kartu Favicon), types.ts/settings.ts (faviconUrl), panduan.tsx + README.md; screenshot tests/favicon-card-{desktop,mobile,dark}.png + favicon-public-home.png; faviconUrl demo terisi /uploads/1789185031598-favicon-test.png.
+
+---
+Task ID: 8
+Agent: Z.ai Code (main)
+Task: Membangun CMS full ala WordPress: halaman konten WYSIWYG, perpustakaan media, menu Informasi, media sosial.
+
+Work Log:
+- Prisma model Page (title/slug unique/content HTML/excerpt/isPublished/showInMenu/sortOrder/views) → db:push; seed scripts/seed-pages.ts idempotent: 5 halaman demo (Tentang Kami, Cara Pemesanan, FAQ, Kebijakan Privasi, Syarat & Ketentuan).
+- API baru: GET/POST /api/pages (publik hanya terbit; ?menu=1; ?all=1 admin), GET/PUT/DELETE /api/pages/[id] (validasi slug unik), GET /api/pages/slug/[slug] (counter views), GET/DELETE /api/media (list root+products, hapus dengan proteksi path traversal). Semua guard 401 tanpa login — terverifikasi curl.
+- rich-editor.tsx: WYSIWYG tanpa dependensi (contentEditable + execCommand) — toolbar 16 aksi (undo/redo, paragraf/H2/H3/kutipan, tebal/miring/garis/coret, daftar poin/angka, rata kiri/tengah, tautan via dialog, sisip gambar via /api/upload, garis pembatas, hapus format) + mode HTML mentah; anti-kehilangan-kursor (sinkronisasi via lastHtml ref).
+- pages-manager.tsx: tabel halaman (status Terbit/Draft, badge Di Menu, views, tanggal, aksi lihat/edit/hapus via AlertDialog) + dialog editor (judul→slug otomatis via slugify(), ringkasan, WYSIWYG, switch Terbitkan & Tampilkan di Menu, urutan).
+- media-manager.tsx: grid 191 file (thumbnail, nama, ukuran), pencarian nama, unggah multi, salin URL 1-klik (toast + clipboard), pratinjau dialog, hapus; badge total file & MB.
+- Publik: page-view.tsx (hero gradient teal + breadcrumb + meta tanggal/views, konten .cms-content ter-styling, CTA WhatsApp bawah) di route /#/p/[slug]; header desktop dropdown "Informasi" (dinamis dari CMS) + section Informasi di menu mobile; footer kolom Menu menampilkan halaman CMS + ikon Instagram/Facebook/TikTok/YouTube (field settings baru, kosong = disembunyikan).
+- globals.css: styling .cms-content (h2/h3/li marker teal, blockquote, img rounded, hr dashed) + placeholder editor.
+- Bugfix: 1 parse error JSX (kurung ganda) di pages-manager; Prisma Client lama di memori setelah db:push → dev server di-restart.
+- INSIDEN: src/app/api/upload/route.ts hilang misterius (404 saat upload media; kemungkinan efek sinkronisasi sandbox) → dibuat ulang 100% sesuai kontrak lama (admin-only, tipe & 3MB, nama ber-timestamp). LAINNYA UTUH.
+- INFRA: dev server hasil spawn tool call dibunuh sandbox di akhir call (nohup/setsid tidak cukup) → solusi: double-fork daemon via python os.fork×2 + os.setsid + exec → server bertahan lintas call. PENTING untuk agent berikutnya.
+- Verifikasi E2E Agent Browser: buat halaman "Testimonial Pelanggan" via editor (ketik, H2 via toolbar, teks tebal → HTML <h2>/<b> benar), alur edit (konten termuat, switch on → tersimpan), halaman tampil di dropdown Informasi + footer, /p/tentang-kami render cantik (h2, list, blockquote), counter views 0→1, media: unggah→192 file, salin URL→toast, hapus→191, pengaturan sosmed→ikon Instagram+Facebook muncul di footer; screenshot: cms-pages-table, cms-page-public (desktop), cms-page-mobile 390px, cms-page-dark, cms-media, cms-footer-sosmed; 0 console error; lint 0 error 0 warning.
+- Dok: panduan.tsx + topik accordion CMS; README (fitur Halaman CMS & Media, tabel API 6 endpoint baru, model Page).
+
+Stage Summary:
+- Website kini memiliki CMS penuh ala WordPress: halaman konten bebas dengan editor WYSIWYG, perpustakaan media terpusat, menu Informasi dinamis, dan ikon media sosial — semua dikelola dari dashboard tanpa coding.
+- 6 halaman aktif (5 demo + Testimonial Pelanggan); Instagram & Facebook demo terpasang.
+- Artefak: prisma Page model, 4 route API baru, rich-editor/pages-manager/media-manager/page-view, header/footer dinamis, seed-pages.ts, screenshot tests/cms-*.
+- Catatan operasional: restart dev server harus via double-fork daemon (lihat Work Log); folder upload kini /api/upload dibuat ulang — bila upload 404 muncul lagi, cek keberadaan src/app/api/upload/route.ts.

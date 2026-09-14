@@ -73,12 +73,41 @@ export interface StoreSettings {
   partnerLogos: string
   /** URL favicon website (kosong = mengikuti logo perusahaan / ikon bawaan) */
   faviconUrl: string
+  /** Tautan media sosial (kosong = ikon tidak tampil) */
+  instagram: string
+  facebook: string
+  youtube: string
+  tiktok: string
 }
 
 /** Satu logo mitra/distributor pada strip mitra beranda */
 export interface PartnerLogo {
   url: string
   name: string
+}
+
+/** Halaman konten CMS (Tentang Kami, FAQ, dll) */
+export interface PageDTO {
+  id: string
+  title: string
+  slug: string
+  content: string
+  excerpt: string
+  isPublished: boolean
+  showInMenu: boolean
+  sortOrder: number
+  views: number
+  createdAt: string
+  updatedAt: string
+}
+
+/** Satu file di perpustakaan media */
+export interface MediaDTO {
+  name: string
+  url: string
+  size: number
+  mtime: string
+  isImage: boolean
 }
 
 export interface StatsDTO {

@@ -4,19 +4,23 @@ import Image from 'next/image'
 import {
   Clock,
   Code2,
+  Facebook,
   Globe,
+  Instagram,
   LayoutDashboard,
   Mail,
   MapPin,
   MessageCircle,
+  Music2,
   Phone,
   Snowflake,
+  Youtube,
 } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { useSettings } from '@/hooks/use-settings'
 import { useApi } from '@/hooks/use-api'
 import { waLink } from '@/lib/format'
-import type { CategoryDTO } from '@/lib/types'
+import type { CategoryDTO, PageDTO } from '@/lib/types'
 
 export function SiteFooter() {
   const navigate = useApp((s) => s.navigate)
@@ -24,6 +28,15 @@ export function SiteFooter() {
   const { data: categories } = useApi<{ items: CategoryDTO[] }>(
     '/api/categories'
   )
+  // Halaman CMS untuk kolom Menu + media sosial dari Pengaturan
+  const { data: pagesData } = useApi<{ items: PageDTO[] }>('/api/pages?menu=1')
+  const menuPages = pagesData?.items || []
+  const socials = [
+    { label: 'Instagram', icon: Instagram, url: settings?.instagram || '' },
+    { label: 'Facebook', icon: Facebook, url: settings?.facebook || '' },
+    { label: 'TikTok', icon: Music2, url: settings?.tiktok || '' },
+    { label: 'YouTube', icon: Youtube, url: settings?.youtube || '' },
+  ].filter((s) => s.url.trim())
   const year = new Date().getFullYear()
 
   return (
@@ -56,6 +69,23 @@ export function SiteFooter() {
             melayani pembelian satuan maupun grosir dengan pengiriman ke
             seluruh Indonesia.
           </p>
+          {socials.length > 0 && (
+            <div className="mt-4 flex items-center gap-2">
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={s.label}
+                  aria-label={s.label}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-slate-400 transition-colors hover:bg-teal-500/20 hover:text-teal-300"
+                >
+                  <s.icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Kategori */}
@@ -90,6 +120,16 @@ export function SiteFooter() {
                   onClick={() => navigate(m.path)}
                 >
                   {m.label}
+                </button>
+              </li>
+            ))}
+            {menuPages.map((p) => (
+              <li key={p.id}>
+                <button
+                  className="transition-colors hover:text-teal-400"
+                  onClick={() => navigate(`/p/${p.slug}`)}
+                >
+                  {p.title}
                 </button>
               </li>
             ))}

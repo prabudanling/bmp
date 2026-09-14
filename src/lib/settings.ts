@@ -16,6 +16,10 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   logoUrl: '',
   partnerLogos: '[]',
   faviconUrl: '',
+  instagram: '',
+  facebook: '',
+  youtube: '',
+  tiktok: '',
 }
 
 /** Parse JSON daftar logo mitra dengan aman (fallback ke array kosong) */

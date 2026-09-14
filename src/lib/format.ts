@@ -38,3 +38,12 @@ export function waDigits(phone: string): string {
 export function waLink(phone: string, text: string): string {
   return `https://wa.me/${waDigits(phone)}?text=${encodeURIComponent(text)}`
 }
+
+/** Ubah judul menjadi slug URL: "Tentang Kami" -> "tentang-kami" */
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+}

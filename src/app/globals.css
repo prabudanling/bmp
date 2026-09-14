@@ -173,3 +173,99 @@
   );
   background-size: 22px 22px;
 }
+
+/* ============================================
+   KONTEN CMS (halaman WYSIWYG + editor)
+   ============================================ */
+.cms-content {
+  font-size: 0.925rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+.cms-content > *:first-child {
+  margin-top: 0;
+}
+.cms-content h2 {
+  margin: 1.75em 0 0.6em;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.cms-content h3 {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.13rem;
+  font-weight: 700;
+}
+.cms-content p {
+  margin: 0.85em 0;
+}
+.cms-content ul,
+.cms-content ol {
+  margin: 0.85em 0;
+  padding-left: 1.4em;
+}
+.cms-content ul {
+  list-style: disc;
+}
+.cms-content ol {
+  list-style: decimal;
+}
+.cms-content li {
+  margin: 0.35em 0;
+}
+.cms-content li::marker {
+  color: #0d9488;
+}
+.dark .cms-content li::marker {
+  color: #2dd4bf;
+}
+.cms-content a {
+  color: #0d9488;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dark .cms-content a {
+  color: #2dd4bf;
+}
+.cms-content a:hover {
+  text-decoration-style: dashed;
+}
+.cms-content img {
+  display: block;
+  margin: 1.25em auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+}
+.cms-content blockquote {
+  margin: 1.25em 0;
+  border-left: 3px solid #0d9488;
+  background: color-mix(in srgb, #0d9488 6%, transparent);
+  border-radius: 0 0.6rem 0.6rem 0;
+  padding: 0.75em 1.1em;
+  font-style: italic;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+}
+.cms-content hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px dashed var(--border);
+}
+.cms-content strong {
+  font-weight: 700;
+}
+
+/* Editor WYSIWYG di dashboard — area kosong menampilkan placeholder */
+.cms-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.cms-editor:focus {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, #0d9488 35%, transparent);
+  border-radius: 0 0 0.7rem 0.7rem;
+}

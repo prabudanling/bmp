@@ -4,7 +4,9 @@ import Image from 'next/image'
 import { useState, useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import {
+  ChevronDown,
   Clock,
+  FileText,
   LayoutDashboard,
   Mail,
   MapPin,
@@ -17,6 +19,12 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
   Sheet,
   SheetContent,
   SheetTitle,
@@ -24,7 +32,9 @@ import {
 } from '@/components/ui/sheet'
 import { useApp } from '@/lib/store'
 import { useSettings } from '@/hooks/use-settings'
+import { useApi } from '@/hooks/use-api'
 import { waLink } from '@/lib/format'
+import type { PageDTO } from '@/lib/types'
 
 const NAV = [
   { label: 'Beranda', path: '/' },
@@ -38,6 +48,10 @@ export function SiteHeader() {
   const settings = useSettings()
   const { theme, setTheme } = useTheme()
   const [open, setOpen] = useState(false)
+  // Halaman CMS yang ditandai "tampilkan di menu" oleh admin
+  const { data: menuData } = useApi<{ items: PageDTO[] }>('/api/pages?menu=1')
+  const menuPages = menuData?.items || []
+  const pageActive = path.startsWith('/p/')
   // Anti-mismatch hydration: false saat SSR, true setelah mount di klien
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -128,6 +142,34 @@ export function SiteHeader() {
                 {item.label}
               </Button>
             ))}
+            {menuPages.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={pageActive ? 'secondary' : 'ghost'}
+                    className={
+                      pageActive
+                        ? 'font-semibold text-primary'
+                        : 'text-foreground/80'
+                    }
+                  >
+                    Informasi
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center" className="w-52">
+                  {menuPages.map((p) => (
+                    <DropdownMenuItem
+                      key={p.id}
+                      onClick={() => navigate(`/p/${p.slug}`)}
+                    >
+                      <FileText className="h-4 w-4 text-primary" />
+                      {p.title}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </nav>
 
           <div className="flex items-center gap-1.5">
@@ -216,6 +258,29 @@ export function SiteHeader() {
                       {item.label}
                     </Button>
                   ))}
+                  {menuPages.length > 0 && (
+                    <div className="mt-2">
+                      <p className="px-2 pb-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                        Informasi
+                      </p>
+                      {menuPages.map((p) => (
+                        <Button
+                          key={p.id}
+                          variant={
+                            path === `/p/${p.slug}` ? 'secondary' : 'ghost'
+                          }
+                          className="justify-start"
+                          onClick={() => {
+                            setOpen(false)
+                            navigate(`/p/${p.slug}`)
+                          }}
+                        >
+                          <FileText className="h-4 w-4 text-primary" />
+                          {p.title}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
                   {settings?.whatsapp && (
                     <Button
                       className="mt-2 justify-start bg-green-600 text-white hover:bg-green-700"
