@@ -112,7 +112,9 @@ printf '\x89PNG\r\n\x1a\n test-bytes' > /tmp/php-upload-test.png
 R=$(curl -s -b "$CJ" -X POST "$BASE/api/upload" -F "file=@/tmp/php-upload-test.png")
 URL=$(jqget "$R" "['url']")
 HOSTDIR="${HOSTDIR:-build/deploy}"
-if [ -f "$HOSTDIR$URL" ]; then PASS=$((PASS+1)); echo "PASS | upload file tersimpan ($URL)"; else FAIL=$((FAIL+1)); echo "FAIL | file tidak ada: $HOSTDIR$URL"; fi
+# URL kini relatif (uploads/...) — dukung juga bentuk lama (/uploads/...)
+UPFILE="$HOSTDIR/$(printf '%s' "$URL" | sed 's#^/##')"
+if [ -f "$UPFILE" ]; then PASS=$((PASS+1)); echo "PASS | upload file tersimpan ($URL)"; else FAIL=$((FAIL+1)); echo "FAIL | file tidak ada: $UPFILE"; fi
 R=$(curl -s -X POST "$BASE/api/upload" -F "file=@/tmp/php-upload-test.png")
 check "upload tanpa login → 401" "Tidak memiliki akses. Silakan login terlebih dahulu." "$(jqget "$R" "['error']")"
 echo "bukan gambar" > /tmp/bad.txt

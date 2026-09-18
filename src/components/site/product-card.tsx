@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { Package, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -34,12 +33,11 @@ export function ProductCard({
       <Card className="h-full gap-0 overflow-hidden py-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-lg">
         <div className="relative aspect-square overflow-hidden bg-muted/40">
           {img ? (
-            <Image
+            <img
               src={img}
               alt={product.name}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center">

@@ -65,7 +65,8 @@ export async function POST(req: NextRequest) {
     await fs.mkdir(UPLOAD_ROOT, { recursive: true })
     await fs.writeFile(path.join(UPLOAD_ROOT, filename), buffer)
 
-    return NextResponse.json({ url: `/uploads/${filename}` })
+    // URL relatif — aman dipakai di domain root maupun subfolder hosting
+    return NextResponse.json({ url: `uploads/${filename}` })
   } catch {
     return bad('Gagal mengunggah file.', 500)
   }

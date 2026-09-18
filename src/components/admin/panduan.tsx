@@ -7,12 +7,14 @@ import {
   Check,
   ClipboardCopy,
   Coins,
+  Download,
   FileText,
   HelpCircle,
   ImagePlus,
   Info,
   MousePointerClick,
   PenLine,
+  Rocket,
   Ruler,
   Tags,
 } from 'lucide-react'
@@ -295,6 +297,65 @@ export function PanduanView() {
           proyek.
         </AlertDescription>
       </Alert>
+
+      {/* ── Kartu Deploy Shared Hosting ── */}
+      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
+        <CardHeader>
+          <div className="flex flex-wrap items-center gap-2">
+            <CardTitle className="text-base">Pasang Website di Shared Hosting</CardTitle>
+            <Badge className="bg-teal-600 text-white hover:bg-teal-600">± 5 menit</Badge>
+          </div>
+          <CardDescription>
+            Paket siap-upload untuk cPanel hosting biasa (PHP) — tanpa Node.js,
+            tanpa VPS. Website langsung tampil setelah di-extract.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Button asChild className="h-11 gap-2 text-sm font-bold">
+            <a href="/download/berkat-mandiri-website.zip" download>
+              <Download className="h-4.5 w-4.5" />
+              Unduh Paket Website (.zip)
+            </a>
+          </Button>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              {
+                n: '1',
+                t: 'Unduh & Upload',
+                d: 'Klik tombol unduh di atas. Buka cPanel → File Manager → public_html → upload ZIP.',
+              },
+              {
+                n: '2',
+                t: 'Extract',
+                d: 'Klik kanan ZIP di public_html → Extract. Pastikan index.html langsung berada di dalam public_html.',
+              },
+              {
+                n: '3',
+                t: 'Buka Domain',
+                d: 'Website langsung tampil! Admin di /#/admin (admin/admin123). Ada masalah? Buka /cek.php.',
+              },
+            ].map((s) => (
+              <div key={s.n} className="rounded-xl border bg-card p-4">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-sm font-extrabold text-primary-foreground">
+                  {s.n}
+                </span>
+                <p className="mt-2.5 text-sm font-bold">{s.t}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-start gap-2.5 rounded-xl border border-teal-200 bg-teal-50 p-3.5 text-xs leading-relaxed text-teal-900 dark:border-teal-900 dark:bg-teal-950/40 dark:text-teal-100">
+            <Rocket className="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" />
+            <p>
+              <b>Anti-gagal:</b> paket berisi mode darurat — walau PHP di hosting
+              bermasalah, halaman toko tetap tampil (baca-saja) dan halaman{' '}
+              <span className="font-mono font-bold">/cek.php</span> memberi diagnosis
+              lengkap berbahasa Indonesia lengkap dengan cara memperbaikinya.
+              Panduan penuh: <span className="font-mono font-bold">PANDUAN-DEPLOY-SHARED-HOSTING.md</span>.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stepper: upload produk dalam 8 langkah */}
       <Card>

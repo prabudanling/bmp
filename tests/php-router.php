@@ -52,6 +52,12 @@ if ($file && strpos($file, $docRoot) === 0 && is_file($file)) {
         'txt' => 'text/plain',
     );
     header('Content-Type: ' . ($mime[$ext] ?? 'application/octet-stream'));
+    if ($ext === 'php') {
+        // Eksekusi PHP (meniru mod_php di hosting asli)
+        chdir(dirname($file));
+        require $file;
+        return true;
+    }
     readfile($file);
     return true;
 }

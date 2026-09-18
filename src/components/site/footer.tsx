@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import {
   Clock,
   Code2,
@@ -47,12 +46,11 @@ export function SiteFooter() {
           <div className="flex items-center gap-2.5">
             {settings?.logoUrl ? (
               <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-white">
-                <Image
+                <img
                   src={settings.logoUrl}
                   alt={settings?.storeName || 'Logo toko'}
-                  fill
-                  sizes="40px"
-                  className="object-contain p-1"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-contain p-1"
                 />
               </span>
             ) : (

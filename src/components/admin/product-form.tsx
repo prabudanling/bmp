@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
 import {
   ArrowLeft,
   ImagePlus,
@@ -438,12 +437,11 @@ export function ProductForm({ editId }: { editId?: string }) {
                       key={img + i}
                       className="group relative aspect-square overflow-hidden rounded-lg border"
                     >
-                      <Image
+                      <img
                         src={img}
                         alt={`Foto ${i + 1}`}
-                        fill
-                        sizes="120px"
-                        className="object-cover"
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
                       {i === 0 && (
                         <span className="absolute left-1 top-1 rounded bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">

@@ -493,6 +493,9 @@ bun run build:deploy
 1. 📤 cPanel → File Manager → `public_html` → upload ZIP → **Extract**
 2. ✅ Selesai! Website langsung tampil — admin `/#/admin` berfungsi penuh
 3. 🔐 Segera ganti password admin (Pengaturan → Akun)
+4. 🚨 **Website tidak muncul?** Buka `domainanda.com/cek.php` — diagnosis
+   otomatis berbahasa Indonesia + solusinya (6 penyebab paling umum dibahas di
+   [PANDUAN-DEPLOY-SHARED-HOSTING.md §Website Tidak Muncul](./PANDUAN-DEPLOY-SHARED-HOSTING.md))
 
 > 💡 **Inovasi PHP API Bridge:** shared hosting biasa (PHP-only) tidak bisa
 > menjalankan Node.js — maka dibuat `php-api/`, sebuah jembatan PHP yang
@@ -502,6 +505,11 @@ bun run build:deploy
 > bisa menambah/mengubah produk, upload gambar, dan mengelola CMS langsung
 > dari website yang online. Terverifikasi **70/70 pengujian otomatis**.
 > Panduan lengkap: [PANDUAN-DEPLOY-SHARED-HOSTING.md](./PANDUAN-DEPLOY-SHARED-HOSTING.md)
+>
+> 🛟 **Mode Darurat anti-website-kosong:** paket berisi `api-cache/` — bila
+> PHP di hosting bermasalah, halaman toko tetap tampil (baca-saja: beranda,
+> katalog 1000 produk, detail, CMS) sampai PHP diperbaiki. Semua referensi
+> aset relatif sehingga paket juga jalan bila dipasang di subfolder.
 >
 > 💾 **Backup rutin 2 hal ini di hosting:** folder `uploads/` + folder `api/data/`.
 

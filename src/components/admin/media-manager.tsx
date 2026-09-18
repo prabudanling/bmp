@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useMemo, useRef, useState } from 'react'
 import {
   Check,
@@ -193,12 +192,11 @@ export function MediaManager() {
                     aria-label={`Lihat ${m.name}`}
                   >
                     {m.isImage ? (
-                      <Image
+                      <img
                         src={m.url}
                         alt={m.name}
-                        fill
-                        sizes="200px"
-                        className="object-cover transition-transform group-hover:scale-105"
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105"
                       />
                     ) : (
                       <span className="flex h-full items-center justify-center">
@@ -263,11 +261,9 @@ export function MediaManager() {
           </DialogHeader>
           {preview?.isImage && (
             <div className="relative flex max-h-[55vh] min-h-48 items-center justify-center overflow-hidden rounded-xl border bg-white">
-              <Image
+              <img
                 src={preview.url}
                 alt={preview.name}
-                width={800}
-                height={600}
                 className="max-h-[55vh] w-auto max-w-full object-contain"
               />
             </div>

@@ -676,7 +676,8 @@ function handle_upload()
     }
     @chmod($dest, 0644);
 
-    json_out(array('url' => '/uploads/' . $filename));
+    // URL relatif — aman dipakai di domain root maupun subfolder hosting
+    json_out(array('url' => 'uploads/' . $filename));
 }
 
 /* =========================================================================
@@ -706,7 +707,7 @@ function media_scan_dir($abs, $rel)
         $mtime = @filemtime($full);
         $out[] = array(
             'name' => $name,
-            'url' => '/uploads/' . ($rel !== '' ? $rel . '/' : '') . $name,
+            'url' => 'uploads/' . ($rel !== '' ? $rel . '/' : '') . $name,
             'size' => (int) @filesize($full),
             'mtime' => $mtime ? gmdate('Y-m-d\TH:i:s.v\Z', $mtime) : iso_now(),
             'isImage' => media_is_image($name),
@@ -736,10 +737,12 @@ function handle_media_delete()
     require_admin();
     try {
         $url = q('url', '');
-        if (strpos($url, '/uploads/') !== 0) {
+        // Terima bentuk relatif (uploads/...) maupun absolut (/uploads/...)
+        $url = ltrim($url, '/');
+        if (strpos($url, 'uploads/') !== 0) {
             json_out(array('error' => 'URL media tidak valid.'), 400);
         }
-        $rel = substr($url, strlen('/uploads/'));
+        $rel = substr($url, strlen('uploads/'));
         $rel = str_replace('\\', '/', $rel);
         if ($rel === '' || strpos($rel, '..') !== false || $rel[0] === '/') {
             json_out(array('error' => 'URL media tidak valid.'), 400);

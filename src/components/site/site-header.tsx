@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useState, useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import {
@@ -103,12 +102,10 @@ export function SiteHeader() {
             {/* Logo — custom jika diunggah, ikon salju jika belum */}
             {settings?.logoUrl ? (
               <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-white shadow-sm">
-                <Image
+                <img
                   src={settings.logoUrl}
                   alt={settings?.storeName || 'Logo toko'}
-                  fill
-                  sizes="40px"
-                  className="object-contain p-1"
+                  className="absolute inset-0 h-full w-full object-contain p-1"
                 />
               </span>
             ) : (
@@ -231,12 +228,10 @@ export function SiteHeader() {
                 <SheetTitle className="flex items-center gap-2 text-base font-bold">
                   {settings?.logoUrl ? (
                     <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border bg-white">
-                      <Image
+                      <img
                         src={settings.logoUrl}
                         alt={settings?.storeName || 'Logo toko'}
-                        fill
-                        sizes="32px"
-                        className="object-contain p-0.5"
+                        className="absolute inset-0 h-full w-full object-contain p-0.5"
                       />
                     </span>
                   ) : (

@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import Image from 'next/image'
 import {
   ChevronLeft,
   ChevronRight,
@@ -137,13 +136,10 @@ export function ProductDetailView({ slug }: { slug: string }) {
         <div>
           <div className="relative aspect-square overflow-hidden rounded-2xl border bg-muted/30">
             {mainImg ? (
-              <Image
+              <img
                 src={mainImg}
                 alt={product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             ) : (
               <div className="flex h-full items-center justify-center">
@@ -167,12 +163,11 @@ export function ProductDetailView({ slug }: { slug: string }) {
                   }`}
                   aria-label={`Foto ${i + 1}`}
                 >
-                  <Image
+                  <img
                     src={img}
                     alt={`${product.name} foto ${i + 1}`}
-                    fill
-                    sizes="64px"
-                    className="object-cover"
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </button>
               ))}

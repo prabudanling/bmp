@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import {
   ArrowRight,
   BadgeCheck,
@@ -123,13 +122,10 @@ export function HomeView() {
 
           <div className="relative animate-fade-up delay-1" aria-hidden="true">
             <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-              <Image
-                src="/uploads/hero.png"
+              <img
+                src="uploads/hero.png"
                 alt="Toko sparepart AC Berkat Mandiri Pendingin"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
             <div className="absolute -bottom-4 left-4 rounded-xl bg-white p-3 shadow-xl sm:left-8">
@@ -294,12 +290,11 @@ export function HomeView() {
       <section className="bg-muted/40 py-14" id="tentang">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 lg:grid-cols-2 lg:px-8">
           <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-2xl shadow-lg">
-            <Image
-              src="/uploads/teknisi.png"
+            <img
+              src="uploads/teknisi.png"
               alt="Teknisi sedang memperbaiki AC"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
           <div>
@@ -345,12 +340,11 @@ export function HomeView() {
                 className="group flex flex-col items-center gap-2.5 rounded-xl border bg-card p-4 transition-colors hover:border-primary/40"
               >
                 <div className="relative flex h-12 w-full items-center justify-center">
-                  <Image
+                  <img
                     src={p.url}
                     alt={p.name || `Logo mitra ${i + 1}`}
-                    fill
-                    sizes="200px"
-                    className="object-contain"
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-contain"
                   />
                 </div>
                 {p.name && (

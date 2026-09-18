@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import {
   AppWindow,
@@ -368,12 +367,10 @@ export function SettingsManager() {
           <div className="flex flex-wrap items-center gap-5">
             <div className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-white shadow-sm">
               {form.logoUrl ? (
-                <Image
+                <img
                   src={form.logoUrl}
                   alt="Logo perusahaan"
-                  fill
-                  sizes="96px"
-                  className="object-contain p-2"
+                  className="absolute inset-0 h-full w-full object-contain p-2"
                 />
               ) : (
                 <ImagePlus className="h-8 w-8 text-muted-foreground/40" />
@@ -455,12 +452,10 @@ export function SettingsManager() {
           <div className="flex flex-wrap items-center gap-5">
             <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-white shadow-sm">
               {faviconSrc ? (
-                <Image
+                <img
                   src={faviconSrc}
                   alt="Favicon website"
-                  fill
-                  sizes="64px"
-                  className="object-contain p-1.5"
+                  className="absolute inset-0 h-full w-full object-contain p-1.5"
                 />
               ) : (
                 <ImagePlus className="h-6 w-6 text-muted-foreground/40" />
@@ -479,12 +474,10 @@ export function SettingsManager() {
               >
                 <span className="relative h-4 w-4 shrink-0" aria-hidden>
                   {faviconSrc ? (
-                    <Image
+                    <img
                       src={faviconSrc}
                       alt=""
-                      fill
-                      sizes="16px"
-                      className="object-contain"
+                      className="absolute inset-0 h-full w-full object-contain"
                     />
                   ) : (
                     <Snowflake className="h-4 w-4 text-teal-600" />
@@ -577,12 +570,11 @@ export function SettingsManager() {
               {partners.map((p, i) => (
                 <div key={p.url + i} className="space-y-2 rounded-xl border p-3">
                   <div className="group relative flex h-16 items-center justify-center overflow-hidden rounded-lg border bg-white">
-                    <Image
+                    <img
                       src={p.url}
                       alt={p.name || `Logo mitra ${i + 1}`}
-                      fill
-                      sizes="160px"
-                      className="object-contain p-1.5"
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-contain p-1.5"
                     />
                     <button
                       type="button"

@@ -34,6 +34,10 @@ Website dipecah menjadi dua bagian yang bekerja sama:
 |  api/index.php   ← PHP API Bridge (pengganti server Node)  |
 |  api/lib/        ← kode PHP (auth, store, handlers)        |
 |  api/data/*.json ← "database" (produk, kategori, settings) |
+|  api-cache/*.json ← MODE DARURAT: snapshot baca-saja yang  |
+|                      membuat toko tetap tampil walau PHP   |
+|                      mati / bermasalah                     |
+|  cek.php         ← halaman diagnosis bila ada masalah      |
 |  uploads/        ← semua gambar produk & media             |
 └────────────────────────────────────────────────────────────┘
 ```
@@ -61,10 +65,12 @@ bun run build:deploy
 Script akan:
 1. Mengekspor seluruh data dari SQLite → `api/data/*.json`
 2. Membangun situs statis Next.js (`BUILD_EXPORT=1`, terisolasi dari dev)
-3. Menyalin PHP Bridge + menulis `.htaccess`
+3. Menyalin PHP Bridge + menulis `.htaccess` + snapshot mode darurat
 4. Mengemas semuanya → **`build/berkat-mandiri-website.zip`** (~50 MB)
 
 > ⚠️ Jalankan ini setiap kali kode/data berubah & ingin di-upload ulang.
+> 💡 Di dashboard admin juga tersedia tombol **“Unduh Paket Website”** di menu
+> **Panduan** — tanpa perlu akses terminal.
 
 ---
 
@@ -98,6 +104,72 @@ public_html/
 > dari `build/deploy/.htaccess`.
 
 7. **Selesai!** Buka `https://domainanda.com` — website langsung tampil. 🎉
+
+> 💡 Paket ini juga bisa dipasang di **subfolder** (mis. `public_html/toko/`) —
+> semua referensi aset & API dibuat relatif, jadi tetap berfungsi. Namun agar
+> terbuka langsung di `https://domainanda.com/`, paling ideal tetap di akar
+> `public_html`.
+
+---
+
+## 🚨 WEBSITE TIDAK MUNCUL? Perbaiki dalam 5 Menit
+
+Tenang — hampir semua kasus “upload tapi tidak muncul” penyebabnya salah satu
+dari 6 hal berikut, bukan karena websitenya rusak. Cek dari paling umum:
+
+### 1️⃣ File ter-extract ke SUBFOLDER (penyebab paling sering)
+**Gejala:** buka domain → halaman kosong / halaman bawaan cPanel / 404.
+**Cek:** File Manager → `public_html` → apakah `index.html` berada LANGSUNG di
+sana, atau masih terbungkus folder seperti `public_html/berkat-mandiri-website/`?
+**Fix:** masuk folder tersebut → select all → **Cut** → kembali ke `public_html`
+→ **Paste**. (atau buka `domainanda.com/berkat-mandiri-website/` — kalau di
+situ tampil, berarti memang salah lokasi).
+
+### 2️⃣ Domain belum mengarah ke hosting / DNS belum propagate
+**Gejala:** “Site can’t be reached” / halaman parkir default registrar.
+**Cek:** buka `https://dnschecker.org` → masukkan domain → apakah A record
+menunjuk IP hosting Anda? Baru ter-pointing + propagate bisa 1–24 jam.
+**Fix:** perbarui Nameserver/A record sesuai email aktivasi hosting.
+
+### 3️⃣ Salah upload file (source code, bukan paket ZIP)
+**Gejala:** muncul tulisan PHP error / struktur folder aneh / 403 Forbidden.
+**Cek:** apakah `index.html` ada di `public_html`? Jika yang di-upload adalah
+folder proyek (ada `src/`, `package.json`), itu SOURCE — tidak bisa jalan di
+hosting PHP.
+**Fix:** unduh paket resmi `berkat-mandiri-website.zip` (tombol di menu Panduan
+dashboard, atau `build/berkat-mandiri-website.zip`), upload & extract itu.
+
+### 4️⃣ PHP versi lama / ekstensi belum aktif
+**Gejala:** halaman toko TETAP TAMPIL (mode darurat), tetapi login admin gagal
+dengan pesan “Server (PHP) tidak aktif…”.
+**Fix:** cPanel → *Select PHP Version* → pilih **8.1/8.2/8.3** → centang
+`json, mbstring, session, fileinfo`.
+
+### 5️⃣ Izin folder tidak bisa ditulis
+**Gejala:** admin masuk, tetapi upload foto / simpan produk gagal.
+**Fix:** File Manager → klik kanan folder `api/data` dan `uploads` →
+*Change Permissions* → **755** (centang *Recurse into subdirectories*).
+
+### 6️⃣ `.htaccess` tidak ikut terekstrak
+**Gejala:** beranda tampil, tetapi admin/login gagal “Gagal terhubung”.
+**Cek:** aktifkan *Show Hidden Files* — apakah `.htaccess` ada di `public_html`?
+**Fix:** buat file `.htaccess` baru di `public_html`, salin isi dari
+`build/deploy/.htaccess` (di komputer lokal).
+
+### 🔬 Alat bantu: halaman DIAGNOSIS otomatis
+Buka **`https://domainanda.com/cek.php`** di browser. Halaman ini memeriksa 11
+hal (versi PHP, ekstensi, file inti, database JSON, izin folder, .htaccess,
+subfolder, koneksi API) lalu menampilkan laporan ✅/⚠️/❌ **beserta cara
+memperbaikinya** dan tombol *Salin Laporan* untuk dikirim ke teknisi.
+
+> Setelah semua beres, file `cek.php` aman dihapus dari hosting.
+
+### 🛟 Jaminan “tidak akan kosong” (Mode Darurat)
+Sejak paket terbaru, halaman toko **tidak mungkin kosong**: bila PHP bridge
+tidak merespons, website otomatis beralih ke snapshot baca-saja di
+`api-cache/` — beranda, katalog 1000 produk, detail produk, dan halaman CMS
+tetap tampil normal untuk pengunjung. Yang nonaktif hanya fitur tulis
+(admin/upload/form kontak) sampai PHP diperbaiki.
 
 ---
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image'
 import {
   Eye,
   MoreVertical,
@@ -237,11 +236,10 @@ export function ProductsManager() {
                         <div className="flex items-center gap-3">
                           <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted">
                             {p.images[0] ? (
-                              <Image
+                              <img
                                 src={p.images[0]}
                                 alt={p.name}
-                                width={44}
-                                height={44}
+                                loading="lazy"
                                 className="h-full w-full object-cover"
                               />
                             ) : (
