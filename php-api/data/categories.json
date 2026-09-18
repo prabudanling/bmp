@@ -1,0 +1,93 @@
+[
+  {
+    "id": "cmtxdz1j60001lrgtsyldr5v0",
+    "name": "Kompresor AC Split & Cassette",
+    "slug": "kompresor-ac",
+    "icon": "cog",
+    "createdAt": "2026-09-11T20:05:51.619Z"
+  },
+  {
+    "id": "cmtxdz1j70002lrgtga06htnp",
+    "name": "Motor & Fan",
+    "slug": "motor-fan",
+    "icon": "fan",
+    "createdAt": "2026-09-11T20:05:51.620Z"
+  },
+  {
+    "id": "cmtxdz1j80003lrgtu8tctt7r",
+    "name": "Kapasitor",
+    "slug": "kapasitor",
+    "icon": "battery-charging",
+    "createdAt": "2026-09-11T20:05:51.621Z"
+  },
+  {
+    "id": "cmtxdz1j90004lrgt9n3q1683",
+    "name": "Termostat & Sensor",
+    "slug": "termostat-sensor",
+    "icon": "thermometer",
+    "createdAt": "2026-09-11T20:05:51.621Z"
+  },
+  {
+    "id": "cmtxdz1j90005lrgtnexiu9n9",
+    "name": "Freon & Gas",
+    "slug": "freon-gas",
+    "icon": "wind",
+    "createdAt": "2026-09-11T20:05:51.622Z"
+  },
+  {
+    "id": "cmtxdz1ja0006lrgtu7dwam77",
+    "name": "Fitting & Aksesoris",
+    "slug": "fitting-aksesoris",
+    "icon": "wrench",
+    "createdAt": "2026-09-11T20:05:51.623Z"
+  },
+  {
+    "id": "cmtxgcoj70000lr8gp46qsmzj",
+    "name": "Kompresor Kulkas & Freezer",
+    "slug": "kompresor-kulkas",
+    "icon": "snowflake",
+    "createdAt": "2026-09-11T21:12:27.188Z"
+  },
+  {
+    "id": "cmtxgcoj90001lr8gq9q4x9sb",
+    "name": "Kompresor AC Mobil",
+    "slug": "kompresor-mobil",
+    "icon": "zap",
+    "createdAt": "2026-09-11T21:12:27.189Z"
+  },
+  {
+    "id": "cmtxgcojb0002lr8gqg9plk86",
+    "name": "Kompresor Komersial & Industri",
+    "slug": "kompresor-industri",
+    "icon": "layers",
+    "createdAt": "2026-09-11T21:12:27.191Z"
+  },
+  {
+    "id": "cmtxgcojc0003lr8ge4robq7t",
+    "name": "Kompresor Angin / Piston",
+    "slug": "kompresor-angin",
+    "icon": "gauge",
+    "createdAt": "2026-09-11T21:12:27.193Z"
+  },
+  {
+    "id": "cmtxgcojo0004lr8g7u97kzlu",
+    "name": "Sparepart Kompresor",
+    "slug": "sparepart-kompresor",
+    "icon": "plug",
+    "createdAt": "2026-09-11T21:12:27.205Z"
+  },
+  {
+    "id": "cmtxgcojq0005lr8g578vj3ks",
+    "name": "Oli & Kimia Pendingin",
+    "slug": "oli-kimia",
+    "icon": "droplets",
+    "createdAt": "2026-09-11T21:12:27.206Z"
+  },
+  {
+    "id": "cmtxgcojr0006lr8gvmth9oas",
+    "name": "Evaporator & Kondensor",
+    "slug": "evaporator-kondensor",
+    "icon": "filter",
+    "createdAt": "2026-09-11T21:12:27.208Z"
+  }
+]

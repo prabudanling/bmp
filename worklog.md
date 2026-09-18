@@ -160,3 +160,29 @@ Stage Summary:
 - 6 halaman aktif (5 demo + Testimonial Pelanggan); Instagram & Facebook demo terpasang.
 - Artefak: prisma Page model, 4 route API baru, rich-editor/pages-manager/media-manager/page-view, header/footer dinamis, seed-pages.ts, screenshot tests/cms-*.
 - Catatan operasional: restart dev server harus via double-fork daemon (lihat Work Log); folder upload kini /api/upload dibuat ulang — bila upload 404 muncul lagi, cek keberadaan src/app/api/upload/route.ts.
+
+---
+Task ID: 9
+Agent: Z.ai Code (main)
+Task: Deploy ke shared hosting — membuat website langsung tampil di cPanel PHP (permintaan user: "aku mau upload ini di shared hosting jadi bagaimana caranya agar website langsung tampil").
+
+Work Log:
+- Bugfix pra-deploy: src/app/api/upload/route.ts ternyata HILANG lagi (insiden sandbox lama, tercatat di Task 8) → dibuat ulang sesuai kontrak (admin-only, 8 tipe gambar, 3MB, nama timestamp) → diverifikasi curl login+upload di dev server: 200 {url:/uploads/...}.
+- Riset arsitektur: recon semua 29 endpoint API Next.js + kontrak respons + shape DTO + dua fungsi slugify berbeda (lib/slug.ts utk produk/kategori, lib/format.ts utk halaman) + pola FormData upload (field "file").
+- PHP API BRIDGE (php-api/): index.php (front controller + router /api/*), lib/http.php (json_out mirip NextResponse.json), lib/store.php (JSON storage atomic tmp+rename + flock), lib/auth.php (session PHP 7 hari httpOnly SameSite=Lax + rate limit login), lib/handlers.php (mirror 1:1 semua endpoint: products CRUD+filter+sort Prisma-parity, categories, settings, upload, media list/delete, pages CMS, messages+honeypot, stats, auth login/me/logout/change-password; hash bcrypt dikonversi $2a/$2b→$2y di export utk password_verify PHP).
+- .htaccess: php-api/.htaccess (deny json/log), data/.htaccess (deny all), root deploy .htaccess (RewriteRule ^api(/.*)?$ api/index.php + deflate + expires), uploads/.htaccess (blokir eksekusi skrip).
+- scripts/export-data.mjs: SQLite→JSON (admins/categories/products/settings/pages/messages) + fallback seed admin default + normalisasi ISO timestamp; bun run export:data.
+- scripts/build-deploy.mjs: salin php-api→deploy/api, export data, pindah sementara src/app/api (route handler tidak boleh ikut static export), next build BUILD_EXPORT=1 (distDir .next-export terisolasi — dev .next tak tersentuh), pulihkan api, tulis .htaccess, zip (zip CLI + fallback python3); bun run build:deploy.
+- next.config.ts: mode kondisional BUILD_EXPORT → output:"export" + images.unoptimized + distDir ".next-export" (Next 16 menulis export ke dalam distDir kustom).
+- PENGUJIAN: PHP static binary 8.3.29 diunduh (dl.static-php.dev) → tests/php-router.php (emulasi .htaccess utk php -S) + tests/test-php-api.sh (70 assertion) + tests/jget.py + tests/upload-cli-test.php (uji logika upload via CLI, persisten di sandbox).
+- Debug penting: (1) server php -S single-thread men-drop request saat suite → PHP_CLI_SERVER_WORKERS=8; (2) bug nyata ditemukan & diperbaiki: uploads_dir() salah level dirname → upload tertulis di api/uploads bukan <root>/uploads (terbukti via CLI test); (3) fallback move_uploaded_file→stream copy utk SAPI non-standar; (4) artefak sandbox: proses background melihat snapshot FS basi + EADDRINUSE oleh proses zombie (kill by PID) — semua diatasi dgn server segar per-call; (5) eslint perlu ignore .next-export/** (hasil export terpindai → 69 error palsu).
+- HASIL: test suite 70/70 PASS (dua kali: terhadap build/test-host dan build/deploy asli, via php -S maupun proxy bun simulasi Apache); verifikasi browser agent-browser pada simulasi hosting (bun static :8899 + proxy /api → php :8898): beranda render ✓, katalog "Menampilkan 12 dari 1000 produk" ✓, login admin PHP session ✓ dashboard stats 1000 produk/pesan/stok ✓, halaman CMS publik /#/p/tentang-kami ✓ counter views ✓, 0 console error. Screenshot: tests/deploy-home.png, deploy-katalog.png, deploy-admin.png, deploy-cms.png.
+- DOK: PANDUAN-DEPLOY-SHARED-HOSTING.md (arsitektur, langkah upload cPanel 5 menit, ceklis, backup/restore JSON, pengaturan PHP, force HTTPS, batasan root-domain, troubleshooting 8 kasus, alternatif Node.js App & Netlify, isi teknis paket); README.md §Cara Deploy dirombak (opsi 🟢 PHP shared hosting jadi rekomendasi utama); panduan.tsx + accordion "Cara memasang website di shared hosting (cPanel PHP)".
+- Paket final: build/berkat-mandiri-website.zip (52 MB) = situs statis + api/ + data seed (1000 produk, 13 kategori, 6 halaman, 3 pesan, 17 settings, 1 admin) — dibangun ulang setelah penambahan panduan agar ZIP memuatnya; smoke test ulang: 200 OK + "KATALOG 1000 PRODUK ✓" via browser.
+
+Stage Summary:
+- Website kini BISA ONLINE di shared hosting cPanel PHP biasa tanpa Node.js/VPS: upload 1 file ZIP → Extract → langsung tampil.
+- Inovasi kunci "PHP API Bridge": mirror 100% REST API Next.js dgn PHP+JSON storage, session auth, upload gambar, CMS — dashboard admin tetap penuh berfungsi di hosting; 70/70 test otomatis + verifikasi browser lulus.
+- Proses deploy divariasikan jadi satu perintah: bun run build:deploy → build/berkat-mandiri-website.zip.
+- Artefak: php-api/ (5 file PHP+3 .htaccess), scripts/export-data.mjs, scripts/build-deploy.mjs, tests/{php-router.php,test-php-api.sh,jget.py,upload-cli-test.php,static-server.ts}, PANDUAN-DEPLOY-SHARED-HOSTING.md, next.config.ts kondisional, package.json 2 script baru, eslint ignore .next-export, /api/upload dipulihkan, 4 screenshot deploy-*.
+- Catatan operasional: php static binary ada di ~/bin/php; jangan biarkan server uji lama mengunci port (kill by PID via /proc); jalankan suite dgn BASE=... & HOSTDIR=... utk target lain.

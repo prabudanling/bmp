@@ -476,12 +476,36 @@ curl "http://localhost:3000/api/products?q=kompresor&sort=price-asc&page=1&limit
 
 ### Ringkasan Opsi
 
-| Opsi | Cocok Untuk | Kesulitan | Panduan |
-|------|-------------|:---------:|---------|
-| 🟦 **cPanel + Node.js App** | Shared hosting berfitur Node.js (Hostinger, Niagahoster, dll) | ⭐⭐ | [TUTORIAL.md §4](./TUTORIAL.md#4-panduan-deploy-ke-shared-hosting-cpanel) |
-| 🖥️ **VPS + PM2** | VPS sendiri (DigitalOcean, Vultr, dll) | ⭐⭐⭐ | [TUTORIAL.md §5](./TUTORIAL.md#5-alternatif-deploy-ke-vps) |
+| Opsi | Cocok Untuk | Admin Dashboard | Kesulitan | Panduan |
+|------|-------------|:---------------:|:---------:|---------|
+| 🟢 **PHP Shared Hosting** ⭐ | cPanel hosting biasa (juraganwebsite, dll) — **TANPA Node.js!** | ✅ Penuh | ⭐ | [PANDUAN-DEPLOY-SHARED-HOSTING.md](./PANDUAN-DEPLOY-SHARED-HOSTING.md) |
+| 🟦 **cPanel + Node.js App** | Shared hosting berfitur Node.js (Hostinger, Niagahoster, dll) | ✅ Penuh | ⭐⭐ | [TUTORIAL.md §4](./TUTORIAL.md#4-panduan-deploy-ke-shared-hosting-cpanel) |
+| 🖥️ **VPS + PM2** | VPS sendiri (DigitalOcean, Vultr, dll) | ✅ Penuh | ⭐⭐⭐ | [TUTORIAL.md §5](./TUTORIAL.md#5-alternatif-deploy-ke-vps) |
 
-### ⚡ Inti Deploy cPanel (TL;DR)
+### ⚡ Inti Deploy PHP Shared Hosting (TL;DR) — REKOMENDASI
+
+```bash
+# Di komputer: bangun paket lengkap (statis + PHP API bridge)
+bun run build:deploy
+# → build/berkat-mandiri-website.zip
+```
+
+1. 📤 cPanel → File Manager → `public_html` → upload ZIP → **Extract**
+2. ✅ Selesai! Website langsung tampil — admin `/#/admin` berfungsi penuh
+3. 🔐 Segera ganti password admin (Pengaturan → Akun)
+
+> 💡 **Inovasi PHP API Bridge:** shared hosting biasa (PHP-only) tidak bisa
+> menjalankan Node.js — maka dibuat `php-api/`, sebuah jembatan PHP yang
+> meniru **100% REST API Next.js** (produk, kategori, settings, upload,
+> media, halaman CMS, pesan, stats, auth) dengan penyimpanan file JSON.
+> Frontend statis hasil `next build` tetap identik; dashboard admin tetap
+> bisa menambah/mengubah produk, upload gambar, dan mengelola CMS langsung
+> dari website yang online. Terverifikasi **70/70 pengujian otomatis**.
+> Panduan lengkap: [PANDUAN-DEPLOY-SHARED-HOSTING.md](./PANDUAN-DEPLOY-SHARED-HOSTING.md)
+>
+> 💾 **Backup rutin 2 hal ini di hosting:** folder `uploads/` + folder `api/data/`.
+
+### ⚡ Inti Deploy cPanel Node.js (TL;DR)
 
 ```bash
 # Di komputer: build produksi
@@ -493,8 +517,8 @@ npm run build
 3. 📦 Install dependensi → 🗄️ jalankan `db:push` + seed → ▶️ Restart aplikasi
 4. ✅ Selesai!
 
-> ⚠️ **Penting:** Hosting harus mendukung **Node.js App** (bukan PHP-only).
-> Backend ini Next.js/Node — bukan PHP. Cek paket hosting sebelum membeli.
+> ⚠️ **Penting:** Opsi Node.js menuntut hosting yang mendukung **Node.js App**
+> (bukan PHP-only). Untuk hosting PHP-only biasa, gunakan opsi 🟢 di atas.
 >
 > 💾 **Backup rutin 2 hal ini:** folder `public/uploads/` + file `db/custom.db`.
 

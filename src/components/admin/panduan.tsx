@@ -124,6 +124,18 @@ pabrik. Harga langsung dari toko, makin banyak makin murah!`
 
 const ACCORDION: { q: string; steps: string[] }[] = [
   {
+    q: 'Cara memasang website di shared hosting (cPanel PHP)',
+    steps: [
+      'Di komputer lokal, jalankan perintah: bun run build:deploy — akan dibuat file build/berkat-mandiri-website.zip berisi situs statis + PHP API bridge + seluruh data produk.',
+      'Login cPanel hosting → buka File Manager → masuk ke folder public_html (atau root subdomain).',
+      'Klik Upload → pilih file ZIP tadi → tunggu hingga selesai.',
+      'Kembali ke File Manager → klik kanan file ZIP → Extract → konfirmasi → hapus ZIP-nya.',
+      'Buka domain Anda — website langsung tampil dengan 1000 produk. Dashboard admin tetap berfungsi penuh di alamat /#/admin (login seperti biasa).',
+      'PENTING: segera ganti password admin lewat menu Pengaturan → Akun, dan pastikan file .htaccess ikut terekstrak (aktifkan Show Hidden Files di File Manager).',
+      'Panduan lengkap + troubleshooting: baca file PANDUAN-DEPLOY-SHARED-HOSTING.md di folder proyek.',
+    ],
+  },
+  {
     q: 'Cara mengelola kategori',
     steps: [
       'Buka menu "Kategori" di sidebar.',

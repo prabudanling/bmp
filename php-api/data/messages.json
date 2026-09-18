@@ -1,0 +1,29 @@
+[
+  {
+    "id": "cmtxdz1jz000zlrgte58fshp3",
+    "name": "Budi Santoso",
+    "phone": "081234567890",
+    "email": "budi@example.com",
+    "message": "Halo, saya mau tanya kompresor Daikin 1PK ready untuk AC Daikin tipe FTV15? Terima kirim ke Bandung?",
+    "isRead": true,
+    "createdAt": "2026-09-11T20:05:51.648Z"
+  },
+  {
+    "id": "cmtxdz1jz0010lrgtpii74bup",
+    "name": "Teknisi AC Maju Jaya",
+    "phone": "087812345678",
+    "email": null,
+    "message": "Bang, freon R32 harganya berapa kalau ambil grosir 10kg? Untuk servis rutin bengkel. Terima kasih.",
+    "isRead": true,
+    "createdAt": "2026-09-11T20:05:51.648Z"
+  },
+  {
+    "id": "cmtxess5r0002lrwhc31wxbqb",
+    "name": "Ibu Sari Wulandari",
+    "phone": "081998877665",
+    "email": null,
+    "message": "Halo, saya butuh 2 unit kompresor untuk AC Daikin 3/4 PK.ready?",
+    "isRead": false,
+    "createdAt": "2026-09-11T20:28:59.151Z"
+  }
+]

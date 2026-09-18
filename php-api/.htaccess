@@ -1,0 +1,14 @@
+# Berkat Mandiri Pendingin — proteksi folder api/
+# File data & log tidak boleh diakses langsung dari browser.
+
+<FilesMatch "\.(json|md|log|lock|tmp)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+Options -Indexes
