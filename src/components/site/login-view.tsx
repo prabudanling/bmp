@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Code2,
+  Crown,
   Eye,
   EyeOff,
   Globe,
@@ -49,8 +50,13 @@ export function LoginView() {
         body: JSON.stringify({ username, password }),
       })
       setUser(res.user)
-      toast.success(`Selamat datang, ${res.user.name}!`)
-      navigate('/admin')
+      if (res.user.role === 'SEO') {
+        toast.success('Akses VVIP diterima 👑')
+        navigate('/admin/seo')
+      } else {
+        toast.success(`Selamat datang, ${res.user.name}!`)
+        navigate('/admin')
+      }
     } catch (err) {
       setError((err as Error).message)
     } finally {
@@ -86,7 +92,7 @@ export function LoginView() {
               Masuk ke Dashboard
             </CardTitle>
             <CardDescription>
-              Kelola produk, kategori, dan pesan pelanggan toko Anda.
+              Kelola toko Anda, atau buka ruang kendali SEO Super VVIP.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -158,10 +164,20 @@ export function LoginView() {
                 )}
               </Button>
             </form>
-            <div className="mt-5 rounded-lg border border-dashed bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Info:</span>{' '}
-              Akun default adalah <b>admin</b> / <b>admin123</b>. Segera ganti
-              password di menu Pengaturan setelah login.
+            <div className="mt-5 space-y-2 rounded-lg border border-dashed bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
+              <p>
+                <span className="font-semibold text-foreground">Admin:</span> akun{' '}
+                <b>admin</b> / <b>admin123</b> — kelola produk & pengaturan.
+              </p>
+              <p className="flex items-start gap-1.5">
+                <Crown className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
+                <span>
+                  <span className="font-semibold text-foreground">SEO Analyst VVIP:</span>{' '}
+                  akun <b>seo.vvip</b> / <b>VvipSeo#2025</b> — masuk ke SEO Command
+                  Center eksklusif (skor, audit, keywords, sitemap).
+                </span>
+              </p>
+              <p>Segera ganti password di Pengaturan setelah login.</p>
             </div>
             <Button
               variant="ghost"

@@ -1,6 +1,6 @@
 /**
  * Generator logo merek (SVG) — Kompresor Udara, AC & Refrigerasi.
- * Menghasilkan 36 logo wordmark bergaya konsisten ke public/logos/brands/
+ * Menghasilkan 48 logo wordmark bergaya konsisten ke public/logos/brands/
  * Jalankan: bun scripts/generate-brand-logos.mjs
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -198,7 +198,9 @@ const ICONS = {
 }
 
 /* ============================================================
-   Data 36 merek — kompresor udara (14), AC (14), refrigerasi (8)
+   Data 48 merek — kompresor udara (18), AC (20), refrigerasi (10)
+   (termasuk ekspansi: Kobelco, Denair, Ceccato, Fini, Chigo, TCL,
+   Polytron, Hisense, Haier, AUX, Dorin, Refcomp)
    main = warna teks, accent = warna ikon sekunder
    ============================================================ */
 const BRANDS = [
@@ -241,6 +243,21 @@ const BRANDS = [
   { slug: 'embraco', name: 'Embraco', icon: 'drop', main: '#0072BC', accent: '#59B947' },
   { slug: 'sanhua', name: 'SANHUA', icon: 'flower', main: '#E8452C', accent: '#F5A623' },
   { slug: 'frascold', name: 'Frascold', icon: 'hex', letter: 'F', main: '#004A97', accent: '#00A0E9' },
+  // ——— Ekspansi: kompresor udara tambahan ———
+  { slug: 'kobelco', name: 'KOBELCO', icon: 'hex', letter: 'K', main: '#C8102E', accent: '#F5A9B3' },
+  { slug: 'denair', name: 'DENAIR', icon: 'bolt', main: '#0057A8', accent: '#6FB4E8' },
+  { slug: 'ceccato', name: 'Ceccato', icon: 'circle', letter: 'C', main: '#00539F', accent: '#E4002B' },
+  { slug: 'fini', name: 'FINI', icon: 'diamond', letter: 'F', main: '#D6002B', accent: '#12356B' },
+  // ——— Ekspansi: AC tambahan ———
+  { slug: 'chigo', name: 'CHIGO', icon: 'wave', main: '#E8452C', accent: '#F5A623' },
+  { slug: 'tcl', name: 'TCL', icon: 'circle', letter: 'T', main: '#D40511', accent: '#FF6B7A' },
+  { slug: 'polytron', name: 'Polytron', icon: 'diamond', letter: 'P', main: '#ED1C24', accent: '#FFB81C' },
+  { slug: 'hisense', name: 'Hisense', icon: 'circle', letter: 'H', main: '#009B77', accent: '#7EDCC8' },
+  { slug: 'haier', name: 'Haier', icon: 'wave', main: '#0066B3', accent: '#66B2E8' },
+  { slug: 'aux', name: 'AUX', icon: 'circle', letter: 'A', main: '#005BAC', accent: '#E60012' },
+  // ——— Ekspansi: refrigerasi tambahan ———
+  { slug: 'dorin', name: 'DORIN', icon: 'gear', letter: 'D', main: '#C8102E', accent: '#12356B' },
+  { slug: 'refcomp', name: 'Refcomp', icon: 'hex', letter: 'R', main: '#1D3C6E', accent: '#F2A900' },
 ]
 
 /* ============================================================

@@ -7,12 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Admin / pemilik toko yang bisa login ke dashboard
+// Admin / pemilik toko / analis SEO yang bisa login ke dashboard
 model Admin {
   id        String   @id @default(cuid())
   username  String   @unique
   password  String // bcrypt hash
   name      String
+  role      String   @default("ADMIN") // ADMIN | SEO
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -83,4 +84,61 @@ model Message {
 model Setting {
   key   String @id
   value String
+}
+
+// ============================================================
+// SEO COMMAND CENTER — Super VVIP
+// ============================================================
+
+// Meta tag per halaman (dipakai layout SSR + preview SERP)
+model SeoPageMeta {
+  id          String   @id @default(cuid())
+  routePath   String   @unique // "/", "/katalog", "/kontak", "/p/faq", ...
+  title       String   @default("")
+  description String   @default("")
+  keywords    String   @default("") // dipisah koma
+  ogImage     String   @default("")
+  robots      String   @default("index,follow")
+  priority    Float    @default(0.5) // prioritas sitemap 0.0 - 1.0
+  updatedAt   DateTime @updatedAt
+}
+
+// Pelacakan posisi keyword di Google
+model SeoKeyword {
+  id           String   @id @default(cuid())
+  keyword      String   @unique
+  targetUrl    String   @default("/")
+  position     Int? // posisi terkini (null = belum terdata)
+  bestPosition Int?
+  volume       Int      @default(0) // estimasi pencarian/bulan
+  history      String   @default("[]") // JSON [{d: iso, p: pos}]
+  notes        String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Temuan audit SEO otomatis
+model SeoIssue {
+  id        String   @id @default(cuid())
+  type      String // missing-desc, no-image, thin-content, meta-title, ...
+  severity  String   @default("WARNING") // CRITICAL | WARNING | INFO
+  title     String
+  detail    String   @default("")
+  target    String   @default("") // path atau nama produk
+  status    String   @default("OPEN") // OPEN | FIXED | IGNORED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+// Jejak aktivitas eksklusif VVIP
+model SeoEvent {
+  id        String   @id @default(cuid())
+  actor     String   @default("")
+  action    String
+  detail    String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }

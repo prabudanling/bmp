@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import {
   Code2,
+  Crown,
   ExternalLink,
   FileText,
   Globe,
@@ -41,16 +42,18 @@ import { PagesManager } from './pages-manager'
 import { MediaManager } from './media-manager'
 import { SettingsManager } from './settings-manager'
 import { PanduanView } from './panduan'
+import { SeoCenter } from './seo/seo-center'
 
 const NAV = [
-  { path: '/admin', label: 'Ringkasan', icon: LayoutGrid, match: (p: string) => p === '/admin' },
-  { path: '/admin/produk', label: 'Produk', icon: Package, match: (p: string) => p.startsWith('/admin/produk') },
-  { path: '/admin/kategori', label: 'Kategori', icon: Tags, match: (p: string) => p.startsWith('/admin/kategori') },
-  { path: '/admin/pesan', label: 'Pesan', icon: Inbox, match: (p: string) => p.startsWith('/admin/pesan') },
-  { path: '/admin/halaman', label: 'Halaman', icon: FileText, match: (p: string) => p.startsWith('/admin/halaman') },
-  { path: '/admin/media', label: 'Media', icon: Images, match: (p: string) => p.startsWith('/admin/media') },
-  { path: '/admin/pengaturan', label: 'Pengaturan', icon: Settings, match: (p: string) => p.startsWith('/admin/pengaturan') },
-  { path: '/admin/panduan', label: 'Panduan', icon: HelpCircle, match: (p: string) => p.startsWith('/admin/panduan') },
+  { path: '/admin', label: 'Ringkasan', icon: LayoutGrid, match: (p: string) => p === '/admin', adminOnly: false },
+  { path: '/admin/produk', label: 'Produk', icon: Package, match: (p: string) => p.startsWith('/admin/produk'), adminOnly: true },
+  { path: '/admin/kategori', label: 'Kategori', icon: Tags, match: (p: string) => p.startsWith('/admin/kategori'), adminOnly: true },
+  { path: '/admin/pesan', label: 'Pesan', icon: Inbox, match: (p: string) => p.startsWith('/admin/pesan'), adminOnly: true },
+  { path: '/admin/halaman', label: 'Halaman', icon: FileText, match: (p: string) => p.startsWith('/admin/halaman'), adminOnly: true },
+  { path: '/admin/media', label: 'Media', icon: Images, match: (p: string) => p.startsWith('/admin/media'), adminOnly: true },
+  { path: '/admin/pengaturan', label: 'Pengaturan', icon: Settings, match: (p: string) => p.startsWith('/admin/pengaturan'), adminOnly: true },
+  { path: '/admin/panduan', label: 'Panduan', icon: HelpCircle, match: (p: string) => p.startsWith('/admin/panduan'), adminOnly: true },
+  { path: '/admin/seo', label: 'SEO VVIP', icon: Crown, match: (p: string) => p.startsWith('/admin/seo'), adminOnly: false },
 ]
 
 function SidebarContent({ path, unread }: { path: string; unread: number }) {
@@ -76,22 +79,31 @@ function SidebarContent({ path, unread }: { path: string; unread: number }) {
     .slice(0, 2)
     .join('')
     .toUpperCase()
+  const isSeo = user?.role === 'SEO'
+  // SEO Analyst VVIP hanya melihat menu SEO Command Center
+  const navItems = isSeo ? NAV.filter((n) => !n.adminOnly && n.path === '/admin/seo') : NAV
 
   return (
     <div className="flex h-full flex-col bg-slate-900 text-slate-300">
       {/* Logo */}
       <button
         className="flex items-center gap-2.5 border-b border-white/10 px-5 py-5 text-left"
-        onClick={() => navigate('/admin')}
+        onClick={() => navigate(isSeo ? '/admin/seo' : '/admin')}
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-500 text-slate-900">
-          <Snowflake className="h-5 w-5" />
+        <span
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+            isSeo ? 'bg-gradient-to-br from-amber-300 to-amber-500 text-slate-950' : 'bg-teal-500 text-slate-900'
+          }`}
+        >
+          {isSeo ? <Crown className="h-5 w-5" /> : <Snowflake className="h-5 w-5" />}
         </span>
         <span className="leading-tight">
           <span className="block max-w-[160px] truncate text-sm font-bold text-white">
             {settings?.storeName || 'Berkat Mandiri Pendingin'}
           </span>
-          <span className="block text-[11px] text-slate-400">Dashboard Admin</span>
+          <span className="block text-[11px] text-slate-400">
+            {isSeo ? 'SEO Command Center VVIP' : 'Dashboard Admin'}
+          </span>
         </span>
       </button>
 
@@ -100,7 +112,7 @@ function SidebarContent({ path, unread }: { path: string; unread: number }) {
         className="scrollbar-thin flex-1 space-y-1 overflow-y-auto px-3 py-4"
         aria-label="Menu dashboard"
       >
-        {NAV.map((item) => {
+        {navItems.map((item) => {
           const active = item.match(path)
           return (
             <button
@@ -108,7 +120,9 @@ function SidebarContent({ path, unread }: { path: string; unread: number }) {
               onClick={() => navigate(item.path)}
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? 'bg-teal-500/15 text-teal-300'
+                  ? item.path === '/admin/seo'
+                    ? 'bg-amber-400/15 text-amber-300'
+                    : 'bg-teal-500/15 text-teal-300'
                   : 'hover:bg-white/5 hover:text-white'
               }`}
               aria-current={active ? 'page' : undefined}
@@ -118,6 +132,11 @@ function SidebarContent({ path, unread }: { path: string; unread: number }) {
               {item.path === '/admin/pesan' && unread > 0 && (
                 <span className="ml-auto rounded-full bg-rose-500 px-2 py-0.5 text-[11px] font-bold text-white">
                   {unread}
+                </span>
+              )}
+              {item.path === '/admin/seo' && (
+                <span className="ml-auto rounded-full bg-gradient-to-r from-amber-300 to-amber-500 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-slate-950">
+                  VVIP
                 </span>
               )}
             </button>
@@ -143,8 +162,13 @@ function SidebarContent({ path, unread }: { path: string; unread: number }) {
             <div className="truncate text-sm font-semibold text-white">
               {user?.name}
             </div>
-            <div className="truncate text-[11px] text-slate-400">
+            <div className="flex items-center gap-1.5 truncate text-[11px] text-slate-400">
               @{user?.username}
+              {isSeo && (
+                <span className="rounded bg-amber-400/20 px-1 text-[9px] font-bold uppercase tracking-wider text-amber-300">
+                  VVIP
+                </span>
+              )}
             </div>
           </div>
           <button
@@ -184,6 +208,7 @@ function PageTitle({ path }: { path: string }) {
   const item = NAV.find((n) => n.match(path))
   if (path === '/admin/produk/baru') return 'Tambah Produk Baru'
   if (/^\/admin\/produk\/[^/]+$/.test(path)) return 'Edit Produk'
+  if (path === '/admin/seo') return 'SEO Command Center — Super VVIP'
   return item?.label || 'Dashboard'
 }
 
@@ -191,11 +216,19 @@ export function AdminApp() {
   const path = useApp((s) => s.path)
   const user = useApp((s) => s.user)
   const authReady = useApp((s) => s.authReady)
+  const navigate = useApp((s) => s.navigate)
   const [mobileNav, setMobileNav] = useState(false)
 
-  // Data pesan belum dibaca untuk badge sidebar
+  // SEO Analyst VVIP hanya boleh berada di /admin/seo
+  useEffect(() => {
+    if (user?.role === 'SEO' && path.startsWith('/admin') && path !== '/admin/seo') {
+      navigate('/admin/seo')
+    }
+  }, [user, path, navigate])
+
+  // Data pesan belum dibaca untuk badge sidebar (khusus ADMIN)
   const { data: stats, refetch } = useApi<StatsDTO>(
-    authReady && user ? '/api/stats' : null
+    authReady && user?.role === 'ADMIN' ? '/api/stats' : null
   )
   const unread = stats?.unreadMessages || 0
 
@@ -231,6 +264,7 @@ export function AdminApp() {
 
   let view: React.ReactNode
   if (path === '/admin') view = <Dashboard />
+  else if (path === '/admin/seo') view = <SeoCenter username={user.username} />
   else if (path === '/admin/produk') view = <ProductsManager />
   else if (path === '/admin/produk/baru') view = <ProductForm />
   else if (path.startsWith('/admin/produk/'))

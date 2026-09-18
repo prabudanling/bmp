@@ -178,5 +178,65 @@
     "slug": "frascold",
     "name": "Frascold",
     "url": "/logos/brands/frascold.svg"
+  },
+  {
+    "slug": "kobelco",
+    "name": "KOBELCO",
+    "url": "/logos/brands/kobelco.svg"
+  },
+  {
+    "slug": "denair",
+    "name": "DENAIR",
+    "url": "/logos/brands/denair.svg"
+  },
+  {
+    "slug": "ceccato",
+    "name": "Ceccato",
+    "url": "/logos/brands/ceccato.svg"
+  },
+  {
+    "slug": "fini",
+    "name": "FINI",
+    "url": "/logos/brands/fini.svg"
+  },
+  {
+    "slug": "chigo",
+    "name": "CHIGO",
+    "url": "/logos/brands/chigo.svg"
+  },
+  {
+    "slug": "tcl",
+    "name": "TCL",
+    "url": "/logos/brands/tcl.svg"
+  },
+  {
+    "slug": "polytron",
+    "name": "Polytron",
+    "url": "/logos/brands/polytron.svg"
+  },
+  {
+    "slug": "hisense",
+    "name": "Hisense",
+    "url": "/logos/brands/hisense.svg"
+  },
+  {
+    "slug": "haier",
+    "name": "Haier",
+    "url": "/logos/brands/haier.svg"
+  },
+  {
+    "slug": "aux",
+    "name": "AUX",
+    "url": "/logos/brands/aux.svg"
+  },
+  {
+    "slug": "dorin",
+    "name": "DORIN",
+    "url": "/logos/brands/dorin.svg"
+  },
+  {
+    "slug": "refcomp",
+    "name": "Refcomp",
+    "url": "/logos/brands/refcomp.svg"
   }
 ]

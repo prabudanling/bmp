@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { TOKEN_COOKIE, TOKEN_MAX_AGE, signToken } from '@/lib/auth'
 import bcrypt from 'bcryptjs'
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -36,10 +35,16 @@ export async function POST(req: NextRequest) {
       sub: admin.id,
       username: admin.username,
       name: admin.name,
+      role: admin.role === 'SEO' ? 'SEO' : 'ADMIN',
     })
 
     const res = NextResponse.json({
-      user: { id: admin.id, username: admin.username, name: admin.name },
+      user: {
+        id: admin.id,
+        username: admin.username,
+        name: admin.name,
+        role: admin.role === 'SEO' ? 'SEO' : 'ADMIN',
+      },
     })
     res.cookies.set(TOKEN_COOKIE, token, {
       httpOnly: true,

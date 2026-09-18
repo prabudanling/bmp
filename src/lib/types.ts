@@ -44,6 +44,8 @@ export interface AdminUser {
   id: string
   username: string
   name: string
+  /** ADMIN = pemilik toko penuh, SEO = SEO Analyst Super VVIP */
+  role: 'ADMIN' | 'SEO'
 }
 
 export interface MessageDTO {
@@ -119,4 +121,92 @@ export interface StatsDTO {
   lowStock: { id: string; name: string; stock: number; images: string[] }[]
   recentMessages: MessageDTO[]
   recentProducts: ProductDTO[]
+}
+
+/* ============================================================
+ * SEO COMMAND CENTER — Super VVIP
+ * ============================================================ */
+
+/** Meta tag satu halaman */
+export interface SeoMetaDTO {
+  id: string
+  routePath: string
+  title: string
+  description: string
+  keywords: string
+  ogImage: string
+  robots: string
+  priority: number
+  updatedAt: string
+  /** true = masih default bawaan, belum pernah diedit */
+  isDefault?: boolean
+}
+
+/** Satu keyword yang dipantau posisinya */
+export interface SeoKeywordDTO {
+  id: string
+  keyword: string
+  targetUrl: string
+  position: number | null
+  bestPosition: number | null
+  volume: number
+  history: { d: string; p: number }[]
+  notes: string
+  createdAt: string
+  updatedAt: string
+}
+
+/** Temuan audit SEO */
+export interface SeoIssueDTO {
+  id: string
+  type: string
+  severity: 'CRITICAL' | 'WARNING' | 'INFO'
+  title: string
+  detail: string
+  target: string
+  status: 'OPEN' | 'FIXED' | 'IGNORED'
+  createdAt: string
+  updatedAt: string
+}
+
+/** Aktivitas eksklusif VVIP */
+export interface SeoEventDTO {
+  id: string
+  actor: string
+  action: string
+  detail: string
+  createdAt: string
+}
+
+/** Ringkasan + skor SEO keseluruhan */
+export interface SeoOverviewDTO {
+  score: number
+  breakdown: {
+    content: number // max 40
+    meta: number // max 30
+    keywords: number // max 15
+    technical: number // max 15
+  }
+  stats: {
+    productTotal: number
+    productActive: number
+    productsMissingDesc: number
+    productsMissingImages: number
+    productsThinContent: number
+    categoryTotal: number
+    pageTotal: number
+    metaRows: number
+    keywordsTracked: number
+    keywordsWithPosition: number
+    keywordsTop3: number
+    avgPosition: number | null
+    sitemapUrls: number
+    issuesOpen: number
+    issuesCritical: number
+    lastAuditAt: string | null
+  }
+  issuesPreview: SeoIssueDTO[]
+  events: SeoEventDTO[]
+  jsonLd: Record<string, unknown>
+  siteUrl: string
 }

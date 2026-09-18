@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { toProductDTO } from '@/lib/product-dto'
 import { uniqueProductSlug } from '@/lib/slug'
 
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const sort = sp.get('sort') || 'terbaru'
     const status = sp.get('status') || 'active'
 
-    const admin = await getAdminFromReq(req)
+    const admin = await requireAdmin(req)
 
     const where: Prisma.ProductWhereInput = {}
     if (admin) {
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/products — tambah produk baru (admin)
 export async function POST(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

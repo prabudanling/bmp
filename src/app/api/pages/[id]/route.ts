@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { slugify } from '@/lib/format'
 
 function unauthorized() {
@@ -15,7 +15,7 @@ export async function GET(
   req: NextRequest,
   ctx: { params: Promise<{ id: string }> }
 ) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) return unauthorized()
   const { id } = await ctx.params
   const page = await db.page.findUnique({ where: { id } })
@@ -30,7 +30,7 @@ export async function PUT(
   req: NextRequest,
   ctx: { params: Promise<{ id: string }> }
 ) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) return unauthorized()
 
   const { id } = await ctx.params
@@ -84,7 +84,7 @@ export async function DELETE(
   req: NextRequest,
   ctx: { params: Promise<{ id: string }> }
 ) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) return unauthorized()
   const { id } = await ctx.params
   try {

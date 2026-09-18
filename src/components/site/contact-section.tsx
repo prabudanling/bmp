@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Clock,
@@ -35,6 +35,84 @@ import {
 import { api } from '@/lib/client'
 import { useSettings } from '@/hooks/use-settings'
 import { waLink } from '@/lib/format'
+
+/**
+ * Status buka/tutup real-time berdasarkan WIB (Asia/Jakarta).
+ * Jadwal mengikuti jam operasional default: Senin–Sabtu 08.00–17.00.
+ */
+function useOpenStatus() {
+  const [status, setStatus] = useState<null | {
+    open: boolean
+    label: string
+  }>(null)
+
+  useEffect(() => {
+    const compute = () => {
+      const now = new Date()
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        minute: '2-digit',
+        weekday: 'short',
+        hour12: false,
+      }).formatToParts(now)
+      const get = (t: string) => parts.find((p) => p.type === t)?.value ?? ''
+      const h = parseInt(get('hour'), 10)
+      const m = parseInt(get('minute'), 10)
+      const wd = get('weekday')
+      const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(wd)
+      const isOpen = day >= 1 && day <= 6 && h >= 8 && (h < 17 || (h === 17 && m === 0))
+      if (isOpen) {
+        setStatus({ open: true, label: 'Buka Sekarang · tutup 17.00 WIB' })
+      } else {
+        const nextDay =
+          day === 6 && h >= 17 ? 'Senin' : day === 0 ? 'Senin' : 'besok'
+        setStatus({
+          open: false,
+          label: `Tutup · buka ${nextDay} 08.00 WIB`,
+        })
+      }
+    }
+    compute()
+    const iv = setInterval(compute, 60_000)
+    return () => clearInterval(iv)
+  }, [])
+
+  return status
+}
+
+/** Badge status toko hidup — hijau saat buka, abu saat tutup */
+export function OpenStatusBadge() {
+  const status = useOpenStatus()
+  if (!status) {
+    return (
+      <span className="mt-2 inline-block h-5 w-40 animate-pulse rounded-full bg-muted" />
+    )
+  }
+  return (
+    <span
+      className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+        status.open
+          ? 'bg-green-500/15 text-green-600 dark:text-green-400'
+          : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+      }`}
+    >
+      <span className="relative flex h-2 w-2">
+        <span
+          className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-60 ${
+            status.open ? 'bg-green-500' : 'bg-rose-500'
+          }`}
+        />
+        <span
+          className={`relative inline-flex h-2 w-2 rounded-full ${
+            status.open ? 'bg-green-500' : 'bg-rose-500'
+          }`}
+        />
+      </span>
+      {status.label}
+    </span>
+  )
+}
 
 export function ContactSection() {
   const settings = useSettings()
@@ -72,7 +150,7 @@ export function ContactSection() {
       title: 'Telepon / WhatsApp',
       value: `${settings?.phone || '-'} • ${settings?.whatsapp || '-'}`,
     },
-    { icon: Clock, title: 'Jam Operasional', value: settings?.hours || '-' },
+    { icon: Clock, title: 'Jam Operasional', value: settings?.hours || '-', live: true },
     { icon: Mail, title: 'Email', value: settings?.email || '-' },
   ]
 
@@ -110,6 +188,7 @@ export function ContactSection() {
                   <CardDescription className="text-xs leading-relaxed">
                     {item.value}
                   </CardDescription>
+                  {'live' in item && item.live && <OpenStatusBadge />}
                 </CardHeader>
               </Card>
             </StaggerItem>

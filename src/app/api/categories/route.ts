@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { uniqueCategorySlug } from '@/lib/slug'
 import type { CategoryDTO } from '@/lib/types'
 
@@ -29,7 +29,7 @@ export async function GET() {
 
 // POST /api/categories — tambah kategori (admin)
 export async function POST(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { DEFAULT_SETTINGS } from '@/lib/settings'
 import type { StoreSettings } from '@/lib/types'
 
@@ -18,7 +18,7 @@ export async function GET() {
 
 // PUT /api/settings — simpan pengaturan toko (admin)
 export async function PUT(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { toProductDTO } from '@/lib/product-dto'
 import type { MessageDTO, StatsDTO } from '@/lib/types'
 
 // GET /api/stats — ringkasan dashboard (admin)
 export async function GET(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

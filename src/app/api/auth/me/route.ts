@@ -7,6 +7,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ user: null }, { status: 401 })
   }
   return NextResponse.json({
-    user: { id: admin.sub, username: admin.username, name: admin.name },
+    user: {
+      id: admin.sub,
+      username: admin.username,
+      name: admin.name,
+      role: admin.role,
+    },
   })
 }

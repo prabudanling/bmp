@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { slugify } from '@/lib/format'
 
 // GET /api/pages — daftar halaman
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       where.isPublished = true
     }
     if (wantAll) {
-      const admin = await getAdminFromReq(req)
+      const admin = await requireAdmin(req)
       if (!admin) {
         return NextResponse.json(
           { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/pages — buat halaman baru (admin)
 export async function POST(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

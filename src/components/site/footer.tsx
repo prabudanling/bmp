@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  BadgeCheck,
   Clock,
   Code2,
   Facebook,
@@ -12,7 +13,9 @@ import {
   MessageCircle,
   Music2,
   Phone,
+  ShieldCheck,
   Snowflake,
+  Truck,
   Youtube,
 } from 'lucide-react'
 import { useApp } from '@/lib/store'
@@ -181,6 +184,80 @@ export function SiteFooter() {
               Chat WhatsApp
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Pembayaran & Pengiriman — sinyal kepercayaan kelas internasional */}
+      <div className="border-t border-white/10">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+          <div>
+            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200">
+              <ShieldCheck className="h-4 w-4 text-teal-400" />
+              Pembayaran
+            </h3>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {[
+                'Transfer Bank',
+                'BCA',
+                'Mandiri',
+                'BRI',
+                'BNI',
+                'QRIS',
+                'GoPay',
+                'OVO',
+                'DANA',
+              ].map((m) => (
+                <span
+                  key={m}
+                  className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-semibold text-slate-300 transition-colors hover:border-teal-400/40 hover:text-teal-300"
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200">
+              <Truck className="h-4 w-4 text-teal-400" />
+              Pengiriman
+            </h3>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {[
+                'JNE',
+                'J&T Express',
+                'SiCepat',
+                'AnterAja',
+                'Indah Cargo',
+                'GoSend Instan',
+              ].map((m) => (
+                <span
+                  key={m}
+                  className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-semibold text-slate-300 transition-colors hover:border-teal-400/40 hover:text-teal-300"
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200">
+              <BadgeCheck className="h-4 w-4 text-teal-400" />
+              Jaminan Kami
+            </h3>
+            <div className="mt-3 grid gap-1.5 text-[11px] text-slate-400 sm:grid-cols-2">
+              {[
+                'Garansi resmi semua produk elektronik',
+                'Retur mudah jika barang tidak sesuai',
+                'Harga distributor untuk pembelian grosir',
+                'Invoice resmi untuk perusahaan & tender',
+              ].map((t) => (
+                <span key={t} className="flex items-center gap-1.5">
+                  <BadgeCheck className="h-3 w-3 shrink-0 text-teal-400/70" />
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

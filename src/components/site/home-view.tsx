@@ -26,6 +26,8 @@ import {
 } from '@/components/motion'
 import { ProductCard, ProductCardSkeleton } from './product-card'
 import { ContactSection, TrustRow } from './contact-section'
+import { TestimonialsSection } from './testimonials'
+import { FaqSection } from './faq-section'
 import { useApi } from '@/hooks/use-api'
 import { useSettings } from '@/hooks/use-settings'
 import { parsePartners } from '@/lib/settings'
@@ -399,6 +401,9 @@ export function HomeView() {
         </div>
       </section>
 
+      {/* ===== TESTIMONI ===== */}
+      <TestimonialsSection />
+
       {/* ===== MEREK / MITRA ===== */}
       <section className="mx-auto w-full max-w-7xl px-4 py-12 lg:px-8">
         <Reveal className="mb-8 text-center">
@@ -476,6 +481,9 @@ export function HomeView() {
           </Reveal>
         )}
       </section>
+
+      {/* ===== FAQ ===== */}
+      <FaqSection />
 
       {/* ===== CTA ===== */}
       <section className="mx-auto w-full max-w-7xl px-4 pb-14 lg:px-8">

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { uniqueCategorySlug } from '@/lib/slug'
 
 type Params = { params: Promise<{ id: string }> }
 
 // PUT /api/categories/[id] — update kategori (admin)
 export async function PUT(req: NextRequest, { params }: Params) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },
@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
 // DELETE /api/categories/[id] — hapus kategori (admin)
 export async function DELETE(req: NextRequest, { params }: Params) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

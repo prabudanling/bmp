@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import type { MediaDTO } from '@/lib/types'
 
 const UPLOAD_ROOT = path.join(process.cwd(), 'public', 'uploads')
@@ -56,7 +56,7 @@ async function listDir(rel: string): Promise<MediaDTO[]> {
 
 // GET /api/media — daftar semua file di folder uploads (admin)
 export async function GET(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) return unauthorized()
 
   try {
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
 
 // DELETE /api/media?url=/uploads/xxx.png — hapus file (admin)
 export async function DELETE(req: NextRequest) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) return unauthorized()
 
   try {

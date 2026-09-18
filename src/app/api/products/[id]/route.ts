@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAdminFromReq } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { toProductDTO } from '@/lib/product-dto'
 
 type Params = { params: Promise<{ id: string }> }
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
 // PUT /api/products/[id] — update produk (admin)
 export async function PUT(req: NextRequest, { params }: Params) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },
@@ -140,7 +140,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
 // DELETE /api/products/[id] — hapus produk (admin)
 export async function DELETE(req: NextRequest, { params }: Params) {
-  const admin = await getAdminFromReq(req)
+  const admin = await requireAdmin(req)
   if (!admin) {
     return NextResponse.json(
       { error: 'Tidak memiliki akses. Silakan login terlebih dahulu.' },

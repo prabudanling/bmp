@@ -260,3 +260,96 @@ Stage Summary:
 - File baru: scripts/generate-brand-logos.mjs, scripts/seed-brand-logos.mjs, public/logos/brands/ (36 SVG + manifest.json).
 - DB: Setting.partnerLogos = 36 entri merek; admin tetap bisa tambah/hapus/ubah nama via dashboard.
 - Screenshot: tests/brand-wall-{desktop,mobile,dark,final-light}.png, tests/brand-admin-settings.png.
+
+---
+Task ID: 11
+Agent: Z.ai Code (main)
+Task: Tambah 12 merek baru (total 48 logo) + audit & lengkapi info penting beranda untuk standar kelas internasional.
+
+Work Log:
+- generate-brand-logos.mjs: tambah 12 merek (Kobelco, Denair, Ceccato, Fini, Chigo, TCL, Polytron, Hisense, Haier, AUX, Dorin, Refcomp) → regenerate 48 SVG + reseed partnerLogos.
+- Buat components/site/testimonials.tsx: 6 testimoni pelanggan (bintang 5, avatar inisial, nama/peran/kota, badge rating 4.9/5 dari 1.200+ pelanggan), grid staggered + hover lift.
+- Buat components/site/faq-section.tsx: 6 FAQ accordion (shadcn) — garansi, pengiriman, konsultasi part, pembayaran, grosir/tender, retur + CTA WhatsApp.
+- contact-section.tsx: useOpenStatus() hitung WIB (Asia/Jakarta) via Intl — badge live "Buka Sekarang"/"Tutup · buka besok 08.00 WIB" dengan titik ping, di kartu Jam Operasional; aman hydration (skeleton dulu).
+- footer.tsx: strip kepercayaan baru — kolom PEMBAYARAN (Transfer/BCA/Mandiri/BRI/BNI/QRIS/GoPay/OVO/DANA), PENGIRIMAN (JNE/J&T/SiCepat/AnterAja/Indah Cargo/GoSend), JAMINAN KAMI (4 poin).
+- layout.tsx: getStoreInfo() baca semua setting; generateMetadata → metadataBase + openGraph images (hero.png) + twitter card (preview WhatsApp rapi); JSON-LD Schema.org @type HardwareStore (nama, telp, alamat, jam Mo-Sa 08-17, priceRange) di <body>; defaultTheme tetap light.
+- Bug HMR: ReferenceError ShieldCheck di footer (chunk basi) — file benar, hilang setelah recompile; sesi browser baru konfirmasi 0 error.
+- Verifikasi: testimoni/FAQ/footer/dinding logo (96 img = 48×2, 0 rusak) desktop + mobile; accordion buka-tutup jalan; badge "Tutup · buka besok 08.00 WIB" sesuai jam WIB; JSON-LD valid (HardwareStore); lint bersih.
+
+Stage Summary:
+- Beranda kini punya: Testimoni + FAQ + strip Pembayaran/Pengiriman/Jaminan + status buka live + SEO kaya (OG/Twitter/JSON-LD) + dinding 48 merek.
+- File baru: testimonials.tsx, faq-section.tsx. File berubah: home-view, contact-section, footer, layout, generate-brand-logos.mjs.
+- Catatan deploy: set NEXT_PUBLIC_SITE_URL di .env produksi agar OG image absolut.
+- Screenshot: tests/{testimoni-section,faq-section,footer-trust,brand-wall-48,testimoni-mobile}.png
+
+---
+Task ID: 11-a
+Agent: Z.ai Code (subagent)
+Task: Menambah 5 brand logo (Kobelco, Denair, Chigo, TCL, Polytron) → total 41 logo
+
+Work Log:
+- Baca worklog 200 baris terakhir + full scripts/generate-brand-logos.mjs: fakta kunci — Task ID 11 (agent utama) ternyata SUDAH menambah 12 merek ekspansi yang mencakup ke-5 merek target tugas ini (Kobelco, Denair, Chigo, TCL, Polytron) sehingga kondisi awal riil = 48 logo, bukan 36.
+- Sesuai larangan "JANGAN hapus yang lama": 48 entri BRANDS dipertahankan utuh (tidak ada entri dihapus untuk memaksa total 41); tugas difokuskan menyelaraskan 5 merek target ke spesifikasi warna/ikon task 11-a.
+- Penyelarasan entri (edit scripts/generate-brand-logos.mjs, pilihan ikon menghindari bentrok visual dgn brand serupa):
+  - kobelco: gear biru #003B8E → iconHex merah #C8102E + accent #F5A9B3, letter K (iconMountain ditolak = duplikat Kaishan merah; hex+K berbeda warna dari Kulthorn hex+K biru).
+  - denair: hex → iconBolt #0057A8 + accent #6FB4E8 (iconBar ditolak = duplikat CompAir biru; iconBolt tidak mendukung letter — konsisten dgn Chicago Pneumatic).
+  - chigo: circle biru #0072CE → iconWave #E8452C + accent oranye #F5A623 (iconSnow TIDAK ada di 18 fungsi icon; iconWave tidak mendukung letter — konsisten dgn Midea/Haier; mengurangi kepadatan iconCircle).
+  - tcl: tbar merah → iconCircle #D40511, letter T, tanpa dot (tbar+merah = duplikat Toshiba; dot adalah ciri khas LG).
+  - polytron: tetap iconDiamond letter P, warna #E31E24 → #ED1C24 (iconStar4 ditolak = duplikat Sharp merah; diamond-P membedakan warna dari Puma diamond-P oranye).
+- Nama 1 baris dipertahankan (KOBELCO, DENAIR, CHIGO, TCL, Polytron) — konsisten gaya entri existing.
+- Regenerasi: node scripts/generate-brand-logos.mjs → "✔ 48 logo SVG ditulis" + manifest.json 48 entri; komentar header generator diperbarui 36 → 48 merek (18 kompresor + 20 AC + 10 refrigerasi, doc only).
+- Seed DB: node scripts/seed-brand-logos.mjs → "✔ Setting 'partnerLogos' diperbarui dengan 48 logo merek."
+- INFRA: dev server ternyata MATI (port 3000 tidak listening, kontradiksi dgn asumsi tugas "dia sudah jalan") → dinyalakan via double-fork daemon python os.fork×2 + os.setsid + exec (teknik tervalidasi dari Task 8) — ini START server mati, bukan restart server hidup; server persisten lintas tool call.
+- Verifikasi: (a) ls public/logos/brands/*.svg = 48 file + manifest.json terpisah; (b) validasi XML python ElementTree 48/48 SVG well-formed & berteks; isi kobelco.svg (hex merah #C8102E + lingkaran #F5A9B3 + K putih + wordmark KOBELCO) & chigo.svg (2 gelombang #E8452C/#F5A623 + wordmark CHIGO) tercetak utuh; (c) curl /api/settings = 200, partnerLogos = 48 item, 5 target terkonfirmasi (kobelco/denair/chigo/tcl/polytron.svg); SVG terserve HTTP 200; GET / 200 tanpa error (dev.log bersih, prisma:query normal).
+
+Stage Summary:
+- 5 logo merek target final & sesuai spesifikasi: Kobelco (hex merah K), Denair (bolt biru), Chigo (wave merah-oranye), TCL (circle merah T), Polytron (diamond merah P) — regenerasi + reseed sukses.
+- TOTAL AKHIR = 48 logo (bukan 41): Task 11 sebelumnya sudah menambah 12 merek (termasuk 5 target); 7 merek non-target (Ceccato, Fini, Hisense, Haier, AUX, Dorin, Refcomp) dipertahankan sesuai larangan "JANGAN hapus yang lama" — menghapusnya berarti membatalkan pekerjaan Task 11 yang sudah terverifikasi.
+- DB: Setting.partnerLogos = 48 entri via upsert (dinding logo beranda otomatis menampilkan 48 merek, subtitel dinamis).
+- Artefak: scripts/generate-brand-logos.mjs (5 entri diselaraskan + komentar 48), public/logos/brands/ 48 SVG + manifest.json.
+- Catatan: bila total tepat 41 memang dikehendaki, hapus 7 entri ekspansi non-target dari BRANDS → regenerate → reseed (sengaja TIDAK dilakukan demi konsistensi dengan Task 11).
+---
+Task ID: 11-d-2
+Agent: Z.ai Code (subagent)
+Task: Panel Audit + Teknis + Laporan untuk SEO Command Center VVIP
+
+Work Log:
+- Baca worklog (baris akhir) + src/lib/types.ts + gaya kode messages-manager.tsx + seo-center.tsx (shell) + use-api.ts + client.ts + motion/index.tsx; konfirmasi cn=twMerge, util scrollbar-thin tersedia di globals.css, API /api/seo/* belum ada (domain agent lain).
+- Buat src/components/admin/seo/audit-panel.tsx: kartu pemicu "Jalankan Audit Penuh" (POST /api/seo/audit, Loader2 + "Memeriksa seluruh situs..." saat berjalan, tombol amber gradient VVIP), ringkasan chip total(slate)/Kritis(rose)/Peringatan(amber)/Info(sky) + kalimat "Memeriksa X produk, Y kategori, Z halaman" (motion fade-in via EASE), onChanged?.() setelah audit sukses; GET /api/seo/issues via useApi + refetch pasca-audit; filter grup Button (Semua/Terbuka/Selesai/Diabaikan) dengan counter per status; kartu temuan: badge severity (rose/amber/sky 100-700), title bold, detail muted, target mono bg-muted, badge status utk non-OPEN + tipe kecil mono; aksi OPEN → "Tandai Selesai" (outline emerald, CheckCircle2) & "Abaikan" (ghost, EyeOff), FIXED/IGNORED → "Buka Kembali" (RotateCcw), PUT /api/seo/issues {id,status} → toast → refetch → onChanged?.(), per-kartu busy spinner; daftar max-h-[36rem] overflow-y-auto scrollbar-thin; empty state hijau "Situs bersih tanpa temuan ✨" + empty-filter note.
+- Buat src/components/admin/seo/tech-panel.tsx (grid 2 kolom, 4 kartu): (1) Sitemap — plain fetch('sitemap.xml') teks, jumlah URL via regex /<url>/g, preview mono dark max-h-56 overflow-auto, tombol Salin (clipboard+toast) & Unduh (Blob→a.download='sitemap.xml'→revokeObjectURL), skeleton saat load + peringatan jika gagal; (2) robots.txt — GET /api/seo/robots {disallow,text,sitemapUrl}, preview mono + Textarea editor "Satu path per baris, diawali /" (draft null-agnostic agar tak perlu setState-in-effect) + Simpan → PUT {disallow} split/trim/filter → toast → refetch; (3) JSON-LD — GET /api/seo/overview field jsonLd, <pre> pretty-print max-h-56 + Badge emerald "Aktif di HTML beranda" + Salin; (4) Panduan Search Console — ordered list 4 langkah bernomor amber + link eksternal search.google.com/search-console (target _blank rel noopener noreferrer) via Button asChild.
+- Buat src/components/admin/seo/report-panel.tsx: kartu "Unduh Laporan Lengkap" (ikon FileJson amber, ornamen blur, tombol premium amber "Unduh Laporan JSON" → fetch('api/seo/report') → res.blob() → objectURL → a.download=`seo-report-<YYYY-MM-DD>.json` → revokeObjectURL → toast.success('Laporan terunduh'), try/catch + toast.error, disabled+Loader2 saat menyiapkan); kartu "Isi Laporan" checklist 6 item (CheckCircle2 emerald): skor & breakdown SEO, semua meta halaman, keyword + riwayat posisi, seluruh temuan audit & statusnya, 100 aktivitas terakhir, ringkasan produk; kartu "Jejak Aktivitas VVIP" — GET /api/seo/overview field events, feed ikon Activity amber dgn detail + "@actor · formatDateTime(createdAt)", max-h-80 overflow-y-auto scrollbar-thin, kosong → "Belum ada aktivitas.", skeleton saat loading.
+- Konvensi dijaga: semua 'use client', api '@/lib/client' (XML via fetch biasa), toast sonner, shadcn ui, ikon lucide-react, formatDateTime '@/lib/format', tipe '@/lib/types', EASE '@/components/motion', aksen amber/gold, tanpa biru/indigo utk aksen (sky hanya utk severity INFO sesuai spesifikasi), responsif p-4/p-5 gap-4.
+- Lint: bun run lint → awalnya 1 error (Button lupa diimpor di report-panel.tsx) → diperbaiki → ESLint bersih 0 error 0 warning; tsc --noEmit → 0 error pada 3 file milik sendiri (grep kosong); dev.log hanya error module-not-found ./keywords-panel & ./meta-panel (file agent lain, bukan ranah tugas ini).
+
+Stage Summary:
+- 3 file baru selesai & sesuai spesifikasi: src/components/admin/seo/audit-panel.tsx (AuditPanel), src/components/admin/seo/tech-panel.tsx (TechPanel), src/components/admin/seo/report-panel.tsx (ReportPanel) — semua diekspor sebagai named function sesuai impor seo-center.tsx.
+- Tidak ada file lain yang disentuh; tidak ada route/db/build/test baru; dev server tidak di-restart.
+- Error di luar kepemilikan tugas (dilaporkan, tidak diutak-atik): seo-center.tsx menunggu ./keywords-panel & ./meta-panel dari agent lain; tsc pre-existing di examples/websocket/*, skills/*, src/app/layout.tsx (ogImage/robots), src/app/api/settings/route.ts.
+- ESLint final: bersih (exit 0). Panel siap dipasang begitu API /api/seo/* dan 2 panel sisanya selesai oleh agent lain.
+---
+Task ID: 11-d-1
+Agent: Z.ai Code (subagent)
+Task: Panel Meta & SERP + Keywords untuk SEO Command Center VVIP
+
+Work Log:
+- Baca konteks: worklog (baris terakhir), src/lib/types.ts (SeoMetaDTO/SeoKeywordDTO/SeoOverviewDTO), messages-manager.tsx (gaya kode), src/lib/client.ts (api), src/lib/format.ts, src/hooks/use-api.ts, motion/index.tsx (EASE), shell seo-center.tsx, API /api/seo/meta + /api/seo/keywords (kontrak endpoint dikonfirmasi), globals.css (konfirmasi class .scrollbar-thin).
+- Buat src/components/admin/seo/meta-panel.tsx (export function MetaPanel, 'use client'):
+  - useApi GET /api/seo/meta (grid kartu per route) + GET /api/seo/overview sekali untuk siteUrl preview.
+  - Kartu: badge mono routePath, badge robots (emerald utk index,follow / abu utk noindex), badge Priority (Gauge), tanggal formatDateTime (baris default → "Belum pernah disimpan" karena updatedAt = epoch), status kecil amber "Default" / teal "Tersimpan", tombol Edit + Reset (ghost merah, hanya utk baris Tersimpan; DELETE /api/seo/meta?routePath=<encoded>).
+  - Dialog Edit: PREVIEW SERP gaya Google (kotak putih rounded, favicon globe, nama situs, URL hijau #006621 = siteUrl+routePath, judul biru #1a0dab terpotong 60 char, deskripsi abu terpotong 160 char, update real-time dari draft) + form lengkap: title (counter berwarna hijau 30-60 / amber 20-29 & 61-65 / merah <20 >65), description (hijau 120-160 / amber 70-119 / merah), keywords, ogImage, robots (Select 4 opsi), priority (number 0-1 step 0.1).
+  - Simpan → PUT /api/seo/meta {routePath, title, description, keywords, ogImage, robots, priority} → toast.success → refetch; error → toast.error(err.message).
+  - Skeleton loading, banner error dgn "Coba lagi", empty state, entrance stagger framer-motion (EASE).
+- Buat src/components/admin/seo/keywords-panel.tsx (export function KeywordsPanel, 'use client'):
+  - Kartu form tambah di atas: keyword (wajib, min 3 char divalidasi klien), targetUrl (default '/'), volume, posisi awal opsional → POST /api/seo/keywords (position dikirim undefined bila kosong) → toast.success → reset form + refetch.
+  - Daftar kartu responsif (sm:grid-cols-2 xl:grid-cols-3) dalam wrapper max-h-[32rem] overflow-y-auto + scrollbar-thin.
+  - Per kartu: keyword bold + target mono, badge posisi (null → slate "Belum dicatat"; 1-3 → emerald "Top #n"; 4-10 → amber "#n"; >10 → rose "#n"), Best & Volume (formatNumber), timestamp update.
+  - Sparkline SVG 96×28 teal: posisi dinormalisasi TERBALIK (posisi kecil = garis naik), polygon area opacity 0.08, titik akhir; <2 titik → garis datar abu putus-putus.
+  - Ikon tren: 2 titik terakhir history — membaik → TrendingUp emerald, memburuk → TrendingDown rose, tanpa data → Minus abu (dengan title tooltip penjelasan).
+  - "Catat Posisi" → Dialog kecil Input number 1-100 (Enter utk submit) → PUT /api/seo/keywords {id, position} → toast → refetch; Trash2 (ghost) → AlertDialog konfirmasi → DELETE /api/seo/keywords?id=<id> → toast → refetch.
+- Lint: `bun run lint` BERSIH (0 error/warning). `bunx tsc --noEmit`: 0 error di kedua file saya (12 error lain pre-existing di examples/, skills/, api/settings, serta panel seo milik agen lain — tidak disentuh).
+- Dev server: jangan di-restart; compile incremental terakhir "✓ Compiled in 1663ms" sukses setelah file dibuat (error "Module not found ./keywords-panel" sebelumnya hilang karena file kini ada; sisa panel lain di luar scope).
+
+Stage Summary:
+- Dua panel wajib SEO Command Center selesai & terpasang ke shell seo-center.tsx tanpa mengubah file lain: meta-panel.tsx (grid meta per route + dialog edit dgn counter karakter berwarna + PREVIEW SERP Google real-time + save/reset API) dan keywords-panel.tsx (form pantau keyword, kartu posisi dgn sparkline SVG terbalik teal + ikon tren, catat posisi, hapus berkonfirmasi).
+- Konvensi project dipatuhi: 'use client', api() dari @/lib/client, toast sonner, komponen shadcn/ui, EASE framer-motion, aksen amber/gold + teal/emerald, UI bahasa Indonesia, responsif.
+- File: src/components/admin/seo/meta-panel.tsx (baru), src/components/admin/seo/keywords-panel.tsx (baru). Tidak ada file lain yang diubah.
