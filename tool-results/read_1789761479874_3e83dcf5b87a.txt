@@ -1,0 +1,214 @@
+     1→# Worklog — Proyek Berkat Mandiri Pendingin
+     2→
+     3→---
+     4→Task ID: 1
+     5→Agent: Z.ai Code (main)
+     6→Task: Membangun website kompresor & sparepart AC "Berkat Mandiri Pendingin" lengkap dengan dashboard admin (frontend + backend) + tutorial bahasa Indonesia.
+     7→
+     8→Work Log:
+     9→- Inspeksi struktur proyek Next.js 16 + shadcn/ui + Prisma; install `jose` & `bcryptjs`.
+    10→- Definisi Prisma schema: Admin, Category, Product, Message, Setting → `bun run db:push` (SQLite di db/custom.db).
+    11→- Generate 8 gambar AI (hero, kompresor, fan motor, kapasitor, termostat, freon, filter dryer, teknisi) via CLI z-ai ke public/uploads/ (ratelimit 429 diatasi dengan antrean berurutan; ukuran valid kelipatan 32px).
+    12→- Backend: 13 route API — auth (login/logout/me/change-password dengan JWT httpOnly + bcrypt), products CRUD + filter q/category/status/sort/paginasi (slug atau id), categories CRUD (blokir hapus jika ada produk), upload (validasi tipe & 3MB), messages (publik + honeypot; admin read/delete), settings (key-value merge default), stats (ringkasan dashboard).
+    13→- Seed scripts/seed.ts idempotent: admin (admin/admin123), 6 kategori, 14 produk berdeskripsi lengkap + spesifikasi, 2 pesan contoh.
+    14→- Frontend publik (SPA hash-router di satu route `/`): header sticky + topbar info, hero gelap berpola + foto, grid kategori, produk unggulan, keunggulan, tentang, strip merek, CTA, kontak (form + honeypot), footer 4 kolom mt-auto, tombol WhatsApp mengambang, dark mode (next-themes), font Plus Jakarta Sans, tema teal.
+    15→- Admin dashboard: guard login, sidebar gelap + badge pesan belum dibaca, Ringkasan (4 stat + pesan terbaru + stok menipis + produk terbaru), Produk (tabel: search/filter/sort, switch aktif, toggle unggulan, hapus via AlertDialog, paginasi), Form Produk (upload multi-foto + preview, editor spesifikasi dinamis, validasi), Kategori (dialog + icon picker), Pesan (filter belum dibaca, balas WA/email, tandai dibaca), Pengaturan (info toko live + ganti password), Panduan (accordion 8 topik).
+    16→- Perbaikan lint: react-hooks/set-state-in-effect (useSyncExternalStore untuk mounted, eslint-disable terkelola), unused directives, refactor reset page tanpa effect.
+    17→- Bugfix: 2 gambar seed tersimpan di root proyek (backgrounding shell) → dipindah ke public/uploads; refresh badge statistik via event `bmp:refresh-stats`; perbaikan kehilangan blok API call di submit form produk.
+    18→- Verifikasi E2E Agent Browser: beranda, katalog + filter + paginasi, detail produk (views counter naik), login admin, dashboard stats, tambah produk (POST 201), edit produk + kategori (PUT), halaman kategori/pesan/pengaturan, kirim pesan kontak (toast sukses + data masuk), upload API (200 dengan cookie, 401 tanpa), settings PUT tersimpan, logout + guard, responsivitas mobile 390px (hamburger menu OK).
+    19→- Menulis TUTORIAL.md (bahasa Indonesia): fitur, instalasi lokal, panduan admin, deploy shared hosting cPanel Node.js App + server.js, deploy VPS PM2, struktur, FAQ.
+    20→
+    21→Stage Summary:
+    22→- Website lengkap & tervalidasi E2E: katalog publik + dashboard admin fungsional (produk CRUD, upload foto, kategori, pesan, pengaturan).
+    23→- Login default: admin / admin123 (diarahkan untuk segera diganti).
+    24→- Data & konfigurasi toko dapat diubah penuh dari dashboard (tanpa coding).
+    25→- Artefak utama: prisma/schema.prisma, src/app/api/**, src/components/site/**, src/components/admin/**, scripts/seed.ts, TUTORIAL.md.
+    26→- Catatan deploy: butuh hosting berfitur Node.js App (bukan PHP-only); backup rutin public/uploads + db/custom.db.
+    27→
+    28→---
+    29→Task ID: 2
+    30→Agent: Z.ai Code (main)
+    31→Task: Membuat README.md terlengkap berbahasa Indonesia untuk website Berkat Mandiri Pendingin.
+    32→
+    33→Work Log:
+    34→- Membaca worklog Task 1, package.json, prisma/schema.prisma, TUTORIAL.md, dan scripts/seed.ts untuk memastikan semua fakta README akurat.
+    35→- Inventarisasi 14 file route API + metode HTTP (GET/POST/PUT/DELETE) dari source code.
+    36→- Menulis README.md (624 baris, 22 bagian utama) berisi: banner ASCII + badge, daftar isi, tentang proyek, fitur lengkap (publik + admin), login default (admin/admin123), tabel teknologi (Next.js 16, TS 5, React 19, Tailwind 4, Prisma 6 + SQLite), diagram arsitektur ASCII, struktur folder lengkap, instalasi 5 langkah, tabel 8 perintah npm, skema 5 tabel database, dokumentasi API lengkap dengan contoh curl, panduan admin kilat, ringkasan deploy (cPanel Node.js App + VPS), checklist keamanan, tabel troubleshooting 8 kasus, FAQ 6 pertanyaan (details/summary), roadmap, kontribusi, lisensi, kontak.
+    37→
+    38→Stage Summary:
+    39→- README.md jadi: 624 baris, seluruhnya berbahasa Indonesia, akurat terhadap codebase (endpoint, model DB, skrip, kredensial diverifikasi dari source).
+    40→- Melengkapi TUTORIAL.md (step-by-step operasional) dengan README (referensi teknis: API docs, schema DB, struktur folder, troubleshooting).
+    41→- Tidak ada perubahan kode aplikasi; situs tetap berjalan normal.
+    42→
+    43→---
+    44→Task ID: 3
+    45→Agent: Z.ai Code (main)
+    46→Task: Menambahkan kredit "Developed by PT Digital Bisnis Manajemen (Digiman)" dan "Hosting & Domain by juraganwebsite.web.id" ke footer + titik strategis lain.
+    47→
+    48→Work Log:
+    49→- Footer publik (src/components/site/footer.tsx): credit strip baru di bawah copyright dengan hairline gradient teal premium, chip kredit berikon Code2 (Digiman) & Globe (juraganwebsite.web.id, link https://juraganwebsite.web.id target _blank + noopener), hover glow teal, tooltip title.
+    50→- Halaman login admin (src/components/site/login-view.tsx): baris kredit di bawah kartu login.
+    51→- Sidebar dashboard admin (src/components/admin/admin-app.tsx): kredit mini "by Digiman · juraganwebsite.web.id" di bawah kotak profil user.
+    52→- README.md: bagian baru "🏆 Kredit" berisi tabel peran developer & hosting.
+    53→- Bugfix responsivitas: chip footer awalnya overflow di 390px (tertutup tombol WA float) → name/link dibuat basis-full wrap 2 baris di mobile, kembali inline 1 baris di sm+.
+    54→- Verifikasi E2E Agent Browser: footer desktop 1280px (1 baris elegan + hairline gradient), footer mobile 390px (2 baris terpusat, tidak tertutup WA float), login page, sidebar admin (login admin sukses), dark mode OK, href & rel link benar, lint bersih, tanpa error console/dev.log.
+    55→
+    56→Stage Summary:
+    57→- Kredit Digiman + juraganwebsite.web.id kini tampil di 3 titik UI (footer publik, login admin, sidebar dashboard) + README.
+    58→- Konsisten tema teal, responsif penuh mobile→desktop, aksesibel (aria-hidden pada separator, rel noopener, title tooltip).
+    59→
+    60→---
+    61→Task ID: 4
+    62→Agent: Z.ai Code (main)
+    63→Task: Mengisi katalog hingga 1000 produk lengkap dengan gambar asli dari internet + deskripsi lengkap.
+    64→
+    65→Work Log:
+    66→- Desain matriks produk: 13 kategori × merek × tipe × kapasitas (989 generator + 16 existing).
+    67→- Image-search skill: 18 query keluarga produk (kompresor rotary/scroll/kulkas/mobil/industri/angin, motor fan, kapasitor, termostat, freon, fitting, dryer, relay, oli, evaporator, kondensor, manifold), 10 gambar per query.
+    68→- Fix infrastruktur: flag `-o` CLI image-search tidak menulis file → redirect stdout + ekstraksi JSON (buang banner emoji); proses background dibunuh sandbox → runner diganti foreground per chunk; path cwd saat menjalankan script dari subfolder.
+    69→- Download 177 foto internet ke public/uploads/products/ (51MB, 0 gagal, validasi min 4KB) + image-map.json.
+    70→- scripts/seed-1000.ts: generator deterministik (LCG) — nama, SKU, slug unik, harga realistis IDR (bug parseFloat('1/8')→1 dan harga AC 5PK 180 juta diperbaiki dengan price map), stok (6% habis), 3 foto/p_produk dari pool, deskripsi multi-paragraf (intro 3 varian + garansi + tips teknisi + pengiriman), spesifikasi JSON per keluarga; insert createMany batch 200; dedupe slug vs DB.
+    71→- Perbaikan data: 2 produk lama tanpa gambar diberi foto; kurasi ulang 29 produk unggulan (kompresor-ac 12, kulkas 3, mobil 3, industri 2, angin 3, freon 2, kapasitor 2, motor 2) agar beranda menampilkan produk bintang.
+    72→- Verifikasi E2E: API total=1000, pencarian "kompresor angin"=76, filter mobil=84, paginasi page=2 OK; browser: katalog "12 dari 1000 produk" + foto asli tampil, filter kategori, detail Sanden 7H13 (deskripsi+tab spesifikasi lengkap), dashboard "1000 Total Produk/1000 Aktif", beranda unggulan kompresor angin asli, mobile 390px grid + paginasi 84 halaman, 0 console error, lint bersih.
+    73→
+    74→Stage Summary:
+    75→- KATALOG 1000 PRODUK TERCAPAI: 13 kategori, semua bergambar foto asli internet (177 foto, 51MB).
+    76→- Kategori baru: Kulkas & Freezer, AC Mobil, Komersial & Industri, Angin/Piston, Sparepart Kompresor, Oli & Kimia, Evaporator & Kondensor.
+    77→- Script reusable: scripts/imgsearch/{queries.tsv,run.sh,download.ts} + scripts/seed-1000.ts (idempotent, selalu menyetel total ke 1000).
+    78→- Catatan deploy: folder public/uploads/products/ ikut dalam backup rutin (51MB).
+    79→
+    80→---
+    81→Task ID: 5
+    82→Agent: Z.ai Code (main)
+    83→Task: Membuat tutorial lengkap mengupload barang/produk (dokumen + terintegrasi di dashboard admin).
+    84→
+    85→Work Log:
+    86→- Membaca worklog, product-form.tsx, products-manager.tsx, panduan.tsx, api/upload/route.ts, dan query DB aktual (13 kategori, 1000 produk) agar semua fakta tutorial sesuai UI asli.
+    87→- Menulis TUTORIAL-UPLOAD-PRODUK.md (~480 baris, 13 bagian berbahasa Indonesia): persiapan & login, daftar 13 kategori + keterangan, anatomi form produk (ASCII diagram + tabel arti tiap kolom), tutorial inti 10 langkah dengan contoh nyata, panduan foto (6 aturan emas, cara foto HP, kompres tinypng, konversi HEIC iPhone, urutan foto), menulis deskripsi yang menjual (template siap salin + 3 contoh jadi + kata yang dihindari), contoh spesifikasi per kategori, strategi harga & stok & satuan, edit/sembunyikan/hapus produk, workflow upload batch (spreadsheet + folder foto), checklist 10 centang, troubleshooting 9 kasus, FAQ 8 details/summary, cheat sheet ASCII 1 halaman siap cetak, bagian kredit Digiman + juraganwebsite.web.id.
+    88→- Rombak src/components/admin/panduan.tsx: alert rujukan ke TUTORIAL-UPLOAD-PRODUK.md & TUTORIAL.md; stepper "Upload Barang dalam 8 Langkah" (8 kartu berikon + nomor + badge durasi + tips teal); kartu Standar Foto LAKUKAN (teal) vs HINDARI (rose); kartu "Template Siap Salin" berisi 3 template (nama, deskripsi singkat, deskripsi lengkap) dengan tombol Salin (navigator.clipboard + toast sonner + state copied); accordion "Topik Lainnya" 7 topik (kategori, pesan, pengaturan toko, password, status aktif/unggulan, troubleshooting foto gagal baru, tips jualan).
+    89→- README.md: tautkan TUTORIAL-UPLOAD-PRODUK.md di baris dokumentasi + struktur folder.
+    90→- Verifikasi E2E Agent Browser: login admin → menu Panduan; konten kunci terverifikasi (8 langkah, LAKUKAN/HINDARI, template, badge durasi); tombol Salin → toast "Template nama produk tersalin ke clipboard!"; accordion "Foto gagal diunggah" terbuka; screenshot desktop 1280px full-page, mobile 390px full-page (1 kolom rapi), dark mode OK; 0 console error; lint bersih; dev.log bersih; browser ditutup, scripts/tmp dibersihkan.
+    91→
+    92→Stage Summary:
+    93→- Tutorial upload produk kini ada di 2 tempat: file TUTORIAL-UPLOAD-PRODUK.md (cetak/arsip, 13 bagian) dan halaman Panduan di dashboard admin (interaktif: stepper, do/don't foto, template 1-klik salin, accordion).
+    94→- Semua instruksi 100% akurat terhadap UI asli (label tombol, batas 3MB, 160 karakter, satuan, 13 kategori, perilaku foto utama, "Hubungi Kami", label "Stok Habis").
+    95→- Artefak: TUTORIAL-UPLOAD-PRODUK.md, src/components/admin/panduan.tsx, README.md (2 tautan baru), screenshot tests/panduan-*.png.
+    96→
+    97→---
+    98→Task ID: 6
+    99→Agent: Z.ai Code (main)
+   100→Task: Menambahkan pengaturan upload Logo Perusahaan & Logo Mitra di admin dashboard.
+   101→
+   102→Work Log:
+   103→- types.ts: StoreSettings + logoUrl & partnerLogos (JSON string); interface baru PartnerLogo {url, name}.
+   104→- lib/settings.ts: default logoUrl='' & partnerLogos='[]' + helper parsePartners() (aman terhadap JSON rusak).
+   105→- API /api/settings PUT otomatis mendukung key baru (iterasi DEFAULT_SETTINGS) — tanpa perubahan route.
+   106→- settings-manager.tsx: kartu "Logo Perusahaan" (preview 96px bg-white, tombol Pilih/Ganti/Hapus, upload via /api/upload lalu auto-persist PUT settings, spinner overlay) + kartu "Logo Mitra" (badge jumlah, grid thumbnail hover-hapus, input nama mitra auto-save on blur, area unggah multi-file, auto-persist JSON). Validasi gambar & 3MB sama seperti form produk.
+   107→- Bugfix ditemukan saat E2E: kondisi onBlur nama mitra selalu false (state sudah re-render) → nama tidak tersimpan; diperbaiki menjadi savePartners tanpa kondisi.
+   108→- site-header.tsx: logo custom (Image object-contain bg-white rounded-xl) menggantikan ikon Snowflake di header desktop + SheetTitle mobile jika logoUrl ada.
+   109→- footer.tsx: logo custom dengan border-white/15 bg-white menggantikan ikon salju teal jika logoUrl ada.
+   110→- home-view.tsx: strip "Sparepart untuk Berbagai Merek AC" jadi dinamis — jika ada logo mitra, tampil grid "Mitra & Distributor Kami" (2 kolom mobile / 5 desktop, logo + nama); fallback ke chip merek teks bila kosong.
+   111→- panduan.tsx: accordion "mengubah informasi toko" + langkah upload logo perusahaan & mitra.
+   112→- Demo assets: generate 3 logo AI (tests/logo-company.png BMP snowflake, logo-mitra-1/2.png distributor fiksi).
+   113→- Verifikasi E2E Agent Browser: upload logo perusahaan → toast sukses + API logoUrl terisi; upload 2 mitra multi-file → tersimpan; ubah nama mitra (bugfix onBlur) → tersimpan; header/footer/strip mitra tampil logo di desktop 1280px & mobile 390px; hapus mitra (2→1) + unggah ulang (1→2) OK; console 0 error; lint bersih; dev.log bersih. Screenshot: tests/settings-logo-full.png, public-header-logo.png, public-mitra-strip.png, public-footer-logo.png, public-mitra-mobile.png.
+   114→
+   115→Stage Summary:
+   116→- Admin kini bisa mengunggah logo perusahaan (header, menu mobile, footer) dan logo mitra (strip beranda jadi grid mitra) sepenuhnya dari dashboard tanpa coding; logo tersimpan via /api/upload + tabel Setting.
+   117→- Fallback elegan: tanpa logo → ikon salju & chip merek teks seperti semula.
+   118→- Data demo terpasang: logo BMP + 2 mitra (CV Sumber Dingin Teknik, PT Prima Kompresor Nusantara).
+   119→
+   120→---
+   121→Task ID: 7
+   122→Agent: Z.ai Code (main)
+   123→Task: Menambahkan favicon dinamis — upload favicon dari dashboard admin yang otomatis dipakai di tab browser.
+   124→
+   125→Work Log:
+   126→- types.ts: field baru StoreSettings.faviconUrl (kosong = mengikuti logo perusahaan); settings.ts: default faviconUrl:'' — PUT /api/settings otomatis mendukung key baru tanpa ubah route.
+   127→- layout.tsx: metadata statis diubah menjadi generateMetadata() — getFaviconUrl() membaca tabel Setting tiap request dengan urutan fallback faviconUrl → logoUrl → /favicon.svg; MIME type disetel otomatis dari ekstensi (png/jpg/webp/gif/svg/ico); ikon dirender sebagai <link rel="icon"> + apple-touch-icon.
+   128→- settings-manager.tsx: kartu "Favicon Website" (ikon AppWindow) di antara Logo Perusahaan & Logo Mitra — preview 64px + mock tab browser (favicon + nama toko + ×) agar admin lihat konteks nyata; tombol Pilih/Ganti/Hapus; auto-persist PUT; helper applyFavicon() memperbarui link[rel=icon] di tab saat ini TANPA reload; toast sukses.
+   129→- panduan.tsx: accordion "mengubah informasi toko" ditambah langkah favicon.
+   130→- README.md: baris fitur Pengaturan Toko + tabel model Setting kini menyebut favicon dinamis & contoh key faviconUrl.
+   131→- Favicon uji dibuat via sharp (teal snowflake 256px) → scripts/tmp dibersihkan setelah selesai.
+   132→- Verifikasi E2E Agent Browser: upload favicon → toast "Favicon berhasil diperbarui" + link[rel=icon] berubah LIVE tanpa reload + setting tersimpan; reload → SSR HTML merender <link rel="icon" href="/uploads/...-favicon-test.png" type="image/png">; tombol Hapus → fallback LIVE ke logo perusahaan, SSR setelah reload juga logo; pasang ulang favicon (state demo final terpasang); beranda publik memuat favicon unggahan; screenshot desktop 1280px / mobile 390px (stacking rapi) / dark mode (localStorage theme=dark); 0 console error; lint bersih; dev.log bersih.
+   133→
+   134→Stage Summary:
+   135→- Favicon kini dinamis penuh: admin unggah ikon dari Pengaturan → tab browser, bookmark & apple-touch-icon otomatis mengikuti (tanpa deploy ulang, tanpa ganti file manual).
+   136→- Fallback berlapis: favicon khusus → logo perusahaan → ikon salju bawaan; perubahan live di tab saat ini via applyFavicon.
+   137→- Artefak: src/app/layout.tsx (generateMetadata), settings-manager.tsx (kartu Favicon), types.ts/settings.ts (faviconUrl), panduan.tsx + README.md; screenshot tests/favicon-card-{desktop,mobile,dark}.png + favicon-public-home.png; faviconUrl demo terisi /uploads/1789185031598-favicon-test.png.
+   138→
+   139→---
+   140→Task ID: 8
+   141→Agent: Z.ai Code (main)
+   142→Task: Membangun CMS full ala WordPress: halaman konten WYSIWYG, perpustakaan media, menu Informasi, media sosial.
+   143→
+   144→Work Log:
+   145→- Prisma model Page (title/slug unique/content HTML/excerpt/isPublished/showInMenu/sortOrder/views) → db:push; seed scripts/seed-pages.ts idempotent: 5 halaman demo (Tentang Kami, Cara Pemesanan, FAQ, Kebijakan Privasi, Syarat & Ketentuan).
+   146→- API baru: GET/POST /api/pages (publik hanya terbit; ?menu=1; ?all=1 admin), GET/PUT/DELETE /api/pages/[id] (validasi slug unik), GET /api/pages/slug/[slug] (counter views), GET/DELETE /api/media (list root+products, hapus dengan proteksi path traversal). Semua guard 401 tanpa login — terverifikasi curl.
+   147→- rich-editor.tsx: WYSIWYG tanpa dependensi (contentEditable + execCommand) — toolbar 16 aksi (undo/redo, paragraf/H2/H3/kutipan, tebal/miring/garis/coret, daftar poin/angka, rata kiri/tengah, tautan via dialog, sisip gambar via /api/upload, garis pembatas, hapus format) + mode HTML mentah; anti-kehilangan-kursor (sinkronisasi via lastHtml ref).
+   148→- pages-manager.tsx: tabel halaman (status Terbit/Draft, badge Di Menu, views, tanggal, aksi lihat/edit/hapus via AlertDialog) + dialog editor (judul→slug otomatis via slugify(), ringkasan, WYSIWYG, switch Terbitkan & Tampilkan di Menu, urutan).
+   149→- media-manager.tsx: grid 191 file (thumbnail, nama, ukuran), pencarian nama, unggah multi, salin URL 1-klik (toast + clipboard), pratinjau dialog, hapus; badge total file & MB.
+   150→- Publik: page-view.tsx (hero gradient teal + breadcrumb + meta tanggal/views, konten .cms-content ter-styling, CTA WhatsApp bawah) di route /#/p/[slug]; header desktop dropdown "Informasi" (dinamis dari CMS) + section Informasi di menu mobile; footer kolom Menu menampilkan halaman CMS + ikon Instagram/Facebook/TikTok/YouTube (field settings baru, kosong = disembunyikan).
+   151→- globals.css: styling .cms-content (h2/h3/li marker teal, blockquote, img rounded, hr dashed) + placeholder editor.
+   152→- Bugfix: 1 parse error JSX (kurung ganda) di pages-manager; Prisma Client lama di memori setelah db:push → dev server di-restart.
+   153→- INSIDEN: src/app/api/upload/route.ts hilang misterius (404 saat upload media; kemungkinan efek sinkronisasi sandbox) → dibuat ulang 100% sesuai kontrak lama (admin-only, tipe & 3MB, nama ber-timestamp). LAINNYA UTUH.
+   154→- INFRA: dev server hasil spawn tool call dibunuh sandbox di akhir call (nohup/setsid tidak cukup) → solusi: double-fork daemon via python os.fork×2 + os.setsid + exec → server bertahan lintas call. PENTING untuk agent berikutnya.
+   155→- Verifikasi E2E Agent Browser: buat halaman "Testimonial Pelanggan" via editor (ketik, H2 via toolbar, teks tebal → HTML <h2>/<b> benar), alur edit (konten termuat, switch on → tersimpan), halaman tampil di dropdown Informasi + footer, /p/tentang-kami render cantik (h2, list, blockquote), counter views 0→1, media: unggah→192 file, salin URL→toast, hapus→191, pengaturan sosmed→ikon Instagram+Facebook muncul di footer; screenshot: cms-pages-table, cms-page-public (desktop), cms-page-mobile 390px, cms-page-dark, cms-media, cms-footer-sosmed; 0 console error; lint 0 error 0 warning.
+   156→- Dok: panduan.tsx + topik accordion CMS; README (fitur Halaman CMS & Media, tabel API 6 endpoint baru, model Page).
+   157→
+   158→Stage Summary:
+   159→- Website kini memiliki CMS penuh ala WordPress: halaman konten bebas dengan editor WYSIWYG, perpustakaan media terpusat, menu Informasi dinamis, dan ikon media sosial — semua dikelola dari dashboard tanpa coding.
+   160→- 6 halaman aktif (5 demo + Testimonial Pelanggan); Instagram & Facebook demo terpasang.
+   161→- Artefak: prisma Page model, 4 route API baru, rich-editor/pages-manager/media-manager/page-view, header/footer dinamis, seed-pages.ts, screenshot tests/cms-*.
+   162→- Catatan operasional: restart dev server harus via double-fork daemon (lihat Work Log); folder upload kini /api/upload dibuat ulang — bila upload 404 muncul lagi, cek keberadaan src/app/api/upload/route.ts.
+   163→
+   164→---
+   165→Task ID: 9
+   166→Agent: Z.ai Code (main)
+   167→Task: Deploy ke shared hosting — membuat website langsung tampil di cPanel PHP (permintaan user: "aku mau upload ini di shared hosting jadi bagaimana caranya agar website langsung tampil").
+   168→
+   169→Work Log:
+   170→- Bugfix pra-deploy: src/app/api/upload/route.ts ternyata HILANG lagi (insiden sandbox lama, tercatat di Task 8) → dibuat ulang sesuai kontrak (admin-only, 8 tipe gambar, 3MB, nama timestamp) → diverifikasi curl login+upload di dev server: 200 {url:/uploads/...}.
+   171→- Riset arsitektur: recon semua 29 endpoint API Next.js + kontrak respons + shape DTO + dua fungsi slugify berbeda (lib/slug.ts utk produk/kategori, lib/format.ts utk halaman) + pola FormData upload (field "file").
+   172→- PHP API BRIDGE (php-api/): index.php (front controller + router /api/*), lib/http.php (json_out mirip NextResponse.json), lib/store.php (JSON storage atomic tmp+rename + flock), lib/auth.php (session PHP 7 hari httpOnly SameSite=Lax + rate limit login), lib/handlers.php (mirror 1:1 semua endpoint: products CRUD+filter+sort Prisma-parity, categories, settings, upload, media list/delete, pages CMS, messages+honeypot, stats, auth login/me/logout/change-password; hash bcrypt dikonversi $2a/$2b→$2y di export utk password_verify PHP).
+   173→- .htaccess: php-api/.htaccess (deny json/log), data/.htaccess (deny all), root deploy .htaccess (RewriteRule ^api(/.*)?$ api/index.php + deflate + expires), uploads/.htaccess (blokir eksekusi skrip).
+   174→- scripts/export-data.mjs: SQLite→JSON (admins/categories/products/settings/pages/messages) + fallback seed admin default + normalisasi ISO timestamp; bun run export:data.
+   175→- scripts/build-deploy.mjs: salin php-api→deploy/api, export data, pindah sementara src/app/api (route handler tidak boleh ikut static export), next build BUILD_EXPORT=1 (distDir .next-export terisolasi — dev .next tak tersentuh), pulihkan api, tulis .htaccess, zip (zip CLI + fallback python3); bun run build:deploy.
+   176→- next.config.ts: mode kondisional BUILD_EXPORT → output:"export" + images.unoptimized + distDir ".next-export" (Next 16 menulis export ke dalam distDir kustom).
+   177→- PENGUJIAN: PHP static binary 8.3.29 diunduh (dl.static-php.dev) → tests/php-router.php (emulasi .htaccess utk php -S) + tests/test-php-api.sh (70 assertion) + tests/jget.py + tests/upload-cli-test.php (uji logika upload via CLI, persisten di sandbox).
+   178→- Debug penting: (1) server php -S single-thread men-drop request saat suite → PHP_CLI_SERVER_WORKERS=8; (2) bug nyata ditemukan & diperbaiki: uploads_dir() salah level dirname → upload tertulis di api/uploads bukan <root>/uploads (terbukti via CLI test); (3) fallback move_uploaded_file→stream copy utk SAPI non-standar; (4) artefak sandbox: proses background melihat snapshot FS basi + EADDRINUSE oleh proses zombie (kill by PID) — semua diatasi dgn server segar per-call; (5) eslint perlu ignore .next-export/** (hasil export terpindai → 69 error palsu).
+   179→- HASIL: test suite 70/70 PASS (dua kali: terhadap build/test-host dan build/deploy asli, via php -S maupun proxy bun simulasi Apache); verifikasi browser agent-browser pada simulasi hosting (bun static :8899 + proxy /api → php :8898): beranda render ✓, katalog "Menampilkan 12 dari 1000 produk" ✓, login admin PHP session ✓ dashboard stats 1000 produk/pesan/stok ✓, halaman CMS publik /#/p/tentang-kami ✓ counter views ✓, 0 console error. Screenshot: tests/deploy-home.png, deploy-katalog.png, deploy-admin.png, deploy-cms.png.
+   180→- DOK: PANDUAN-DEPLOY-SHARED-HOSTING.md (arsitektur, langkah upload cPanel 5 menit, ceklis, backup/restore JSON, pengaturan PHP, force HTTPS, batasan root-domain, troubleshooting 8 kasus, alternatif Node.js App & Netlify, isi teknis paket); README.md §Cara Deploy dirombak (opsi 🟢 PHP shared hosting jadi rekomendasi utama); panduan.tsx + accordion "Cara memasang website di shared hosting (cPanel PHP)".
+   181→- Paket final: build/berkat-mandiri-website.zip (52 MB) = situs statis + api/ + data seed (1000 produk, 13 kategori, 6 halaman, 3 pesan, 17 settings, 1 admin) — dibangun ulang setelah penambahan panduan agar ZIP memuatnya; smoke test ulang: 200 OK + "KATALOG 1000 PRODUK ✓" via browser.
+   182→
+   183→Stage Summary:
+   184→- Website kini BISA ONLINE di shared hosting cPanel PHP biasa tanpa Node.js/VPS: upload 1 file ZIP → Extract → langsung tampil.
+   185→- Inovasi kunci "PHP API Bridge": mirror 100% REST API Next.js dgn PHP+JSON storage, session auth, upload gambar, CMS — dashboard admin tetap penuh berfungsi di hosting; 70/70 test otomatis + verifikasi browser lulus.
+   186→- Proses deploy divariasikan jadi satu perintah: bun run build:deploy → build/berkat-mandiri-website.zip.
+   187→- Artefak: php-api/ (5 file PHP+3 .htaccess), scripts/export-data.mjs, scripts/build-deploy.mjs, tests/{php-router.php,test-php-api.sh,jget.py,upload-cli-test.php,static-server.ts}, PANDUAN-DEPLOY-SHARED-HOSTING.md, next.config.ts kondisional, package.json 2 script baru, eslint ignore .next-export, /api/upload dipulihkan, 4 screenshot deploy-*.
+   188→- Catatan operasional: php static binary ada di ~/bin/php; jangan biarkan server uji lama mengunci port (kill by PID via /proc); jalankan suite dgn BASE=... & HOSTDIR=... utk target lain.
+   189→
+   190→---
+   191→Task ID: 10
+   192→Agent: Z.ai Code (main)
+   193→Task: PENYELAMATAN DEPLOY — user upload ke shared hosting tapi website TIDAK MUNCUL. Membuat paket anti-gagal: mode darurat statis, halaman diagnosis cek.php, dukungan subfolder, tombol unduh paket di dashboard.
+   194→
+   195→Work Log:
+   196→- Diagnosa akar masalah: (1) ZIP 52MB berada di build/ yang TIDAK bisa diunduh user via preview panel → user kemungkinan upload paket yang salah; (2) ekstrak ke subfolder → index.html+aset absolut /_next/ → layar putih; (3) PHP lama/mati → admin gagal; (4) DNS; (5) .htaccess hilang. PANDUAN lama belum punya troubleshooting terstruktur.
+   197→- MODE DARURAT (fitur inti anti-website-kosong): scripts/export-data.mjs + opsi --cache → snapshot api-cache/{products,categories,pages,settings}.json (TANPA admins/messages demi keamanan). Modul baru src/lib/fallback.ts: shim GET yang mereplikasi filter/sort/paginasi/DTO API asli (q, category, featured, exclude, sort terbaru|harga-asc|harga-desc|nama|populer, page/limit; parse specs/images; map category; productCount; pages menu/slug; stats) — katalog tetap "12 dari 1000 produk" walau PHP mati.
+   198→- src/lib/client.ts ditulis ulang: URL /api/* diubah relatif (subfolder-safe), deteksi API mati (jaringan gagal / respons bukan JSON → DeadApiError), GET → fallback snapshot, aksi tulis → pesan ramah "Server (PHP) tidak aktif… buka /cek.php". ApiError baru dengan status.
+   199→- Gambar 100% relatif: 14 pemakaian next/image diganti <img> native (product-card, footer, site-header×2, home-view×3 hero/teknisi/mitra, product-detail×2, media-manager×2, settings-manager×4, product-form, products-manager); home-view hero.png/teknisi.png jadi relatif; /api/upload (Next) & handle_upload (PHP) kini balik "uploads/…"; media list relatif; media_delete menerima relatif & absolut. Import lucide dobel dibersihkan (Package/Snowflake/Star/FileText).
+   200→- export-data.mjs: fungsi relUrls() mengubah semua URL /uploads/ → uploads/ (nilai langsung, JSON string images/specs, konten CMS src=, url CSS) untuk api/data MAUPUN api-cache.
+   201→- build-deploy.mjs v2: ekspor --cache → deploy/api-cache; pasca-export rewriteAssets() — "/_next/ → _next/" di html/js/txt, "../../../_next/" pola css (ternyata css Next sudah relatif ../media), /uploads/ + favicon/logo relatif di html (18 file disentuh); salin cek.php → akar; tulis BACA-SAYA-PENTING.txt (3 langkah + arahan cek.php); .htaccess diperkuat (hapus Options -Indexes yang bisa 500 di AllowOverride ketat, tambah DirectoryIndex index.html index.php); rmrf deploy/download (anti zip-dalam-zip).
+   202→- cek.php BARU (php-api/cek.php, ±340 baris): 11 pemeriksaan — lokasi instalasi+deteksi subfolder, versi PHP, ekstensi (json/mbstring/session/fileinfo), 4 file inti, validitas index.html, kelengkapan+isi api/data (jumlah produk), api-cache mode darurat, izin tulis api/data & uploads (uji tulis nyata), .htaccess RewriteRule, uji loopback API HTTP, folder uploads; verdict "SEMUA SEHAT/HAMPIR SEMPURNA/DITEMUKAN N MASALAH"; tiap item ada "Cara memperbaiki" presisi cPanel; tombol Salin Laporan; styling teal inline; aman tanpa mbstring.
+   203→- Router uji diperbaiki: tests/php-router.php + tests/php-router-sub.php kini mengeksekusi .php (require) bukan serve mentah — cek.php jalan di simulasi.
+   204→- HASIL UJI: (A) root+PHP: home 14img/0rusak, katalog "12 dari 1000", detail produk, CMS /p/tentang-kami, login admin→dashboard 1000 ✓; suite PHP 70/70 PASS (1 assertion test diperbaiki utk URL relatif). (B) PHP DIMATIKAN: beranda tetap render (8 unggulan+mitra+hero dari snapshot), katalog tetap "12 dari 1000 produk" via fallback client-side, CMS tampil, login gagal dengan toast ramah cek.php ✓. (C) SUBFOLDER /toko/ (php-router-sub.php): beranda+jam 0 rusak, katalog 12/1000, admin dashboard 1000 produk ✓. cek.php root="SEMUA SEHAT! 🎉", cek.php subfolder mendeteksi SUBFOLDER + verdict HAMPIR SEMPURNA ✓.
+   205→- panduan.tsx: kartu "Pasang Website di Shared Hosting" (badge ±5 menit) + tombol besar "Unduh Paket Website (.zip)" (a href=/download/berkat-mandiri-website.zip) + 3 langkah + kotak "Anti-gagal" mode darurat.
+   206→- ZIP final (49.7MB) disalin → public/download/berkat-mandiri-website.zip; curl -I dev server 200/52MB → USER BISA MENGUNDUH via preview panel. Dev app 3000 sanity: home/katalog/login/panduan OK, lint bersih.
+   207→- Dok: PANDUAN-DEPLOY-SHARED-HOSTING.md + bagian "🚨 WEBSITE TIDAK MUNCUL? Perbaiki dalam 5 Menit" (6 penyebab berjenjang: subfolder→DNS→salah file→PHP→izin→.htaccess + cek.php + jaminan mode darurat), README §Cara Deploy + langkah 4 cek.php + catatan mode darurat & subfolder. Screenshot: tests/deploy2-{root-home,root-katalog,root-admin,php-mati-katalog,php-mati-login,subfolder-katalog,subfolder-admin,cek-sehat,cek-php,panduan-deploy}.png.
+   208→
+   209→Stage Summary:
+   210→- PAKET DEPLOY KINI ANTI-GAGAL: (1) ZIP bisa diunduh langsung dari dashboard (menu Panduan) atau /download/berkat-mandiri-website.zip; (2) diletakkan di root ATAU subfolder tetap jalan; (3) PHP mati sekalipun → toko tetap tampil baca-saja dari api-cache; (4) /cek.php mendiagnosis 11 hal + solusi bahasa Indonesia + tombol salin laporan; (5) BACA-SAYA-PENTING.txt ikut dalam ZIP.
+   211→- Instruksi ke user: unduh ZIP baru → hapus dulu file lama di public_html → upload+extract PASTIKAN index.html langsung di public_html → buka domain; bila bermasalah buka /cek.php; PHP 7.4+ utk admin penuh.
+   212→- Artefak: src/lib/fallback.ts, src/lib/client.ts (v2), 13 komponen (<img>), export-data.mjs (relUrls+--cache), build-deploy.mjs (v2), php-api/cek.php, handlers.php (URL relatif), tests/php-router-sub.php (+router php fix), panduan.tsx (kartu deploy), public/download/berkat-mandiri-website.zip, PANDUAN-DEPLOY + README diperbarui, 10 screenshot deploy2-*.
+   213→- Catatan operasional: router uji php kini eksekusi .php; suite PHP perlu HOSTDIR utk target lain; api-cache WAJIB tidak pernah berisi admins.json/messages.json (privasi).
+   214→

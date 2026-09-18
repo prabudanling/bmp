@@ -30,27 +30,27 @@ export function ProductCard({
       }}
       tabIndex={0}
     >
-      <Card className="h-full gap-0 overflow-hidden py-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-lg">
-        <div className="relative aspect-square overflow-hidden bg-muted/40">
+      <Card className="h-full gap-0 overflow-hidden py-0 transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl">
+        <div className="card-shine relative aspect-square overflow-hidden bg-muted/40">
           {img ? (
             <img
               src={img}
               alt={product.name}
               loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Package className="h-10 w-10 text-muted-foreground/30" />
+              <Package className="h-10 w-10 text-muted-foreground/30 transition-transform duration-300 group-hover:scale-125" />
             </div>
           )}
           {product.isFeatured && (
-            <Badge className="absolute left-2 top-2 gap-1 bg-amber-500 text-white hover:bg-amber-500">
+            <Badge className="absolute left-2 top-2 z-10 gap-1 bg-amber-500 text-white shadow-md transition-transform duration-300 group-hover:scale-105 hover:bg-amber-500">
               <Star className="h-3 w-3" /> Unggulan
             </Badge>
           )}
           {product.stock === 0 && (
-            <Badge variant="destructive" className="absolute right-2 top-2">
+            <Badge variant="destructive" className="absolute right-2 top-2 z-10">
               Stok Habis
             </Badge>
           )}
@@ -66,11 +66,11 @@ export function ProductCard({
               </span>
             )}
           </div>
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug group-hover:text-primary">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug transition-colors group-hover:text-primary">
             {product.name}
           </h3>
           <div className="flex items-center justify-between pt-1">
-            <span className="text-sm font-bold text-primary">
+            <span className="text-sm font-bold text-primary transition-transform duration-300 group-hover:translate-x-0.5">
               {formatRupiah(product.price)}
             </span>
             {product.stock > 0 ? (
@@ -88,7 +88,7 @@ export function ProductCard({
 export function ProductCardSkeleton() {
   return (
     <Card className="h-full gap-0 overflow-hidden py-0">
-      <Skeleton className="aspect-square w-full rounded-none" />
+      <Skeleton className="shimmer aspect-square w-full rounded-none" />
       <CardContent className="space-y-2 p-4">
         <Skeleton className="h-3 w-20" />
         <Skeleton className="h-4 w-full" />

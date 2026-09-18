@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import {
   Code2,
   Eye,
@@ -24,6 +25,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { EASE } from '@/components/motion'
 import { api } from '@/lib/client'
 import { useApp } from '@/lib/store'
 import type { AdminUser } from '@/lib/types'
@@ -58,12 +60,27 @@ export function LoginView() {
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4 py-14">
-      <div className="w-full max-w-md">
+      <motion.div
+        initial={{ opacity: 0, y: 28, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="w-full max-w-md"
+      >
         <Card>
           <CardHeader className="items-center text-center">
-            <span className="mx-auto mb-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md">
-              <Snowflake className="h-7 w-7" />
-            </span>
+            <motion.span
+              initial={{ rotate: -180, scale: 0, opacity: 0 }}
+              animate={{ rotate: 0, scale: 1, opacity: 1 }}
+              transition={{
+                delay: 0.15,
+                type: 'spring',
+                stiffness: 200,
+                damping: 15,
+              }}
+              className="mx-auto mb-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md"
+            >
+              <Snowflake className="h-7 w-7 animate-spin-slow" />
+            </motion.span>
             <CardTitle className="flex items-center gap-2 text-xl">
               <LayoutDashboard className="h-5 w-5 text-primary" />
               Masuk ke Dashboard
@@ -73,10 +90,18 @@ export function LoginView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Kartu error bergetar lucu saat login salah */}
             {error && (
-              <Alert variant="destructive" className="mb-4">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
+              <motion.div
+                key={error}
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ x: [0, -9, 9, -6, 6, -2, 0], opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: EASE }}
+              >
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              </motion.div>
             )}
             <form onSubmit={submit} className="space-y-4">
               <div className="space-y-2">
@@ -147,7 +172,6 @@ export function LoginView() {
             </Button>
           </CardContent>
         </Card>
-
         {/* Kredit — Developer & Hosting */}
         <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
@@ -173,7 +197,7 @@ export function LoginView() {
             </a>
           </span>
         </p>
-      </div>
+      </motion.div>
     </div>
   )
 }

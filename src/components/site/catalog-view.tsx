@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 import {
   ChevronLeft,
   ChevronRight,
@@ -20,6 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Reveal } from '@/components/motion'
 import { ProductCard, ProductCardSkeleton } from './product-card'
 import { useApi } from '@/hooks/use-api'
 import type { CategoryDTO, ProductsResponse } from '@/lib/types'
@@ -69,6 +71,16 @@ export function CatalogView({ query }: { query: string }) {
 
   const { data, loading } = useApi<ProductsResponse>(url)
 
+  // Gulir halus ke atas saat filter/pagination berubah (bukan saat load pertama)
+  const firstRun = useRef(true)
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false
+      return
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [page, category, sort, q])
+
   const resetFilter = () => {
     setInputQ('')
     setQ('')
@@ -102,7 +114,8 @@ export function CatalogView({ query }: { query: string }) {
       </div>
 
       {/* Kontrol */}
-      <Card className="mb-6 gap-4 p-4 sm:p-5">
+      <Reveal>
+        <Card className="mb-6 gap-4 p-4 sm:p-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -150,7 +163,7 @@ export function CatalogView({ query }: { query: string }) {
             <button
               key={c.id}
               onClick={() => changeCategory(c.slug)}
-              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all active:scale-95 ${
                 category === c.slug
                   ? 'border-primary bg-primary text-primary-foreground'
                   : 'bg-card text-muted-foreground hover:border-primary/40 hover:text-primary'
@@ -161,6 +174,7 @@ export function CatalogView({ query }: { query: string }) {
           ))}
         </div>
       </Card>
+      </Reveal>
 
       {/* Grid produk */}
       {loading ? (
@@ -171,7 +185,7 @@ export function CatalogView({ query }: { query: string }) {
         </div>
       ) : (data?.items.length || 0) === 0 ? (
         <div className="flex flex-col items-center rounded-2xl border border-dashed py-16 text-center">
-          <PackageSearch className="h-12 w-12 text-muted-foreground/40" />
+          <PackageSearch className="h-12 w-12 animate-float text-muted-foreground/40" />
           <h3 className="mt-4 font-bold">Produk tidak ditemukan</h3>
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
             Coba ubah kata kunci pencarian atau filter kategori Anda.
@@ -206,14 +220,31 @@ export function CatalogView({ query }: { query: string }) {
                   {idx > 0 && n - pageNumbers[idx - 1] > 1 && (
                     <span className="px-1 text-muted-foreground">…</span>
                   )}
-                  <Button
-                    variant={n === page ? 'default' : 'outline'}
-                    size="icon"
+                  <motion.button
                     onClick={() => setPage(n)}
                     aria-label={`Halaman ${n}`}
+                    aria-current={n === page ? 'page' : undefined}
+                    whileTap={{ scale: 0.85 }}
+                    className={`relative flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium transition-colors ${
+                      n === page
+                        ? 'text-primary-foreground'
+                        : 'border border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground'
+                    }`}
                   >
-                    {n}
-                  </Button>
+                    {/* Pil aktif meluncur halus ke nomor halaman baru */}
+                    {n === page && (
+                      <motion.span
+                        layoutId="pg-active"
+                        className="absolute inset-0 rounded-md bg-primary shadow-sm"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 450,
+                          damping: 34,
+                        }}
+                      />
+                    )}
+                    <span className="relative">{n}</span>
+                  </motion.button>
                 </span>
               ))}
               <Button

@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
+import { motion, useScroll } from 'framer-motion'
 import { useTheme } from 'next-themes'
+import { EASE } from '@/components/motion'
 import {
   ChevronDown,
   Clock,
@@ -47,6 +49,17 @@ export function SiteHeader() {
   const settings = useSettings()
   const { theme, setTheme } = useTheme()
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { scrollYProgress } = useScroll()
+
+  // Bayangan muncul saat halaman di-scroll
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   // Halaman CMS yang ditandai "tampilkan di menu" oleh admin
   const { data: menuData } = useApi<{ items: PageDTO[] }>('/api/pages?menu=1')
   const menuPages = menuData?.items || []
@@ -61,7 +74,12 @@ export function SiteHeader() {
   const isActive = (p: string) => path === p
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <motion.header
+      initial={{ y: -90, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: EASE }}
+      className="sticky top-0 z-50 w-full"
+    >
       {/* Bar atas */}
       <div className="hidden bg-teal-900 text-white/85 md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-1.5 text-xs lg:px-8">
@@ -91,7 +109,11 @@ export function SiteHeader() {
       </div>
 
       {/* Bar utama */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div
+        className={`relative border-b bg-background/95 backdrop-blur transition-shadow duration-300 supports-[backdrop-filter]:bg-background/80 ${
+          scrolled ? 'shadow-lg shadow-slate-900/[0.08] dark:shadow-black/40' : ''
+        }`}
+      >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 lg:px-8">
           {/* Logo */}
           <button
@@ -126,33 +148,55 @@ export function SiteHeader() {
           {/* Nav desktop */}
           <nav className="hidden items-center gap-1 md:flex" aria-label="Menu utama">
             {NAV.map((item) => (
-              <Button
-                key={item.path}
-                variant={isActive(item.path) ? 'secondary' : 'ghost'}
-                className={
-                  isActive(item.path)
-                    ? 'font-semibold text-primary'
-                    : 'text-foreground/80'
-                }
-                onClick={() => navigate(item.path)}
-              >
-                {item.label}
-              </Button>
+              <div key={item.path} className="relative">
+                <Button
+                  variant={isActive(item.path) ? 'secondary' : 'ghost'}
+                  className={
+                    isActive(item.path)
+                      ? 'font-semibold text-primary'
+                      : 'text-foreground/80'
+                  }
+                  onClick={() => navigate(item.path)}
+                >
+                  {item.label}
+                </Button>
+                {/* Garis aktif yang meluncur halus antar menu */}
+                {isActive(item.path) && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute inset-x-3 -bottom-2 h-[3px] rounded-full bg-primary"
+                    transition={{ type: 'spring', stiffness: 480, damping: 38 }}
+                  />
+                )}
+              </div>
             ))}
             {menuPages.length > 0 && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={pageActive ? 'secondary' : 'ghost'}
-                    className={
-                      pageActive
-                        ? 'font-semibold text-primary'
-                        : 'text-foreground/80'
-                    }
-                  >
-                    Informasi
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
+                  <div className="relative">
+                    <Button
+                      variant={pageActive ? 'secondary' : 'ghost'}
+                      className={
+                        pageActive
+                          ? 'font-semibold text-primary'
+                          : 'text-foreground/80'
+                      }
+                    >
+                      Informasi
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                    {pageActive && (
+                      <motion.span
+                        layoutId="nav-underline"
+                        className="absolute inset-x-3 -bottom-2 h-[3px] rounded-full bg-primary"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 480,
+                          damping: 38,
+                        }}
+                      />
+                    )}
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="center" className="w-52">
                   {menuPages.map((p) => (
@@ -177,11 +221,19 @@ export function SiteHeader() {
                 aria-label="Ganti tema terang/gelap"
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               >
-                {theme === 'dark' ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
+                <motion.span
+                  key={theme}
+                  initial={{ rotate: -140, scale: 0.4, opacity: 0 }}
+                  animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.45, ease: EASE }}
+                  className="flex"
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                </motion.span>
               </Button>
             )}
 
@@ -310,7 +362,14 @@ export function SiteHeader() {
             </Sheet>
           </div>
         </div>
+
+        {/* Progress bar tipis — menunjukkan seberapa jauh halaman di-scroll */}
+        <motion.div
+          aria-hidden="true"
+          style={{ scaleX: scrollYProgress }}
+          className="absolute inset-x-0 bottom-0 h-[2.5px] origin-left bg-gradient-to-r from-teal-600 via-teal-400 to-emerald-400"
+        />
       </div>
-    </header>
+    </motion.header>
   )
 }

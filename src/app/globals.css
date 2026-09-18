@@ -175,6 +175,249 @@
 }
 
 /* ============================================
+   ANIMASI PREMIUM — keyframes
+   ============================================ */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes float-y-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(28px, -34px) scale(1.12);
+  }
+  66% {
+    transform: translate(-24px, 18px) scale(0.93);
+  }
+}
+@keyframes snow-drift {
+  0% {
+    transform: translate3d(0, -8vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--snow-o, 0.3);
+  }
+  88% {
+    opacity: var(--snow-o, 0.3);
+  }
+  100% {
+    transform: translate3d(var(--snow-x, 24px), 105vh, 0) rotate(260deg);
+    opacity: 0;
+  }
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  30% {
+    transform: rotate(-9deg) scale(1.1);
+  }
+  70% {
+    transform: rotate(8deg) scale(1.1);
+  }
+}
+@keyframes shine-sweep {
+  from {
+    transform: translateX(-130%);
+  }
+  to {
+    transform: translateX(130%);
+  }
+}
+@keyframes shimmer-x {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes glow-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(45 212 191 / 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgb(45 212 191 / 0);
+  }
+}
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  70% {
+    transform: scale(1.07);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================
+   ANIMASI PREMIUM — utilitas
+   ============================================ */
+@layer utilities {
+  .animate-float {
+    animation: float-y 5.5s ease-in-out infinite;
+  }
+  .animate-float-soft {
+    animation: float-y-soft 4s ease-in-out infinite;
+  }
+  .animate-blob {
+    animation: blob 14s ease-in-out infinite;
+  }
+  .animate-marquee {
+    animation: marquee-x var(--marquee-dur, 28s) linear infinite;
+    will-change: transform;
+  }
+  .animate-glow {
+    animation: glow-ring 2.4s ease-in-out infinite;
+  }
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-pan 9s ease infinite;
+  }
+  .animate-pop-in {
+    animation: pop-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
+/* Mask gradasi di tepi marquee agar teks/logo "memudar" elegan */
+.marquee-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 9%,
+    black 91%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 9%,
+    black 91%,
+    transparent
+  );
+}
+.marquee-hover:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Kepingan salju */
+.snowflake {
+  opacity: 0;
+  animation-name: snow-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+/* Ikon bergoyang lucu saat parent .group di-hover */
+.group:hover .hover-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* Kilau menyapu kartu saat di-hover (taruh di wrapper gambar) */
+.card-shine {
+  position: relative;
+}
+.card-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgb(255 255 255 / 0.3) 50%,
+    transparent 58%
+  );
+  transform: translateX(-130%);
+}
+.group:hover .card-shine::after {
+  animation: shine-sweep 0.9s ease;
+}
+
+/* Kerangka loading dengan kilau menyapu */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.5),
+    transparent
+  );
+  animation: shimmer-x 1.7s infinite;
+}
+
+/* Hormati preferensi pengguna yang mematikan animasi */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-soft,
+  .animate-blob,
+  .animate-glow,
+  .animate-marquee,
+  .animate-gradient-x,
+  .snowflake {
+    animation: none !important;
+  }
+}
+
+/* ============================================
    KONTEN CMS (halaman WYSIWYG + editor)
    ============================================ */
 .cms-content {

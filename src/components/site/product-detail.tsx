@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronLeft,
   ChevronRight,
@@ -25,6 +26,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { EASE, Reveal, Stagger, StaggerItem } from '@/components/motion'
 import { ProductCard } from './product-card'
 import { useApi } from '@/hooks/use-api'
 import { useSettings } from '@/hooks/use-settings'
@@ -53,7 +55,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
     return (
       <div className="mx-auto w-full max-w-7xl px-4 py-10 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-2">
-          <Skeleton className="aspect-square w-full rounded-2xl" />
+          <Skeleton className="shimmer aspect-square w-full rounded-2xl" />
           <div className="space-y-4">
             <Skeleton className="h-6 w-32" />
             <Skeleton className="h-9 w-full" />
@@ -69,7 +71,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
   if (error || !product) {
     return (
       <div className="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-24 text-center lg:px-8">
-        <PackageSearch className="h-14 w-14 text-muted-foreground/40" />
+        <PackageSearch className="h-14 w-14 animate-float text-muted-foreground/40" />
         <h1 className="mt-4 text-xl font-bold">Produk tidak ditemukan</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Produk mungkin sudah dihapus atau tautan salah.
@@ -133,50 +135,69 @@ export function ProductDetailView({ slug }: { slug: string }) {
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Galeri foto */}
-        <div>
-          <div className="relative aspect-square overflow-hidden rounded-2xl border bg-muted/30">
-            {mainImg ? (
-              <img
-                src={mainImg}
-                alt={product.name}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center">
-                <Package className="h-16 w-16 text-muted-foreground/30" />
+        <Reveal from="left">
+          <div>
+            <div className="group relative aspect-square overflow-hidden rounded-2xl border bg-muted/30">
+              <AnimatePresence mode="wait">
+                {mainImg ? (
+                  <motion.img
+                    key={mainImg}
+                    src={mainImg}
+                    alt={product.name}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.32, ease: EASE }}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                ) : (
+                  <motion.div
+                    key="placeholder"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex h-full items-center justify-center"
+                  >
+                    <Package className="h-16 w-16 text-muted-foreground/30" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {product.isFeatured && (
+                <Badge className="absolute left-3 top-3 z-10 bg-amber-500 text-white shadow-md hover:bg-amber-500">
+                  ⭐ Produk Unggulan
+                </Badge>
+              )}
+            </div>
+            {images.length > 1 && (
+              <div className="scrollbar-thin mt-3 flex gap-2.5 overflow-x-auto pb-1">
+                {images.map((img, i) => (
+                  <motion.button
+                    key={i}
+                    onClick={() => setImgIdx(i)}
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.92 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
+                      i === imgIdx ? 'border-primary' : 'border-transparent'
+                    }`}
+                    aria-label={`Foto ${i + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} foto ${i + 1}`}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  </motion.button>
+                ))}
               </div>
             )}
-            {product.isFeatured && (
-              <Badge className="absolute left-3 top-3 bg-amber-500 text-white hover:bg-amber-500">
-                ⭐ Produk Unggulan
-              </Badge>
-            )}
           </div>
-          {images.length > 1 && (
-            <div className="scrollbar-thin mt-3 flex gap-2.5 overflow-x-auto pb-1">
-              {images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setImgIdx(i)}
-                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
-                    i === imgIdx ? 'border-primary' : 'border-transparent'
-                  }`}
-                  aria-label={`Foto ${i + 1}`}
-                >
-                  <img
-                    src={img}
-                    alt={`${product.name} foto ${i + 1}`}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        </Reveal>
 
         {/* Info produk */}
-        <div>
+        <Reveal from="right" delay={0.08}>
+          <div>
           <div className="flex flex-wrap items-center gap-2">
             {product.category && (
               <Badge
@@ -208,9 +229,14 @@ export function ProductDetailView({ slug }: { slug: string }) {
           )}
 
           <div className="mt-5 flex items-end gap-3">
-            <span className="text-3xl font-extrabold text-primary">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.75, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.25, type: 'spring', stiffness: 260, damping: 18 }}
+              className="text-3xl font-extrabold text-primary"
+            >
               {formatRupiah(product.price)}
-            </span>
+            </motion.span>
             {product.price != null && (
               <span className="pb-1 text-sm text-muted-foreground">
                 / {product.unit}
@@ -236,7 +262,10 @@ export function ProductDetailView({ slug }: { slug: string }) {
           </div>
 
           {/* Info singkat */}
-          <div className="mt-6 grid grid-cols-2 gap-3 text-xs sm:grid-cols-3">
+          <Stagger
+            className="mt-6 grid grid-cols-2 gap-3 text-xs sm:grid-cols-3"
+            gap={0.05}
+          >
             {[
               { label: 'SKU', value: product.sku || '-' },
               { label: 'Merek', value: product.brand || '-' },
@@ -251,24 +280,27 @@ export function ProductDetailView({ slug }: { slug: string }) {
                 value: `${product.views}x`,
               },
             ].map((row) => (
-              <div
-                key={row.label}
-                className="rounded-lg border bg-card p-2.5"
-              >
-                <div className="text-muted-foreground">{row.label}</div>
-                <div className="mt-0.5 truncate font-semibold" title={row.value}>
-                  {row.value}
+              <StaggerItem key={row.label} from="zoom">
+                <div className="rounded-lg border bg-card p-2.5 transition-colors hover:border-primary/40">
+                  <div className="text-muted-foreground">{row.label}</div>
+                  <div
+                    className="mt-0.5 truncate font-semibold"
+                    title={row.value}
+                  >
+                    {row.value}
+                  </div>
                 </div>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
 
           <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
             <Eye className="h-3.5 w-3.5" />
             Konsultasi gratis — pastikan part sesuai dengan tipe AC Anda
             sebelum memesan.
           </p>
-        </div>
+          </div>
+        </Reveal>
       </div>
 
       {/* Deskripsi & spesifikasi */}
@@ -292,21 +324,22 @@ export function ProductDetailView({ slug }: { slug: string }) {
             <Card>
               <CardContent className="p-0">
                 {product.specs.length > 0 ? (
-                  <div className="divide-y">
+                  <Stagger className="divide-y">
                     {product.specs.map((s, i) => (
-                      <div
-                        key={i}
-                        className={`grid grid-cols-[140px_1fr] gap-4 px-5 py-3 text-sm sm:grid-cols-[220px_1fr] sm:px-6 ${
-                          i % 2 === 1 ? 'bg-muted/40' : ''
-                        }`}
-                      >
-                        <span className="font-semibold text-muted-foreground">
-                          {s.k}
-                        </span>
-                        <span>{s.v}</span>
-                      </div>
+                      <StaggerItem key={i} from="fade">
+                        <div
+                          className={`grid grid-cols-[140px_1fr] gap-4 px-5 py-3 text-sm sm:grid-cols-[220px_1fr] sm:px-6 ${
+                            i % 2 === 1 ? 'bg-muted/40' : ''
+                          }`}
+                        >
+                          <span className="font-semibold text-muted-foreground">
+                            {s.k}
+                          </span>
+                          <span>{s.v}</span>
+                        </div>
+                      </StaggerItem>
                     ))}
-                  </div>
+                  </Stagger>
                 ) : (
                   <div className="flex flex-col items-center py-10 text-center">
                     <ImageOff className="h-8 w-8 text-muted-foreground/40" />

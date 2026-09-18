@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import {
   Clock,
   Headset,
@@ -24,6 +25,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+  heroContainer,
+  heroItem,
+} from '@/components/motion'
 import { api } from '@/lib/client'
 import { useSettings } from '@/hooks/use-settings'
 import { waLink } from '@/lib/format'
@@ -74,55 +82,62 @@ export function ContactSection() {
       id="kontak"
     >
       <div className="mb-10 text-center">
-        <span className="text-xs font-bold uppercase tracking-widest text-primary">
-          Hubungi Kami
-        </span>
-        <h2 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
-          Ada yang Bisa Kami Bantu?
-        </h2>
-        <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground">
-          Kirim pertanyaan Anda melalui form di bawah, atau chat langsung via
-          WhatsApp untuk respon lebih cepat.
-        </p>
+        <Reveal>
+          <span className="text-xs font-bold uppercase tracking-widest text-primary">
+            Hubungi Kami
+          </span>
+          <h2 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
+            Ada yang Bisa Kami Bantu?
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground">
+            Kirim pertanyaan Anda melalui form di bawah, atau chat langsung via
+            WhatsApp untuk respon lebih cepat.
+          </p>
+        </Reveal>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Info kontak */}
-        <div className="grid gap-4 sm:grid-cols-2">
+        <Stagger className="grid gap-4 sm:grid-cols-2" gap={0.09}>
           {contactItems.map((item) => (
-            <Card key={item.title} className="gap-2 py-4">
-              <CardHeader className="pb-0">
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <item.icon className="h-5 w-5" />
-                </div>
-                <CardTitle className="text-sm">{item.title}</CardTitle>
-                <CardDescription className="text-xs leading-relaxed">
-                  {item.value}
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <StaggerItem key={item.title}>
+              <Card className="group h-full gap-2 py-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md">
+                <CardHeader className="pb-0">
+                  <div className="hover-wiggle mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <CardTitle className="text-sm">{item.title}</CardTitle>
+                  <CardDescription className="text-xs leading-relaxed">
+                    {item.value}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </StaggerItem>
           ))}
           {settings?.whatsapp && (
-            <Button
-              className="col-span-full bg-green-600 text-white hover:bg-green-700"
-              size="lg"
-              onClick={() =>
-                window.open(
-                  waLink(
-                    settings.whatsapp,
-                    'Halo, saya ingin bertanya tentang produk sparepart AC.'
-                  ),
-                  '_blank'
-                )
-              }
-            >
-              <MessageCircle className="h-5 w-5" />
-              Chat Langsung via WhatsApp
-            </Button>
+            <StaggerItem className="sm:col-span-2">
+              <Button
+                className="w-full bg-green-600 text-white transition-all hover:-translate-y-0.5 hover:bg-green-500"
+                size="lg"
+                onClick={() =>
+                  window.open(
+                    waLink(
+                      settings.whatsapp,
+                      'Halo, saya ingin bertanya tentang produk sparepart AC.'
+                    ),
+                    '_blank'
+                  )
+                }
+              >
+                <MessageCircle className="h-5 w-5" />
+                Chat Langsung via WhatsApp
+              </Button>
+            </StaggerItem>
           )}
-        </div>
+        </Stagger>
 
         {/* Form */}
+        <Reveal from="right" delay={0.1}>
         <Card>
           <CardHeader>
             <CardTitle>Kirim Pesan</CardTitle>
@@ -206,6 +221,7 @@ export function ContactSection() {
             </form>
           </CardContent>
         </Card>
+        </Reveal>
       </div>
     </section>
   )
@@ -230,9 +246,18 @@ export function TrustRow() {
     },
   ]
   return (
-    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-6">
+    <motion.div
+      variants={heroContainer}
+      initial="hidden"
+      animate="show"
+      className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-6"
+    >
       {items.map((item) => (
-        <div key={item.title} className="flex items-center gap-3">
+        <motion.div
+          key={item.title}
+          variants={heroItem}
+          className="flex items-center gap-3 transition-transform duration-300 hover:scale-105"
+        >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-teal-300">
             <item.icon className="h-5 w-5" />
           </span>
@@ -242,8 +267,8 @@ export function TrustRow() {
             </span>
             <span className="block text-xs text-white/60">{item.desc}</span>
           </span>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 }

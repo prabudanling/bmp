@@ -211,3 +211,31 @@ Stage Summary:
 - Instruksi ke user: unduh ZIP baru → hapus dulu file lama di public_html → upload+extract PASTIKAN index.html langsung di public_html → buka domain; bila bermasalah buka /cek.php; PHP 7.4+ utk admin penuh.
 - Artefak: src/lib/fallback.ts, src/lib/client.ts (v2), 13 komponen (<img>), export-data.mjs (relUrls+--cache), build-deploy.mjs (v2), php-api/cek.php, handlers.php (URL relatif), tests/php-router-sub.php (+router php fix), panduan.tsx (kartu deploy), public/download/berkat-mandiri-website.zip, PANDUAN-DEPLOY + README diperbarui, 10 screenshot deploy2-*.
 - Catatan operasional: router uji php kini eksekusi .php; suite PHP perlu HOSTDIR utk target lain; api-cache WAJIB tidak pernah berisi admins.json/messages.json (privasi).
+
+---
+Task ID: 10
+Agent: Z.ai Code (main)
+Task: Menambahkan animasi full yang enak dipandang di seluruh website publik (framer-motion + CSS keyframes) tanpa merusak paket deploy statis.
+
+Work Log:
+- Audit seluruh komponen site/* + stack: framer-motion v12 terpasang tapi nyaris terpakai; hanya CSS animate-fade-up yang ada.
+- Toolkit baru src/components/motion/index.tsx: SmoothMotion (MotionConfig reducedMotion="user"), Reveal (up/down/left/right/zoom/fade, whileInView once), Stagger + StaggerItem, varian heroContainer/heroItem/heroItemRight, Counter (count-up rAF, format id-ID), Marquee (pause-on-hover, mask tepi), Snowfall (seeded random anti hydration-mismatch), Pop.
+- globals.css: keyframes float-y, float-y-soft, blob, snow-drift, marquee-x, wiggle, shine-sweep, shimmer-x, glow-ring, gradient-pan, pop-in, spin-slow + utilitas (animate-float/soft/blob/marquee/glow/gradient-x/pop-in/spin-slow, marquee-mask, hover-wiggle, card-shine, shimmer) + guard prefers-reduced-motion.
+- public-site.tsx: SmoothMotion wrapper, AnimatePresence mode="wait" transisi antar halaman (fade+slide, key=path), auto scroll-to-top saat pindah route, ikon NotFound animate-float.
+- site-header.tsx: entrance slide-down, bayangan saat scroll, progress bar scroll (useScroll + gradient teal di tepi bawah header), garis aktif layoutId "nav-underline" meluncur antar menu (termasuk dropdown Informasi), ikon tema berputar saat ganti.
+- home-view.tsx: hero stagger berurutan (badge→judul→desc→tombol→TrustRow), 2 blob gradasi bernapas + Snowfall 13 kepingan, gambar hero animate-float, badge melayang dengan Counter (10+ Tahun, total produk berformat 1.000+), semua section Reveal/Stagger, ikon kategori & fitur hover-wiggle, merek fallback jadi Marquee berjalan, CTA dengan animate-glow + Snowfall 6, gambar tentang zoom-on-hover, grid mitra stagger zoom.
+- product-card.tsx: card-shine kilau menyapu saat hover, lift -translate-y-1.5 + shadow-xl, gambar scale-110, harga geser micro-interaction, skeleton shimmer.
+- catalog-view.tsx: filter card Reveal, paginasi motion.button dengan pil aktif layoutId "pg-active" + whileTap, empty state ikon melayang, smooth scroll-to-top saat ganti halaman/filter (skip load pertama).
+- product-detail.tsx: galeri Reveal kiri + info Reveal kanan, gambar utama crossfade AnimatePresence per thumbnail + zoom hover, thumbnail spring (whileHover/whileTap), harga pop spring, grid info & baris spesifikasi Stagger.
+- contact-section.tsx: kartu kontak Stagger + hover-wiggle ikon, form Reveal kanan, TrustRow jadi stagger heroItem, tombol WA hover lift.
+- footer.tsx: sosmed hover lift, link kategori/menu geser kanan saat hover, tombol WA shadow.
+- whatsapp-float.tsx: entrance spring delay 0.9s + whileHover scale, tooltip geser.
+- login-view.tsx: kartu entrance, logo salju spin-in spring + animate-spin-slow, alert error bergetar (keyframes x array).
+- page-view.tsx: hero CMS gradient animate-gradient-x, konten & CTA Reveal.
+- Lint bersih; E2E agent-browser: hero+salju+counter "1.000+ Item" ✓, kategori stagger ✓, progress bar header ✓, paginasi pindah halaman + scroll-top ✓, detail produk crossfade & pop harga ✓, login error shake + login sukses ✓, dark mode ✓ (counter tertangkap "992+" saat menghitung), mobile 390px ✓, 0 error console. Screenshot: tests/anim-*.png (9 file).
+- bun run build:deploy → export statis memuat CSS animasi (terverifikasi di chunk CSS/JS index.html); ZIP 49.7MB baru disalin ke public/download/berkat-mandiri-website.zip (tombol unduh di dashboard Panduan).
+
+Stage Summary:
+- Website kini punya animasi premium menyeluruh namun tetap ringan (hanya transform/opacity, once:true, reduced-motion dihormati) dan AMAN untuk deploy statis (semua client-side, path aset relatif tidak diubah).
+- Toolkit terpusat di src/components/motion — mudah dipakai ulang komponen baru: <Reveal>, <Stagger>/<StaggerItem>, <Counter>, <Marquee>, <Snowfall>, <Pop>, varian hero.
+- Paket deploy ZIP diperbarui dengan animasi; instruksi user: unduh ulang ZIP dari dashboard (Panduan) bila sudah pernah upload versi lama.

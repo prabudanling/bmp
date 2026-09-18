@@ -1,7 +1,10 @@
 'use client'
 
+import { useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { PackageSearch } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { EASE, SmoothMotion } from '@/components/motion'
 import { SiteHeader } from './site-header'
 import { SiteFooter } from './footer'
 import { HomeView } from './home-view'
@@ -17,7 +20,7 @@ function NotFoundView() {
   const navigate = useApp((s) => s.navigate)
   return (
     <div className="flex flex-col items-center px-4 py-24 text-center">
-      <PackageSearch className="h-14 w-14 text-muted-foreground/40" />
+      <PackageSearch className="h-14 w-14 animate-float text-muted-foreground/40" />
       <h1 className="mt-4 text-xl font-bold">Halaman tidak ditemukan</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Tautan yang Anda buka tidak tersedia.
@@ -31,6 +34,11 @@ function NotFoundView() {
 
 export function PublicSite() {
   const path = useApp((s) => s.path)
+
+  // Scroll ke atas setiap pindah halaman (SPA hash-router)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [path])
 
   let content: React.ReactNode
   if (path === '/' || path === '') {
@@ -65,11 +73,26 @@ export function PublicSite() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <main className="flex-1">{content}</main>
-      <SiteFooter />
-      <WhatsAppFloat />
-    </div>
+    <SmoothMotion>
+      <div className="flex min-h-screen flex-col">
+        <SiteHeader />
+        <main className="flex-1">
+          {/* Transisi halus antar halaman */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={path}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.28, ease: EASE }}
+            >
+              {content}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+        <SiteFooter />
+        <WhatsAppFloat />
+      </div>
+    </SmoothMotion>
   )
 }
