@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 180" width="480" height="180" role="img" aria-label="Mitsubishi Electric">
+<title>Mitsubishi Electric</title>
+<rect x="77" y="53" width="30" height="30" rx="4" fill="#FF5252" transform="rotate(45 92 68)"/><rect x="55" y="87" width="30" height="30" rx="4" fill="#E60012" transform="rotate(45 70 102)"/><rect x="99" y="87" width="30" height="30" rx="4" fill="#E60012" transform="rotate(45 114 102)"/>
+<text x="172" y="80.7" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-weight="800" letter-spacing="0.5" font-size="36" fill="#E60012">Mitsubishi</text><text x="172" y="114.6" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="0.5" font-size="30" fill="#E60012" opacity="0.82">Electric</text>
+</svg>

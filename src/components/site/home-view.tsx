@@ -31,7 +31,7 @@ import { useSettings } from '@/hooks/use-settings'
 import { parsePartners } from '@/lib/settings'
 import { waLink } from '@/lib/format'
 import { useApp } from '@/lib/store'
-import type { CategoryDTO, ProductsResponse } from '@/lib/types'
+import type { CategoryDTO, PartnerLogo, ProductsResponse } from '@/lib/types'
 
 const FEATURES = [
   {
@@ -68,6 +68,25 @@ const BRANDS = [
   'Hitachi',
   'Aqua',
 ]
+
+/** Satu kartu logo merek pada dinding mitra (latar putih agar warna merek tetap kontras) */
+function BrandTile({ p, large = false }: { p: PartnerLogo; large?: boolean }) {
+  return (
+    <div
+      title={p.name || undefined}
+      className={`group/tile mx-2 flex shrink-0 items-center justify-center rounded-xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg ${
+        large ? 'h-16 w-44 p-3 sm:h-[4.5rem] sm:w-52' : 'h-14 w-40 p-2.5'
+      }`}
+    >
+      <img
+        src={p.url}
+        alt={p.name || 'Logo merek'}
+        loading="lazy"
+        className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover/tile:scale-[1.06]"
+      />
+    </div>
+  )
+}
 
 export function HomeView() {
   const navigate = useApp((s) => s.navigate)
@@ -382,14 +401,41 @@ export function HomeView() {
 
       {/* ===== MEREK / MITRA ===== */}
       <section className="mx-auto w-full max-w-7xl px-4 py-12 lg:px-8">
-        <Reveal>
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        <Reveal className="mb-8 text-center">
+          <span className="text-xs font-bold uppercase tracking-widest text-primary">
+            Merek &amp; Mitra
+          </span>
+          <h2 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
             {partnerLogos.length > 0
-              ? 'Mitra & Distributor Kami'
+              ? 'Merek & Mitra Kami'
               : 'Sparepart untuk Berbagai Merek AC'}
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground">
+            {partnerLogos.length > 0
+              ? `Melayani kebutuhan sparepart untuk ${partnerLogos.length} merek ternama dunia — dari kompresor udara, AC, hingga refrigerasi industri.`
+              : 'Temukan sparepart kompatibel untuk merek AC populer di dunia.'}
           </p>
         </Reveal>
-        {partnerLogos.length > 0 ? (
+
+        {partnerLogos.length > 6 ? (
+          /* Dinding logo dua baris berlawanan arah — pause saat disentuh kursor */
+          <Reveal delay={0.1} className="space-y-4">
+            <Marquee duration={58}>
+              {partnerLogos
+                .slice(0, Math.ceil(partnerLogos.length / 2))
+                .map((p, i) => (
+                  <BrandTile key={p.url + i} p={p} large />
+                ))}
+            </Marquee>
+            <Marquee duration={70} reverse>
+              {partnerLogos
+                .slice(Math.ceil(partnerLogos.length / 2))
+                .map((p, i) => (
+                  <BrandTile key={p.url + i} p={p} large />
+                ))}
+            </Marquee>
+          </Reveal>
+        ) : partnerLogos.length > 0 ? (
           <Stagger
             className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
             gap={0.06}

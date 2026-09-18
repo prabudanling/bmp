@@ -239,3 +239,24 @@ Stage Summary:
 - Website kini punya animasi premium menyeluruh namun tetap ringan (hanya transform/opacity, once:true, reduced-motion dihormati) dan AMAN untuk deploy statis (semua client-side, path aset relatif tidak diubah).
 - Toolkit terpusat di src/components/motion — mudah dipakai ulang komponen baru: <Reveal>, <Stagger>/<StaggerItem>, <Counter>, <Marquee>, <Snowfall>, <Pop>, varian hero.
 - Paket deploy ZIP diperbarui dengan animasi; instruksi user: unduh ulang ZIP dari dashboard (Panduan) bila sudah pernah upload versi lama.
+
+---
+Task ID: 10
+Agent: Z.ai Code (main)
+Task: Membuat koleksi lengkap 36 logo merek kompresor dunia (kompresor udara, AC, refrigerasi) + dinding logo berjalan dua arah di beranda.
+
+Work Log:
+- Cek implementasi partnerLogos: Setting JSON {url,name}, parsePartners(), grid di home-view, kelola di settings-manager.
+- Buat scripts/generate-brand-logos.mjs — generator 36 logo SVG wordmark (480×180, ikon generik 18 jenis + nama merek, warna khas tiap brand, auto-fit font, dukungan nama 2 baris) → public/logos/brands/*.svg + manifest.json.
+- Brand tercakup: 14 kompresor udara (Atlas Copco, Ingersoll Rand, Sullair, Kaishan, ELGi, Chicago Pneumatic, Hitachi, Fusheng, Swan, Puma, ABAC, Airman, Boge, CompAir), 14 AC (Daikin, Panasonic, LG, Samsung, Sharp, Mitsubishi Electric, Toshiba, Gree, Midea, Fujitsu General, York, Carrier, Sanyo, Aqua), 8 refrigerasi (Bitzer, Copeland, Danfoss, Tecumseh, Kulthorn, Embraco, Sanhua, Frascold).
+- Buat scripts/seed-brand-logos.mjs → upsert Setting.partnerLogos dengan 36 logo (menggantikan 2 logo mitra demo lama).
+- Marquee (motion/index.tsx): tambah prop reverse (animationDirection inline) untuk baris kedua.
+- home-view.tsx: redesain section Merek & Mitra — judul + subtitel dinamis (jumlah merek), BrandTile (kartu putih, hover lift+scale, tooltip nama), dinding logo 2 baris marquee berlawanan arah jika >6 logo, grid staggered jika ≤6, fallback pill teks jika kosong.
+- settings-manager.tsx: daftar 36 logo jadi scrollable (max-h-[26rem] overflow-y-auto), deskripsi kartu diperbarui.
+- Verifikasi agent-browser: 72 img (36×2) 0 broken; animasi bergerak (transform berubah), baris 2 arah reverse; screenshot desktop light/dark + mobile + admin settings — semua rapi; 0 console error; lint bersih.
+
+Stage Summary:
+- 36 logo merek dunia tampil sebagai dinding berjalan dua arah di beranda (pause on hover, mask gradasi tepi, lazy-load).
+- File baru: scripts/generate-brand-logos.mjs, scripts/seed-brand-logos.mjs, public/logos/brands/ (36 SVG + manifest.json).
+- DB: Setting.partnerLogos = 36 entri merek; admin tetap bisa tambah/hapus/ubah nama via dashboard.
+- Screenshot: tests/brand-wall-{desktop,mobile,dark,final-light}.png, tests/brand-admin-settings.png.

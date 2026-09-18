@@ -553,9 +553,9 @@ export function SettingsManager() {
             </span>
           </CardTitle>
           <CardDescription>
-            Tampil di strip &quot;Mitra Kami&quot; pada beranda, menggantikan
-            daftar nama merek teks. Unggah PNG transparan agar rapi, maks 3MB
-            per logo.
+            Tampil di dinding logo beranda — lebih dari 6 logo otomatis tampil
+            sebagai barisan berjalan dua arah yang elegan. Unggah PNG/SVG
+            transparan agar rapi, maks 3MB per logo.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -566,7 +566,7 @@ export function SettingsManager() {
           )}
 
           {partners.length > 0 && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid max-h-[26rem] grid-cols-2 gap-3 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-4">
               {partners.map((p, i) => (
                 <div key={p.url + i} className="space-y-2 rounded-xl border p-3">
                   <div className="group relative flex h-16 items-center justify-center overflow-hidden rounded-lg border bg-white">

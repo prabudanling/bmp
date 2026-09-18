@@ -203,11 +203,14 @@ export function Marquee({
   children,
   duration = 30,
   className,
+  reverse = false,
 }: {
   children: ReactNode
   /** detik untuk satu siklus */
   duration?: number
   className?: string
+  /** arah berjalan ke kanan (baris kedua dinding logo) */
+  reverse?: boolean
 }) {
   return (
     <div
@@ -215,7 +218,10 @@ export function Marquee({
     >
       <div
         className="animate-marquee flex w-max items-center"
-        style={{ '--marquee-dur': `${duration}s` } as CSSProperties}
+        style={{
+          '--marquee-dur': `${duration}s`,
+          animationDirection: reverse ? 'reverse' : undefined,
+        } as CSSProperties}
       >
         <div className="flex shrink-0 items-center">{children}</div>
         <div className="flex shrink-0 items-center" aria-hidden="true">
