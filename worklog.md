@@ -373,3 +373,21 @@ Stage Summary:
 - Repo BMP ter-install penuh & berjalan: dependensi OK, SQLite OK (1000 produk, 13 kategori, admin aktif), verifikasi browser & API lulus.
 - Login default: admin / admin123 (sudah ada peringatan ganti password di dashboard).
 - Catatan runtime: dev server dikelola supervisor platform (proses yang dibuat manual antar sesi tool akan dibersihkan); gunakan preview panel untuk mengakses situs.
+
+---
+Task ID: kontak-1
+Agent: Super Z (main)
+Task: Ganti semua kontak person & alamat di website sesuai data baru dari pemilik.
+
+Work Log:
+- Identifikasi 5 lapisan penyimpanan kontak: DB Setting, DEFAULT_SETTINGS (src/lib/settings.ts), StoreSettings type, fallback PHP (settings.json + handlers.php), dan tampilan (contact-section, footer, topbar via settings live).
+- Data baru: kontak person Mr. Encep Sihabudin; WA +62 812-5000-3323 (link wa.me/6281250003323 via waDigits); telp (021) 22682617; email berkatmandiripendingin@gmail.com; alamat Jalan Hayam Wuruk No.2-5 Gedung New Harco Glodok Lantai 1 Blok C 45, Jakarta Barat 11180.
+- Penambahan key setting baru contactPerson: types.ts (StoreSettings), DEFAULT_SETTINGS, field di settings-manager.tsx (dashboard admin), kartu Kontak Person di contact-section.tsx (ikon UserRound), baris kontak di footer.tsx.
+- DB diupdate via scripts/update-kontak.ts (upsert idempotent, tersimpan untuk pemakaian ulang).
+- php-api/data/settings.json + php-api/lib/handlers.php disinkronkan (mode fallback hosting).
+- Verifikasi: lint bersih; GET /api/settings mengembalikan nilai baru; browser: topbar, kartu kontak (5 kartu termasuk Kontak Person), footer menampilkan data baru; tombol WA mengarah ke https://wa.me/6281250003323.
+- Commit git lokal dengan pesan perubahan kontak.
+
+Stage Summary:
+- Seluruh kontak website live update: kontak person, WA, telepon, email, alamat — konsisten di topbar, halaman kontak, footer, tombol WA, dan dashboard admin (bisa diedit lagi kapan saja di Pengaturan).
+- Screenshot: tool-results/kontak-baru-v2.png (halaman kontak), footer-baru.png (footer).
