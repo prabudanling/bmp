@@ -7,10 +7,12 @@ import {
   FileText,
   Gauge,
   Globe,
+  Loader2,
   Pencil,
   RotateCcw,
   Save,
   Search,
+  Sparkles,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -139,11 +141,14 @@ export function MetaPanel() {
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT)
   const [saving, setSaving] = useState(false)
   const [resettingId, setResettingId] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiNote, setAiNote] = useState<string | null>(null)
 
   const items = data?.items ?? []
 
   const openEdit = (m: SeoMetaDTO) => {
     setEditing(m)
+    setAiNote(null)
     setDraft({
       title: m.title,
       description: m.description,
