@@ -8,7 +8,6 @@ import {
   ChevronDown,
   Clock,
   FileText,
-  LayoutDashboard,
   Mail,
   MapPin,
   Menu,
@@ -255,15 +254,6 @@ export function SiteHeader() {
               </Button>
             )}
 
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Masuk dashboard admin"
-              onClick={() => navigate('/masuk')}
-            >
-              <LayoutDashboard className="h-5 w-5" />
-            </Button>
-
             {/* Menu mobile */}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
@@ -346,17 +336,6 @@ export function SiteHeader() {
                       Chat WhatsApp
                     </Button>
                   )}
-                  <Button
-                    variant="outline"
-                    className="justify-start"
-                    onClick={() => {
-                      setOpen(false)
-                      navigate('/masuk')
-                    }}
-                  >
-                    <LayoutDashboard className="h-4 w-4" />
-                    Login Admin
-                  </Button>
                 </nav>
               </SheetContent>
             </Sheet>

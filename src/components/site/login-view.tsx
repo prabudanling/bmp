@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Code2,
-  Crown,
   Eye,
   EyeOff,
   Globe,
@@ -164,21 +163,6 @@ export function LoginView() {
                 )}
               </Button>
             </form>
-            <div className="mt-5 space-y-2 rounded-lg border border-dashed bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
-              <p>
-                <span className="font-semibold text-foreground">Admin:</span> akun{' '}
-                <b>admin</b> / <b>admin123</b> — kelola produk & pengaturan.
-              </p>
-              <p className="flex items-start gap-1.5">
-                <Crown className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
-                <span>
-                  <span className="font-semibold text-foreground">SEO Analyst VVIP:</span>{' '}
-                  akun <b>seo.vvip</b> / <b>VvipSeo#2025</b> — masuk ke SEO Command
-                  Center eksklusif (skor, audit, keywords, sitemap).
-                </span>
-              </p>
-              <p>Segera ganti password di Pengaturan setelah login.</p>
-            </div>
             <Button
               variant="ghost"
               className="mt-3 w-full"

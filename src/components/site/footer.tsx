@@ -7,7 +7,6 @@ import {
   Facebook,
   Globe,
   Instagram,
-  LayoutDashboard,
   Mail,
   MapPin,
   MessageCircle,
@@ -135,15 +134,6 @@ export function SiteFooter() {
                 </button>
               </li>
             ))}
-            <li>
-              <button
-                className="inline-flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-teal-400"
-                onClick={() => navigate('/masuk')}
-              >
-                <LayoutDashboard className="h-3.5 w-3.5" />
-                Login Admin
-              </button>
-            </li>
           </ul>
         </div>
 

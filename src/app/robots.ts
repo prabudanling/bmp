@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const site = getSiteUrl()
 
-  let disallow = ['/admin']
+  let disallow = ['/admin', '/masuk']
   try {
     const row = await db.setting.findUnique({ where: { key: 'seoRobotsDisallow' } })
     if (row?.value) {

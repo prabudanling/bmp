@@ -107,21 +107,28 @@ fitting, dan lainnya). Dirancang agar pemilik toko **tanpa keahlian coding** bis
 
 ## 🔑 Akses Cepat & Login Default
 
-Setelah instalasi selesai ([lihat di bawah](#-instalasi-5-langkah)), buka `http://localhost:3000`:
+> 🔒 **DOKUMEN INTERNAL — JANGAN DIBAGIKAN KE LUAR / DI-COPY-PASTE KE WEBSITE.**
+> Semua tombol & menu login **sudah disembunyikan dari website publik** (header,
+> menu mobile, dan footer dibersihkan). Halaman login hanya bisa diakses lewat
+> tautan langsung di bawah — simpan tautan & kredensial ini hanya di tim internal.
 
 | Halaman | URL / Cara Akses |
 |---------|------------------|
-| 🌐 Website publik | `http://localhost:3000` |
-| 🔐 Login admin | Website → menu **Login** (atau tombol di footer) |
+| 🌐 Website publik | `http://localhost:3000` (produksi: domain Anda) |
+| 🔐 **Link login admin (rahasia)** | `<domain>/#/masuk` — contoh lokal: `http://localhost:3000/#/masuk` |
 | 📊 Dashboard admin | Otomatis setelah login |
+| 📈 SEO Command Center | Login sebagai akun SEO → menu SEO di dashboard |
 
 | Kredensial Default | Nilai |
 |--------------------|-------|
-| 👤 Username | `admin` |
+| 👤 Username (admin penuh) | `admin` |
 | 🔑 Password | `admin123` |
+| 👤 Username (SEO Analyst VVIP) | `seo.vvip` |
+| 🔑 Password (SEO Analyst VVIP) | `VvipSeo#2025` |
 
 > ⚠️ **WAJIB BACA:** Segera ganti password di **Pengaturan → Ubah Password Admin**
 > setelah login pertama. Password default hanya untuk pengembangan!
+> Halaman login juga tidak lagi menampilkan hint kredensial apa pun.
 
 ---
 

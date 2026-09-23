@@ -15,27 +15,29 @@ export function getSiteUrl(): string {
 export const DEFAULT_ROUTES = [
   {
     routePath: '/',
-    title: 'Berkat Mandiri Pendingin — Kompresor & Sparepart AC Terlengkap',
+    title: 'Kompresor & Sparepart AC Glodok | Berkat Mandiri Pendingin',
     description:
-      'Toko spesialis kompresor dan sparepart AC: kompresor rotary & scroll, motor fan, kapasitor, termostat, freon, dan aksesoris AC lainnya. Original, bergaransi, kirim ke seluruh Indonesia.',
+      'Toko kompresor & sparepart AC original di New Harco Glodok, Jakarta Barat. 1000+ item ready stok: kompresor rotary/scroll, kapasitor, motor fan, freon. Kirim seluruh Indonesia.',
     keywords:
-      'kompresor AC, sparepart AC, jual kompresor AC, kapasitor AC, motor fan AC, freon AC',
+      'toko sparepart AC glodok, jual kompresor AC glodok, kompresor AC jakarta barat, sparepart AC original glodok, toko kompresor pendingin glodok, kapasitor AC original, motor fan AC jakarta, freon AC murah glodok, sparepart AC harco glodok, jual kompresor AC jakarta',
     priority: 1,
   },
   {
     routePath: '/katalog',
-    title: 'Katalog Produk — Kompresor & Sparepart AC',
+    title: 'Katalog 1000+ Sparepart & Kompresor AC Glodok | Harga Grosir',
     description:
-      'Jelajahi ratusan kompresor, kapasitor, motor fan, termostat, dan sparepart AC lainnya. Harga jujur, stok terupdate, pemesanan mudah via WhatsApp.',
-    keywords: 'katalog sparepart AC, harga kompresor, katalog kompresor AC',
+      'Katalog lengkap kompresor AC, kapasitor, motor fan, termostat, freon & fitting di Glodok Jakarta Barat. Harga jujur, stok terupdate, pesan mudah via WhatsApp.',
+    keywords:
+      'katalog sparepart AC, harga kompresor AC, katalog kompresor AC glodok, harga kompresor AC 1 pk, jual kapasitor AC glodok, grosir sparepart AC jakarta, harga freon AC jakarta barat',
     priority: 0.9,
   },
   {
     routePath: '/kontak',
-    title: 'Kontak & Lokasi Toko — Berkat Mandiri Pendingin',
+    title: 'Kontak & Lokasi Toko AC Glodok | Berkat Mandiri Pendingin',
     description:
-      'Hubungi tim kami untuk konsultasi part, cek stok, kerja sama grosir, atau kunjungi toko. Respon cepat di jam kerja.',
-    keywords: 'kontak toko AC, alamat toko sparepart AC, grosir sparepart AC',
+      'Kunjungi toko kami di New Harco Glodok Lantai 1 Blok C 45, Jakarta Barat, atau hubungi Mr. Encep (WA +62 812-5000-3323). Konsultasi part, cek stok, harga grosir.',
+    keywords:
+      'alamat toko sparepart AC glodok, lokasi toko kompresor AC jakarta barat, kontak sparepart AC glodok, toko AC harco glodok, telp toko sparepart AC jakarta',
     priority: 0.8,
   },
 ]
@@ -88,26 +90,73 @@ export async function buildJsonLd() {
     .filter(Boolean)
   const siteUrl = getSiteUrl()
 
+  // Alamat granular untuk local SEO (postal code & kota membantu Google Maps)
+  const rawAddress = map.address?.trim() || ''
+  const postal = rawAddress.match(/\b(\d{5})\b/)?.[1]
+  const locality =
+    rawAddress.match(/Jakarta\s+Barat/i)?.[0] || 'Jakarta Barat'
+  const waDigits = (map.whatsapp || '').replace(/\D/g, '')
+
   return {
     '@context': 'https://schema.org',
     '@type': 'HardwareStore',
     '@id': `${siteUrl}/#store`,
     name: storeName,
-    description: `Toko spesialis kompresor dan sparepart AC original. ${
+    description: `Toko spesialis kompresor dan sparepart AC original di New Harco Glodok, Jakarta Barat. ${
       map.tagline?.trim() || 'Spesialis Kompresor & Sparepart AC'
-    }.`,
+    }. Melayani satuan & grosir, kirim ke seluruh Indonesia.`,
     url: siteUrl,
     telephone: map.phone?.trim() || map.whatsapp?.trim() || undefined,
     email: map.email?.trim() || undefined,
-    address: map.address?.trim()
+    address: rawAddress
       ? {
           '@type': 'PostalAddress',
-          streetAddress: map.address.trim(),
+          streetAddress: rawAddress.replace(/,\s*(Jakarta\s*Barat|DKI\s*Jakarta|Indonesia|\d{5})[^,]*/gi, '').replace(/,\s*$/, ''),
+          addressLocality: locality,
+          addressRegion: 'DKI Jakarta',
+          ...(postal ? { postalCode: postal } : {}),
           addressCountry: 'ID',
         }
       : undefined,
-    openingHours: 'Mo-Sa 08:00-17:00',
+    // Pusat Gedung New Harco Glodok, Jl. Hayam Wuruk — membantu Google Maps & paket lokasi
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: -6.1481,
+      longitude: 106.8136,
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+        ],
+        opens: '08:00',
+        closes: '17:00',
+      },
+    ],
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        contactType: 'sales',
+        ...(map.contactPerson?.trim()
+          ? { name: map.contactPerson.trim() }
+          : {}),
+        ...(waDigits
+          ? { telephone: `+${waDigits}` }
+          : map.phone?.trim()
+            ? { telephone: map.phone.trim() }
+            : {}),
+        availableLanguage: ['id', 'ID'],
+      },
+    ],
     priceRange: 'Rp',
+    currenciesAccepted: 'IDR',
+    paymentAccepted: 'Cash, Transfer Bank, QRIS, GoPay, OVO, DANA',
     areaServed: { '@type': 'Country', name: 'Indonesia' },
     sameAs: socials.length ? socials : undefined,
   }

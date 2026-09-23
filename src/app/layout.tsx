@@ -17,24 +17,34 @@ const geistMono = Geist_Mono({
 });
 
 const BASE_METADATA: Metadata = {
-  title: "Berkat Mandiri Pendingin — Kompresor & Sparepart AC Terlengkap",
+  title: "Kompresor & Sparepart AC Glodok | Berkat Mandiri Pendingin",
   description:
-    "Toko spesialis kompresor dan sparepart AC: kompresor rotary & scroll, motor fan, kapasitor, termostat, freon, dan aksesoris AC lainnya. Original, bergaransi, kirim ke seluruh Indonesia.",
+    "Toko kompresor & sparepart AC original di New Harco Glodok, Jakarta Barat. 1000+ item ready stok: kompresor rotary/scroll, kapasitor, motor fan, freon. Kirim seluruh Indonesia.",
   keywords: [
+    "toko sparepart AC glodok",
+    "jual kompresor AC glodok",
+    "kompresor AC jakarta barat",
+    "sparepart AC original glodok",
+    "toko kompresor pendingin glodok",
+    "kapasitor AC original",
+    "motor fan AC jakarta",
+    "freon AC murah glodok",
+    "sparepart AC harco glodok",
+    "jual kompresor AC jakarta",
     "kompresor AC",
     "sparepart AC",
-    "jual kompresor AC",
-    "kapasitor AC",
-    "motor fan AC",
-    "freon AC",
     "Berkat Mandiri Pendingin",
   ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Berkat Mandiri Pendingin",
+    title: "Kompresor & Sparepart AC Glodok | Berkat Mandiri Pendingin",
     description:
-      "Spesialis kompresor & sparepart AC original dengan harga bersahabat.",
+      "Toko spesialis kompresor & sparepart AC original di New Harco Glodok, Jakarta Barat — ready stok 1000+ item, harga bersahabat.",
     siteName: "Berkat Mandiri Pendingin",
     type: "website",
+    locale: "id_ID",
   },
 };
 
