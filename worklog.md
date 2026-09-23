@@ -391,3 +391,24 @@ Work Log:
 Stage Summary:
 - Seluruh kontak website live update: kontak person, WA, telepon, email, alamat — konsisten di topbar, halaman kontak, footer, tombol WA, dan dashboard admin (bisa diedit lagi kapan saja di Pengaturan).
 - Screenshot: tool-results/kontak-baru-v2.png (halaman kontak), footer-baru.png (footer).
+
+---
+Task ID: seo-1
+Agent: Super Z (main)
+Task: Sembunyikan login admin dari website publik (simpan kredensial di README) + suntikan SEO terbaik untuk dominasi Google lokal.
+
+Work Log:
+- Hapus 3 titik login publik: tombol ikon dashboard di header desktop, tombol "Login Admin" di menu mobile (Sheet), item "Login Admin" di footer; bersihkan import ikon tak terpakai.
+- Hapus kotak hint kredensial (admin/admin123 & seo.vvip) dari halaman login — halaman /#/masuk tetap berfungsi via tautan langsung.
+- README.md: section "Akses Cepat & Login Default" diubah jadi DOKUMEN INTERNAL berisi link login rahasia (<domain>/#/masuk), kredensial admin + seo.vvip, dan peringatan jangan dibagikan.
+- Fix bug SEO: hapus public/robots.txt statis yang konflik dengan route src/app/robots.ts (HTTP 500) → robots.txt dinamis jalan; tambah Disallow: /masuk agar halaman login tak diindeks.
+- SEO on-page: BASE_METADATA layout.tsx diperkaya keyword lokal (toko sparepart AC glodok, kompresor AC jakarta barat, harco glodok, dll.) + canonical "/" + OG locale id_ID.
+- seo.ts: DEFAULT_ROUTES 3 route diperkaya meta lokal; buildJsonLd ditingkatkan — PostalAddress granular (Jakarta Barat, DKI Jakarta, 11180), GeoCoordinates New Harco Glodok (-6.1481, 106.8136), openingHoursSpecification Sen-Sab 08-17, ContactPoint sales atas nama Mr. Encep Sihabudin, paymentAccepted, currenciesAccepted.
+- DB: scripts/suntik-seo.ts — upsert SeoPageMeta "/" "/katalog" "/kontak" dengan title/description/keywords optimal + 10 keyword target SeoKeyword (volume estimasi) + SeoEvent jejak suntikan.
+- Verifikasi: lint bersih; SSR title "Kompresor & Sparepart AC Glodok | Berkat Mandiri Pendingin"; JSON-LD berisi postalCode 11180 + Mr. Encep; robots.txt 200 (Disallow /admin, /masuk + sitemap); snapshot browser tanpa jejak login di UI publik; /#/masuk tetap bisa diakses tanpa menampilkan kredensial.
+- Commit git lokal (SEO + hidden login).
+
+Stage Summary:
+- Website publik 100% bebas jejak admin: header, menu mobile, footer, dan halaman login bersih; akses internal hanya via /#/masuk (terdokumentasi di README dengan kredensial).
+- SEO siap perang: meta SSR lokal Glodok, JSON-LD kaya (geo/postal/contact person), robots dinamis + sitemap aktif, 3 route ter-meta, 10 keyword terpantau di SEO Command Center.
+- Untuk ranking #1: daftarkan sitemap di Google Search Console (NEXT_PUBLIC_SITE_URL harus domain produksi), klaim Google Business Profile lokasi Glodok, dan pantau keyword di dashboard SEO.
