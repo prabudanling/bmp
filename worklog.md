@@ -353,3 +353,23 @@ Stage Summary:
 - Dua panel wajib SEO Command Center selesai & terpasang ke shell seo-center.tsx tanpa mengubah file lain: meta-panel.tsx (grid meta per route + dialog edit dgn counter karakter berwarna + PREVIEW SERP Google real-time + save/reset API) dan keywords-panel.tsx (form pantau keyword, kartu posisi dgn sparkline SVG terbalik teal + ikon tren, catat posisi, hapus berkonfirmasi).
 - Konvensi project dipatuhi: 'use client', api() dari @/lib/client, toast sonner, komponen shadcn/ui, EASE framer-motion, aksen amber/gold + teal/emerald, UI bahasa Indonesia, responsif.
 - File: src/components/admin/seo/meta-panel.tsx (baru), src/components/admin/seo/keywords-panel.tsx (baru). Tidak ada file lain yang diubah.
+
+---
+Task ID: install-1
+Agent: Super Z (main)
+Task: Install repo https://github.com/prabudanling/bmp ke workspace (clone, dependensi, database, jalankan & verifikasi).
+
+Work Log:
+- Clone repo GitHub prabudanling/bmp ke /home/z/my-project/bmp.
+- Mengenali repo ini adalah snapshot workspace lama (DATABASE_URL absolut ke /home/z/my-project/db/custom.db, ada .zscripts & worklog) → restore seluruh isi repo ke root workspace /home/z/my-project (termasuk .git, .env, .gitignore, .next-export, .zscripts); folder sistem (skills, upload) tetap utuh; history git + remote GitHub dipertahankan.
+- bun install → 830 paket terinstall (8.12s), tanpa error.
+- bun run db:push → schema Prisma dipush ke SQLite + Prisma Client v6.19.2 ter-generate.
+- bun scripts/seed.ts → idempotent: admin & data sudah ada dari repo (1000 produk, 13 kategori), tidak ada duplikasi.
+- Menjalankan dev server port 3000. Kendala diagnostik: proses dev mati antar panggilan tool (pipe tee menyumbat stdout saat sesi tool di-kill) → solusi: setsid + redirect output ke dev.out; verifikasi E2E dilakukan dalam satu sesi bersama server.
+- Verifikasi E2E Agent Browser: beranda render sempurna (topbar, hero, 13 kategori, produk unggulan), katalog terbuka, login admin/admin123 sukses (JWT cookie), GET /api/stats 200 (1000 produk aktif, 1 pesan belum dibaca, peringatan stok habis).
+- Screenshot verifikasi: tool-results/verify-beranda.png, verify-katalog.png.
+
+Stage Summary:
+- Repo BMP ter-install penuh & berjalan: dependensi OK, SQLite OK (1000 produk, 13 kategori, admin aktif), verifikasi browser & API lulus.
+- Login default: admin / admin123 (sudah ada peringatan ganti password di dashboard).
+- Catatan runtime: dev server dikelola supervisor platform (proses yang dibuat manual antar sesi tool akan dibersihkan); gunakan preview panel untuk mengakses situs.

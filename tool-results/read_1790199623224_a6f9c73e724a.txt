@@ -1,0 +1,690 @@
+     1→<div align="center">
+     2→
+     3→```
+     4→╔══════════════════════════════════════════════════════════════════╗
+     5→║                                                                  ║
+     6→║      ███╗   ███╗ █████╗ ███╗   ██╗ ██████╗ ██╗  ██╗ █████╗       ║
+     7→║      ████╗ ████║██╔══██╗████╗  ██║██╔════╝ ██║  ██║██╔══██╗      ║
+     8→║      ██╔████╔██║███████║██╔██╗ ██║██║  ███╗███████║███████║      ║
+     9→║      ██║╚██╔╝██║██╔══██║██║╚██╗██║██║   ██║██╔══██║██╔══██║      ║
+    10→║      ██║ ╚═╝ ██║██║  ██║██║ ╚████║╚██████╔╝██║  ██║██║  ██║      ║
+    11→║      ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝      ║
+    12→║                                                                  ║
+    13→║          B E R K A T   M A N D I R I   P E N D I N G I N         ║
+    14→║                                                                  ║
+    15→║        ❄️  Kompresor & Sparepart AC — Toko Digital Terlengkap ❄️  ║
+    16→║                                                                  ║
+    17→╚══════════════════════════════════════════════════════════════════╝
+    18→```
+    19→
+    20→# 🧊 Berkat Mandiri Pendingin
+    21→
+    22→**Website toko online kompresor & sparepart AC lengkap dengan Dashboard Admin —
+    23→dari katalog produk, upload barang, sampai pesanan WhatsApp, semua dalam satu aplikasi.**
+    24→
+    25→![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js&logoColor=white)
+    26→![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+    27→![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+    28→![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+    29→![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+    30→![SQLite](https://img.shields.io/badge/SQLite-Database-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+    31→![Status](https://img.shields.io/badge/Status-Terverifikasi_E2E-brightgreen?style=for-the-badge)
+    32→
+    33→**Bahasa Antarmuka:** 🇮🇩 Indonesia 100% — setiap tombol, menu, dan pesan.
+    34→
+    35→---
+    36→
+    37→📖 **Dokumentasi Lain:** [Tutorial Upload Produk (TUTORIAL-UPLOAD-PRODUK.md)](./TUTORIAL-UPLOAD-PRODUK.md) · [Tutorial Lengkap (TUTORIAL.md)](./TUTORIAL.md) ·
+    38→Panduan admin & deploy langkah-demi-langkah tersedia di dalam dashboard (menu *Panduan*).
+    39→
+    40→</div>
+    41→
+    42→---
+    43→
+    44→## 📑 Daftar Isi
+    45→
+    46→| # | Bagian | # | Bagian |
+    47→|---|--------|---|--------|
+    48→| 1 | [✨ Tentang Proyek](#-tentang-proyek) | 9 | [🗄️ Skema Database](#️-skema-database) |
+    49→| 2 | [🚀 Fitur Lengkap](#-fitur-lengkap) | 10 | [🔌 Dokumentasi API](#-dokumentasi-api) |
+    50→| 3 | [🔑 Akses Cepat & Login Default](#-akses-cepat--login-default) | 11 | [🧭 Panduan Admin Kilat](#-panduan-admin-kilat) |
+    51→| 4 | [🛠️ Teknologi yang Digunakan](#️-teknologi-yang-digunakan) | 12 | [🌐 Cara Deploy](#-cara-deploy) |
+    52→| 5 | [🏗️ Arsitektur Aplikasi](#️-arsitektur-aplikasi) | 13 | [🔐 Keamanan](#-keamanan) |
+    53→| 6 | [📂 Struktur Folder](#-struktur-folder) | 14 | [🧯 Troubleshooting](#-troubleshooting) |
+    54→| 7 | [⚡ Instalasi 5 Langkah](#-instalasi-5-langkah) | 15 | [❓ FAQ](#-faq) |
+    55→| 8 | [📜 Perintah Tersedia](#-perintah-tersedia) | 16 | [🗺️ Roadmap & Kontak](#️-roadmap--kontak) |
+    56→
+    57→---
+    58→
+    59→## ✨ Tentang Proyek
+    60→
+    61→**Berkat Mandiri Pendingin** adalah aplikasi web fullstack untuk bisnis jual-beli
+    62→**kompresor AC** dan **sparepart AC** (kapasitor, motor fan, termostat, freon,
+    63→fitting, dan lainnya). Dirancang agar pemilik toko **tanpa keahlian coding** bisa:
+    64→
+    65→- 🛍️ Menampilkan katalog produk yang **rapi, cepat, dan responsif** ke pelanggan
+    66→- 📤 **Upload barang sendiri** (nama, foto, harga, stok, deskripsi lengkap, spesifikasi teknis)
+    67→- 📨 Menerima **pesan pelanggan** langsung ke dashboard, balas 1-klik via WhatsApp/Email
+    68→- ⚙️ Mengatur identitas toko (nama, nomor WA, alamat, jam buka) **tanpa menyentuh kode**
+    69→
+    70→> 💡 **Kenapa aplikasi ini spesial?**
+    71→> Semua data tersimpan di **SQLite** — satu file saja. Tidak perlu install MySQL,
+    72→> tidak perlu konfigurasi server database rumit. Upload ke hosting, langsung jalan.
+    73→
+    74→---
+    75→
+    76→## 🚀 Fitur Lengkap
+    77→
+    78→### 🌐 Website Publik (untuk pelanggan)
+    79→
+    80→| Fitur | Detail |
+    81→|-------|--------|
+    82→| 🏠 **Beranda** | Hero banner besar, grid kategori, produk unggulan, keunggulan toko, tentang kami, strip merek (Daikin, Panasonic, LG, Gree, Sharp, Mitsubishi), CTA & kontak |
+    83→| 🔍 **Katalog Pintar** | Pencarian real-time, filter kategori, urutkan (terbaru / terpopuler / harga naik-turun), paginasi |
+    84→| 📄 **Detail Produk** | Galeri multi-foto, harga + status stok, spesifikasi teknis, penghitung *views*, tombol **Pesan via WhatsApp** (pesan otomatis terisi nama produk), produk terkait |
+    85→| 💬 **Form Kontak** | Dengan perlindungan **honeypot anti-spam** — pesan masuk langsung ke dashboard admin |
+    86→| 📱 **Tombol WA Mengambang** | Chat WhatsApp melayang di semua halaman, otomatis mengikuti nomor di Pengaturan |
+    87→| 🌙 **Dark Mode** | Terang/gelap otomatis mengikuti preferensi pengunjung |
+    88→| 📐 **Responsif Penuh** | Sempurna di HP (390px), tablet, dan desktop |
+    89→
+    90→### 🔐 Dashboard Admin (untuk pemilik toko)
+    91→
+    92→| Fitur | Detail |
+    93→|-------|--------|
+    94→| 🔑 **Login Aman** | Password ter-hash **bcrypt** + sesi **JWT** di cookie `httpOnly` |
+    95→| 📊 **Ringkasan** | 4 kartu statistik, pesan terbaru, peringatan stok menipis, produk terbaru |
+    96→| 📦 **Kelola Produk** | Tambah / edit / hapus, **upload multi-foto** (maks 3MB per file), editor spesifikasi dinamis, SKU, merek, harga (atau *"Hubungi Kami"*), stok, satuan |
+    97→| 👁️ **Sembunyikan / Tampilkan** | Switch aktif per produk + tandai **Unggulan** untuk beranda |
+    98→| 🗂️ **Kelola Kategori** | CRUD kategori + pilih ikon (terlindungi dari hapus jika masih ada produk) |
+    99→| 📨 **Kotak Pesan** | Filter belum-dibaca, tandai dibaca, hapus, **balas 1-klik** via WhatsApp/Email |
+   100→| 📄 **Halaman CMS** | **Editor WYSIWYG ala WordPress**: buat halaman bebas (Tentang, FAQ, kebijakan), tayangkan di menu "Informasi" & footer, mode draf/terbit, mode HTML |
+   101→| 🖼️ **Perpustakaan Media** | Grid semua gambar terunggah: cari, unggah, **salin URL 1-klik**, hapus; ikon media sosial (Instagram/Facebook/TikTok/YouTube) di footer |
+   102→| ⚙️ **Pengaturan Toko** | Nama toko, nomor WA, alamat, jam buka, teks hero, **logo perusahaan**, **logo mitra**, **favicon dinamis** — **live update tanpa deploy ulang** + ubah password admin |
+   103→| 📚 **Panduan Terpasang** | Tutorial 8 topik berbentuk accordion di dalam dashboard |
+   104→| 🛡️ **Notifikasi Stok Menipis** | Produk dengan stok ≤ 5 otomatis muncul di dashboard |
+   105→
+   106→---
+   107→
+   108→## 🔑 Akses Cepat & Login Default
+   109→
+   110→Setelah instalasi selesai ([lihat di bawah](#-instalasi-5-langkah)), buka `http://localhost:3000`:
+   111→
+   112→| Halaman | URL / Cara Akses |
+   113→|---------|------------------|
+   114→| 🌐 Website publik | `http://localhost:3000` |
+   115→| 🔐 Login admin | Website → menu **Login** (atau tombol di footer) |
+   116→| 📊 Dashboard admin | Otomatis setelah login |
+   117→
+   118→| Kredensial Default | Nilai |
+   119→|--------------------|-------|
+   120→| 👤 Username | `admin` |
+   121→| 🔑 Password | `admin123` |
+   122→
+   123→> ⚠️ **WAJIB BACA:** Segera ganti password di **Pengaturan → Ubah Password Admin**
+   124→> setelah login pertama. Password default hanya untuk pengembangan!
+   125→
+   126→---
+   127→
+   128→## 🛠️ Teknologi yang Digunakan
+   129→
+   130→| Lapisan | Teknologi | Fungsi |
+   131→|---------|-----------|--------|
+   132→| ⚙️ Framework | **Next.js 16** (App Router) | Fullstack — frontend & API dalam satu aplikasi |
+   133→| 🧠 Bahasa | **TypeScript 5** | Kode aman, bebas bug tipe data |
+   134→| 🎨 UI | **React 19 + shadcn/ui** (Radix) | Komponen modern & aksesibel |
+   135→| 💅 Styling | **Tailwind CSS 4** | Desain cepat & konsisten, tema teal ❄️ |
+   136→| 🗄️ Database | **Prisma 6 + SQLite** | ORM tipe-aman, database cukup 1 file |
+   137→| 🔐 Auth | **jose (JWT) + bcryptjs** | Login aman tanpa dependensi eksternal |
+   138→| 🖼️ Ikon | **Lucide React** | Ribuan ikon vektor elegan |
+   139→| ✨ Animasi | **Framer Motion** | Transisi halus & modern |
+   140→| 🔔 Notifikasi | **Sonner** | Toast notifikasi yang cantik |
+   141→| 🌓 Tema | **next-themes** | Dark mode otomatis |
+   142→
+   143→**Prasyarat:** Node.js **18+** (disarankan 20+) atau **Bun**. Itu saja — SQLite sudah bawaan!
+   144→
+   145→---
+   146→
+   147→## 🏗️ Arsitektur Aplikasi
+   148→
+   149→```
+   150→┌─────────────────────────────────────────────────────────────────────┐
+   151→│                           PENGGUNA                                  │
+   152→│         🛒 Pelanggan (publik)          👨‍💼 Admin (pemilik toko)      │
+   153→└───────────────┬─────────────────────────────┬───────────────────────┘
+   154→                │                             │
+   155→                ▼                             ▼
+   156→┌─────────────────────────────────────────────────────────────────────┐
+   157→│                    NEXT.JS 16 — SATU APLIKASI (:3000)               │
+   158→│                                                                     │
+   159→│  ┌────────────────────────────┐   ┌──────────────────────────────┐  │
+   160→│  │   FRONTEND (React SPA)     │   │      BACKEND (API Routes)    │  │
+   161→│  │                            │   │                              │  │
+   162→│  │  publik-site.tsx           │   │  /api/auth/*     🔐 login    │  │
+   163→│  │  ├─ home-view (beranda)    │   │  /api/products   📦 produk   │  │
+   164→│  │  ├─ catalog-view (katalog) │──▶│  /api/categories 🗂️ kategori │  │
+   165→│  │  ├─ product-detail         │   │  /api/messages   📨 pesan    │  │
+   166→│  │  └─ contact-section        │   │  /api/settings   ⚙️ setting  │  │
+   167→│  │                            │   │  /api/upload     🖼️ gambar   │  │
+   168→│  │  admin-app.tsx             │   │  /api/stats      📊 statistik│  │
+   169→│  │  ├─ dashboard              │   │                              │  │
+   170→│  │  ├─ products-manager       │   │  🛡️ Middleware: JWT cookie   │  │
+   171→│  │  ├─ messages-manager       │   │     httpOnly + bcrypt        │  │
+   172→│  │  └─ settings-manager       │   │                              │  │
+   173→│  └────────────────────────────┘   └──────────────┬───────────────┘  │
+   174→│                                                  │                  │
+   175→│         📁 public/uploads/ ◀── file foto produk  │                  │
+   176→└──────────────────────────────────────────────────┼──────────────────┘
+   177→                                                   ▼
+   178→                                    ┌──────────────────────────┐
+   179→                                    │   PRISMA ORM             │
+   180→                                    │   ┌──────────────────┐   │
+   181→                                    │   │  SQLite (1 file) │   │
+   182→                                    │   │  db/custom.db    │   │
+   183→                                    │   └──────────────────┘   │
+   184→                                    │   5 tabel: Admin,        │
+   185→                                    │   Category, Product,     │
+   186→                                    │   Message, Setting       │
+   187→                                    └──────────────────────────┘
+   188→```
+   189→
+   190→> 📌 **Catatan arsitektur:** Routing halaman memakai **hash-router SPA** (`/#/katalog`,
+   191→> `/#/admin`) di atas satu route Next.js — sehingga deploy jauh lebih sederhana.
+   192→
+   193→---
+   194→
+   195→## 📂 Struktur Folder
+   196→
+   197→```
+   198→berkat-mandiri-pendingin/
+   199→├── 📄 README.md                  ← File yang sedang Anda baca
+   200→├── 📘 TUTORIAL.md                ← Tutorial lengkap & deploy langkah demi langkah
+   201→├── 📦 TUTORIAL-UPLOAD-PRODUK.md  ← Tutorial lengkap mengupload barang (pemula)
+   202→├── 📦 package.json               ← Daftar dependensi & skrip npm
+   203→│
+   204→├── 🗄️ prisma/
+   205→│   └── schema.prisma             ← Definisi 5 tabel database
+   206→│
+   207→├── 🗃️ db/
+   208→│   └── custom.db                 ← File database SQLite (dibuat otomatis)
+   209→│
+   210→├── 🖼️ public/
+   211→│   └── uploads/                  ← Foto produk & gambar website (WAJIB di-backup!)
+   212→│
+   213→├── 🌱 scripts/
+   214→│   └── seed.ts                   ← Isi data awal: admin, 6 kategori, 14 produk
+   215→│
+   216→├── ⚙️ src/
+   217→│   ├── app/
+   218→│   │   ├── layout.tsx            ← Layout global + tema + font
+   219→│   │   ├── page.tsx              ← Titik masuk SPA (public + admin)
+   220→│   │   └── api/                  ← 🌐 BACKEND — 14 route API
+   221→│   │       ├── auth/             ← login, logout, me, change-password
+   222→│   │       ├── products/         ← CRUD produk + filter & paginasi
+   223→│   │       ├── categories/       ← CRUD kategori
+   224→│   │       ├── messages/         ← Pesan pelanggan
+   225→│   │       ├── settings/         ← Pengaturan toko (key-value)
+   226→│   │       ├── stats/            ← Statistik dashboard
+   227→│   │       └── upload/           ← Upload foto (validasi 3MB)
+   228→│   │
+   229→│   ├── components/
+   230→│   │   ├── site/                 ← 🛒 Halaman publik
+   231→│   │   │   ├── public-site.tsx   ← Router SPA publik
+   232→│   │   │   ├── home-view.tsx     ← Beranda
+   233→│   │   │   ├── catalog-view.tsx  ← Katalog + filter + paginasi
+   234→│   │   │   ├── product-detail.tsx← Detail produk + tombol WA
+   235→│   │   │   ├── product-card.tsx  ← Kartu produk
+   236→│   │   │   ├── contact-section.tsx
+   237→│   │   │   ├── site-header.tsx   ← Header sticky + navigasi
+   238→│   │   │   ├── footer.tsx        ← Footer 4 kolom
+   239→│   │   │   ├── login-view.tsx    ← Form login admin
+   240→│   │   │   └── whatsapp-float.tsx← Tombol WA mengambang
+   241→│   │   │
+   242→│   │   ├── admin/                ← 🔐 Dashboard admin
+   243→│   │   │   ├── admin-app.tsx     ← Kerangka admin + guard login
+   244→│   │   │   ├── dashboard.tsx     ← Ringkasan & statistik
+   245→│   │   │   ├── products-manager.tsx  ← Tabel produk (cari, filter, sort)
+   246→│   │   │   ├── product-form.tsx  ← Form tambah/edit + upload foto
+   247→│   │   │   ├── categories-manager.tsx
+   248→│   │   │   ├── messages-manager.tsx
+   249→│   │   │   ├── settings-manager.tsx
+   250→│   │   │   └── panduan.tsx       ← Tutorial di dalam dashboard
+   251→│   │   │
+   252→│   │   └── ui/                   ← Komponen shadcn/ui (button, dialog, dll)
+   253→│   │
+   254→│   └── lib/                      ← 🧰 Utilitas
+   255→│       ├── db.ts                 ← Klien Prisma
+   256→│       ├── auth.ts               ← JWT, hash password, guard
+   257→│       ├── format.ts             ← Format Rupiah, tanggal
+   258→│       ├── slug.ts               ← Generator slug URL
+   259→│       └── ...
+   260→│
+   261→└── 🧪 tests/                     ← Folder pengujian
+   262→```
+   263→
+   264→---
+   265→
+   266→## ⚡ Instalasi 5 Langkah
+   267→
+   268→> 🎯 **Total waktu: ±3 menit.** Tidak perlu MySQL, tidak perlu Docker.
+   269→
+   270→```bash
+   271→# 1️⃣ Masuk folder proyek
+   272→cd berkat-mandiri-pendingin
+   273→
+   274→# 2️⃣ Install semua dependensi
+   275→npm install                 # atau: bun install
+   276→
+   277→# 3️⃣ Buat struktur database SQLite
+   278→npm run db:push
+   279→
+   280→# 4️⃣ Isi data awal (admin + 6 kategori + 14 produk contoh)
+   281→bun scripts/seed.ts         # atau: npx tsx scripts/seed.ts
+   282→
+   283→# 5️⃣ Jalankan website 🚀
+   284→npm run dev
+   285→```
+   286→
+   287→Buka **http://localhost:3000** → login sebagai `admin` / `admin123` → selesai! 🎉
+   288→
+   289→<details>
+   290→<summary>🔧 <b>Butuh variabel lingkungan?</b> (klik untuk buka)</summary>
+   291→
+   292→Buat file `.env` di root proyek (sudah otomatis tersedia di kebanyakan kasus):
+   293→
+   294→```env
+   295→# Lokasi file database SQLite
+   296→DATABASE_URL="file:../db/custom.db"
+   297→
+   298→# Kunci rahasia untuk token JWT login admin
+   299→# GANTI dengan string acak panjang saat produksi!
+   300→JWT_SECRET="ubah-ini-dengan-string-acak-yang-panjang-dan-unik"
+   301→```
+   302→
+   303→💡 Tips membuat string acak: jalankan `openssl rand -hex 32`
+   304→</details>
+   305→
+   306→---
+   307→
+   308→## 📜 Perintah Tersedia
+   309→
+   310→Jalankan dengan `npm run <perintah>` (atau `bun run <perintah>`):
+   311→
+   312→| Perintah | Fungsi |
+   313→|----------|--------|
+   314→| `dev` | 🚀 Jalankan server pengembangan di port **3000** (hot reload) |
+   315→| `build` | 🏗️ Build versi produksi (standalone, siap deploy) |
+   316→| `start` | ▶️ Jalankan server produksi hasil build |
+   317→| `lint` | 🧹 Cek kualitas kode dengan ESLint |
+   318→| `db:push` | 🗄️ Terapkan schema Prisma ke database SQLite |
+   319→| `db:generate` | ⚙️ Generate klien Prisma (setelah ubah schema) |
+   320→| `db:migrate` | 📝 Buat migrasi database (mode pengembangan) |
+   321→| `db:reset` | 🔄 **⚠️ Hapus semua data** & buat ulang database dari nol |
+   322→
+   323→---
+   324→
+   325→## 🗄️ Skema Database
+   326→
+   327→Database SQLite berisi **5 tabel** (dikelola oleh Prisma):
+   328→
+   329→### 👤 `Admin` — Akun pemilik toko
+   330→| Kolom | Tipe | Keterangan |
+   331→|-------|------|-----------|
+   332→| `id` | String (cuid) | ID unik |
+   333→| `username` | String **unique** | Nama untuk login |
+   334→| `password` | String | Hash **bcrypt** (tidak pernah plain-text!) |
+   335→| `name` | String | Nama tampil di dashboard |
+   336→
+   337→### 🗂️ `Category` — Kategori produk
+   338→| Kolom | Tipe | Keterangan |
+   339→|-------|------|-----------|
+   340→| `name` | String **unique** | Misal: "Kompresor AC" |
+   341→| `slug` | String **unique** | `kompresor-ac` (untuk URL) |
+   342→| `icon` | String | Nama ikon Lucide (default: `package`) |
+   343→
+   344→### 📦 `Product` — Produk toko (tabel utama)
+   345→| Kolom | Tipe | Keterangan |
+   346→|-------|------|-----------|
+   347→| `name` / `slug` | String | Nama produk & slug unik URL |
+   348→| `sku` | String? | Kode stok barang (opsional) |
+   349→| `brand` | String? | Merek: Daikin, Panasonic, dll |
+   350→| `categoryId` | String? | Relasi ke Category (*SetNull* saat kategori dihapus) |
+   351→| `price` | Int? | Dalam **Rupiah**; kosong = *"Hubungi Kami"* |
+   352→| `unit` / `stock` | String / Int | Satuan (`pcs`, `unit`) & jumlah stok |
+   353→| `shortDesc` / `description` | String | Deskripsi singkat & **deskripsi lengkap** |
+   354→| `specs` | String (JSON) | Array spesifikasi: `[{"k":"Merek","v":"Daikin"}]` |
+   355→| `images` | String (JSON) | Array URL foto (multi-foto) |
+   356→| `isFeatured` / `isActive` | Boolean | Tampilkan di beranda / sembunyikan dari katalog |
+   357→| `views` | Int | Penghitung kunjungan detail produk |
+   358→
+   359→### 📨 `Message` — Pesan dari form kontak
+   360→| Kolom | Tipe | Keterangan |
+   361→|-------|------|-----------|
+   362→| `name` / `phone` / `email` | String | Identitas pengirim (email opsional) |
+   363→| `message` | String | Isi pesan |
+   364→| `isRead` | Boolean | Status dibaca admin (untuk badge notifikasi) |
+   365→
+   366→### ⚙️ `Setting` — Pengaturan toko (key-value)
+   367→| Kolom | Tipe | Keterangan |
+   368→|-------|------|-----------|
+   369→| `key` / `value` | String | Contoh: `storeName`, `whatsapp`, `heroTitle`, `logoUrl`, `partnerLogos` (JSON), `faviconUrl` |
+   370→
+   371→### 📄 `Page` — Halaman konten CMS
+   372→| Kolom | Tipe | Keterangan |
+   373→|-------|------|-----------|
+   374→| `title` / `slug` | String | Judul + alamat (`/p/slug`, unik) |
+   375→| `content` | String | HTML dari editor WYSIWYG |
+   376→| `excerpt` | String | Ringkasan singkat (opsional) |
+   377→| `isPublished` | Boolean | `false` = draf, belum tampil di publik |
+   378→| `showInMenu` | Boolean | Masuk menu "Informasi" & footer |
+   379→| `sortOrder` / `views` | Int | Urutan menu / counter pembaca |
+   380→
+   381→> 🌱 **Data awal dari seed:** 1 admin, 6 kategori (Kompresor AC, Motor & Fan,
+   382→> Kapasitor, Termostat & Sensor, Freon & Gas, Fitting & Aksesoris),
+   383→> 14 produk contoh lengkap dengan spesifikasi & deskripsi, 2 pesan contoh.
+   384→> Seed **idempotent** — aman dijalankan berulang, tidak akan menduplikasi data.
+   385→
+   386→---
+   387→
+   388→## 🔌 Dokumentasi API
+   389→
+   390→Semua endpoint berawalan `/api`. Respon berformat JSON.
+   391→
+   392→### 🔐 Autentikasi
+   393→
+   394→| Metode | Endpoint | Auth | Fungsi |
+   395→|--------|----------|:----:|--------|
+   396→| `POST` | `/api/auth/login` | — | Login → set cookie JWT `httpOnly` |
+   397→| `POST` | `/api/auth/logout` | — | Hapus cookie sesi |
+   398→| `GET` | `/api/auth/me` | 🔒 | Data admin yang sedang login |
+   399→| `PUT` | `/api/auth/change-password` | 🔒 | Ganti password admin |
+   400→
+   401→**Contoh login:**
+   402→
+   403→```bash
+   404→curl -X POST http://localhost:3000/api/auth/login \
+   405→  -H "Content-Type: application/json" \
+   406→  -d '{"username":"admin","password":"admin123"}' \
+   407→  -c cookie.txt
+   408→# → {"ok":true,"admin":{"username":"admin","name":"Administrator"}}
+   409→```
+   410→
+   411→### 📦 Produk
+   412→
+   413→| Metode | Endpoint | Auth | Fungsi |
+   414→|--------|----------|:----:|--------|
+   415→| `GET` | `/api/products` | — | Daftar produk + **filter**: `q` (cari), `category`, `status`, `sort` (`newest`/`popular`/`price-asc`/`price-desc`), `featured`, `page`, `limit` |
+   416→| `GET` | `/api/products/:id` | — | Detail produk (via `id` **atau** `slug`) + menambah `views` |
+   417→| `POST` | `/api/products` | 🔒 | Buat produk baru |
+   418→| `PUT` | `/api/products/:id` | 🔒 | Update produk |
+   419→| `DELETE` | `/api/products/:id` | 🔒 | Hapus produk |
+   420→
+   421→**Contoh ambil katalog + filter:**
+   422→
+   423→```bash
+   424→curl "http://localhost:3000/api/products?q=kompresor&sort=price-asc&page=1&limit=12"
+   425→# → {"items":[...],"total":4,"page":1,"totalPages":1}
+   426→```
+   427→
+   428→### 🗂️ Kategori · 📨 Pesan · ⚙️ Pengaturan · 📊 Lainnya
+   429→
+   430→| Metode | Endpoint | Auth | Fungsi |
+   431→|--------|----------|:----:|--------|
+   432→| `GET` | `/api/categories` | — | Semua kategori (beserta jumlah produk) |
+   433→| `POST` | `/api/categories` | 🔒 | Buat kategori |
+   434→| `PUT` | `/api/categories/:id` | 🔒 | Update kategori |
+   435→| `DELETE` | `/api/categories/:id` | 🔒 | Hapus (❌ ditolak jika masih ada produk) |
+   436→| `GET` | `/api/messages` | 🔒 | Daftar pesan (filter `unread=true`) |
+   437→| `POST` | `/api/messages` | — | Kirim pesan dari form kontak (honeypot anti-spam) |
+   438→| `PUT` | `/api/messages/:id` | 🔒 | Tandai sudah dibaca |
+   439→| `DELETE` | `/api/messages/:id` | 🔒 | Hapus pesan |
+   440→| `GET` | `/api/settings` | — | Pengaturan toko (merge nilai default) |
+   441→| `PUT` | `/api/settings` | 🔒 | Simpan pengaturan (batch key-value) |
+   442→| `GET` | `/api/stats` | 🔒 | Statistik dashboard (jumlah produk, pesan belum dibaca, stok menipis, produk terbaru) |
+   443→| `POST` | `/api/upload` | 🔒 | Upload foto (maks **3MB**, validasi tipe file) → `{"url":"/uploads/..."}` |
+   444→| `GET` | `/api/pages` | — | Daftar halaman CMS terbit (`?menu=1` khusus menu, `?all=1` 🔒 termasuk draf) |
+   445→| `POST` | `/api/pages` | 🔒 | Buat halaman (slug otomatis dari judul) |
+   446→| `GET/PUT/DELETE` | `/api/pages/:id` | 🔒 | Detail / ubah / hapus halaman |
+   447→| `GET` | `/api/pages/slug/:slug` | — | Halaman per slug (counter views naik otomatis) |
+   448→| `GET` | `/api/media` | 🔒 | Daftar semua file di folder uploads (nama, ukuran, tanggal) |
+   449→| `DELETE` | `/api/media?url=` | 🔒 | Hapus file media (proteksi path traversal) |
+   450→| `GET` | `/api` | — | Cek status API (health check) |
+   451→
+   452→> 🔒 = butuh login admin (cookie JWT dikirim otomatis oleh browser setelah login)
+   453→
+   454→---
+   455→
+   456→## 🧭 Panduan Admin Kilat
+   457→
+   458→```
+   459→📊 RINGKASAN      Lihat statistik, pesan baru & produk stok menipis
+   460→📦 PRODUK         [+ Produk Baru] → isi nama, kategori, harga, stok
+   461→                  → upload foto (bisa banyak) → tulis deskripsi & spesifikasi
+   462→                  → [Simpan]. Switch 👁️ = tampilkan/sembunyikan, ⭐ = unggulan
+   463→🗂️ KATEGORI       Tambah/edit/hapus kategori + pilih ikon
+   464→📨 PESAN          Pesan pelanggan masuk di sini → [Balas WA] 1 klik
+   465→⚙️ PENGATURAN     Ubah nama toko, nomor WA (semua tombol WA ikut berubah!),
+   466→                  alamat, jam buka, teks banner → [Simpan]
+   467→🔐 GANTI SANDI    Pengaturan → Ubah Password Admin (LAKUKAN SEGERA!)
+   468→```
+   469→
+   470→> 📚 Panduan lengkap dengan gambar: **[TUTORIAL.md](./TUTORIAL.md)** — termasuk
+   471→> cara deploy ke cPanel & VPS.
+   472→
+   473→---
+   474→
+   475→## 🌐 Cara Deploy
+   476→
+   477→### Ringkasan Opsi
+   478→
+   479→| Opsi | Cocok Untuk | Admin Dashboard | Kesulitan | Panduan |
+   480→|------|-------------|:---------------:|:---------:|---------|
+   481→| 🟢 **PHP Shared Hosting** ⭐ | cPanel hosting biasa (juraganwebsite, dll) — **TANPA Node.js!** | ✅ Penuh | ⭐ | [PANDUAN-DEPLOY-SHARED-HOSTING.md](./PANDUAN-DEPLOY-SHARED-HOSTING.md) |
+   482→| 🟦 **cPanel + Node.js App** | Shared hosting berfitur Node.js (Hostinger, Niagahoster, dll) | ✅ Penuh | ⭐⭐ | [TUTORIAL.md §4](./TUTORIAL.md#4-panduan-deploy-ke-shared-hosting-cpanel) |
+   483→| 🖥️ **VPS + PM2** | VPS sendiri (DigitalOcean, Vultr, dll) | ✅ Penuh | ⭐⭐⭐ | [TUTORIAL.md §5](./TUTORIAL.md#5-alternatif-deploy-ke-vps) |
+   484→
+   485→### ⚡ Inti Deploy PHP Shared Hosting (TL;DR) — REKOMENDASI
+   486→
+   487→```bash
+   488→# Di komputer: bangun paket lengkap (statis + PHP API bridge)
+   489→bun run build:deploy
+   490→# → build/berkat-mandiri-website.zip
+   491→```
+   492→
+   493→1. 📤 cPanel → File Manager → `public_html` → upload ZIP → **Extract**
+   494→2. ✅ Selesai! Website langsung tampil — admin `/#/admin` berfungsi penuh
+   495→3. 🔐 Segera ganti password admin (Pengaturan → Akun)
+   496→4. 🚨 **Website tidak muncul?** Buka `domainanda.com/cek.php` — diagnosis
+   497→   otomatis berbahasa Indonesia + solusinya (6 penyebab paling umum dibahas di
+   498→   [PANDUAN-DEPLOY-SHARED-HOSTING.md §Website Tidak Muncul](./PANDUAN-DEPLOY-SHARED-HOSTING.md))
+   499→
+   500→> 💡 **Inovasi PHP API Bridge:** shared hosting biasa (PHP-only) tidak bisa
+   501→> menjalankan Node.js — maka dibuat `php-api/`, sebuah jembatan PHP yang
+   502→> meniru **100% REST API Next.js** (produk, kategori, settings, upload,
+   503→> media, halaman CMS, pesan, stats, auth) dengan penyimpanan file JSON.
+   504→> Frontend statis hasil `next build` tetap identik; dashboard admin tetap
+   505→> bisa menambah/mengubah produk, upload gambar, dan mengelola CMS langsung
+   506→> dari website yang online. Terverifikasi **70/70 pengujian otomatis**.
+   507→> Panduan lengkap: [PANDUAN-DEPLOY-SHARED-HOSTING.md](./PANDUAN-DEPLOY-SHARED-HOSTING.md)
+   508→>
+   509→> 🛟 **Mode Darurat anti-website-kosong:** paket berisi `api-cache/` — bila
+   510→> PHP di hosting bermasalah, halaman toko tetap tampil (baca-saja: beranda,
+   511→> katalog 1000 produk, detail, CMS) sampai PHP diperbaiki. Semua referensi
+   512→> aset relatif sehingga paket juga jalan bila dipasang di subfolder.
+   513→>
+   514→> 💾 **Backup rutin 2 hal ini di hosting:** folder `uploads/` + folder `api/data/`.
+   515→
+   516→### ⚡ Inti Deploy cPanel Node.js (TL;DR)
+   517→
+   518→```bash
+   519→# Di komputer: build produksi
+   520→npm run build
+   521→```
+   522→
+   523→1. 📤 Upload seluruh folder proyek ke cPanel (File Manager / ZIP)
+   524→2. 🟦 cPanel → **Setup Node.js App** → arahkan ke proyek, startup file: `.next/standalone/server.js`
+   525→3. 📦 Install dependensi → 🗄️ jalankan `db:push` + seed → ▶️ Restart aplikasi
+   526→4. ✅ Selesai!
+   527→
+   528→> ⚠️ **Penting:** Opsi Node.js menuntut hosting yang mendukung **Node.js App**
+   529→> (bukan PHP-only). Untuk hosting PHP-only biasa, gunakan opsi 🟢 di atas.
+   530→>
+   531→> 💾 **Backup rutin 2 hal ini:** folder `public/uploads/` + file `db/custom.db`.
+   532→
+   533→---
+   534→
+   535→## 🔐 Keamanan
+   536→
+   537→- ✅ Password di-hash **bcrypt** (10 rounds) — tidak pernah tersimpan polos
+   538→- ✅ Sesi memakai **JWT** dalam cookie `httpOnly` (tahan serangan XSS)
+   539→- ✅ Semua endpoint admin **terlindungi middleware** autentikasi
+   540→- ✅ Upload file **divalidasi** (tipe & ukuran maks 3MB)
+   541→- ✅ Form kontak dilengkapi **honeypot** anti-bot spam
+   542→- ✅ Prisma ORM = terlindungi dari **SQL Injection** secara bawaan
+   543→
+   544→**Checklist sebelum produksi:**
+   545→
+   546→- [ ] Ganti password admin default (`admin123`)
+   547→- [ ] Ganti `JWT_SECRET` dengan string acak unik
+   548→- [ ] Aktifkan HTTPS di hosting (SSL/TLS gratis via cPanel — Let's Encrypt)
+   549→- [ ] Backup rutin `public/uploads/` + `db/custom.db`
+   550→
+   551→---
+   552→
+   553→## 🧯 Troubleshooting
+   554→
+   555→| ❌ Masalah | 💡 Solusi |
+   556→|-----------|----------|
+   557→| `P1003: database tidak ada` | Jalankan `npm run db:push`, lalu seed ulang |
+   558→| Login ditolak padahal password benar | Pastikan sudah seed (`bun scripts/seed.ts`) & cookie browser tidak diblokir |
+   559→| Foto tidak muncul | Cek file ada di `public/uploads/`; pastikan folder ikut ter-upload saat deploy |
+   560→| Upload foto gagal "terlalu besar" | Maks **3MB** per file — kompres dulu fotonya |
+   561→| Port 3000 dipakai aplikasi lain | `npm run dev -- -p 3001` lalu buka `:3001` |
+   562→| Hapus kategori ditolak | Kategori masih berisi produk — pindahkan/hapus produknya dulu (ini fitur pengaman!) |
+   563→| Website blank putih setelah deploy | Jalankan `npm run build` ulang; pastikan startup file benar (`.next/standalone/server.js`) |
+   564→| Perubahan pengaturan tidak muncul | Klik **Simpan** di Pengaturan, lalu refresh halaman (Ctrl+F5) |
+   565→
+   566→---
+   567→
+   568→## ❓ FAQ
+   569→
+   570→<details>
+   571→<summary><b>Apakah bisa jalan di shared hosting PHP biasa (cPanel tanpa Node.js)?</b></summary>
+   572→
+   573→Tidak. Aplikasi ini dibangun di **Next.js (Node.js)** — bukan PHP. Anda butuh hosting
+   574→dengan fitur **Setup Node.js App** (tersedia di Hostinger, Niagahoster, dsb pada paket
+   575→tertentu) atau VPS. Panduan lengkap di [TUTORIAL.md](./TUTORIAL.md).
+   576→</details>
+   577→
+   578→<details>
+   579→<summary><b>Apakah harus install MySQL?</b></summary>
+   580→
+   581→**Tidak perlu!** Database memakai **SQLite** — cukup satu file (`db/custom.db`).
+   582→Tidak ada instalasi, tidak ada konfigurasi server database. Backup = copy file-nya saja.
+   583→</details>
+   584→
+   585→<details>
+   586→<summary><b>Lupa password admin, bagaimana?</b></summary>
+   587→
+   588→Jalankan ulang seed admin: hapus row Admin di database (bisa via script Prisma Studio
+   589→`npx prisma studio`), lalu `bun scripts/seed.ts` — login kembali dengan
+   590→`admin/admin123` dan segera ganti password.
+   591→</details>
+   592→
+   593→<details>
+   594→<summary><b>Bisa menambah kategori baru? (misal: "Blower")</b></summary>
+   595→
+   596→Bisa, dari dashboard: **Kategori → + Kategori Baru**. Isi nama, slug otomatis,
+   597→pilih ikon. Kategori baru langsung muncul di katalog & form produk.
+   598→</details>
+   599→
+   600→<details>
+   601→<summary><b>Bagaimana cara membuat produk "harga hubungi kami"?</b></summary>
+   602→
+   603→Kosongkan kolom harga saat membuat produk — katalog otomatis menampilkan
+   604→**"Hubungi Kami"** dan tombol WhatsApp tetap berfungsi.
+   605→</details>
+   606→
+   607→<details>
+   608→<summary><b>Apakah data produk contoh bisa dihapus?</b></summary>
+   609→
+   610→Bisa. Hapus satu per satu dari dashboard (📦 Produk → 🗑️), atau mulai dari database
+   611→kosong: `npm run db:reset` lalu seed ulang **hanya admin & kategori** (edit seed bila perlu).
+   612→</details>
+   613→
+   614→---
+   615→
+   616→## 🗺️ Roadmap
+   617→
+   618→- [ ] Keranjang belanja & pemesanan langsung (checkout)
+   619→- [ ] Ekspor laporan produk ke Excel/PDF
+   620→- [ ] Notifikasi pesan baru via WhatsApp API
+   621→- [ ] Multi-gambar drag & drop dengan urutan
+   622→- [ ] Statistik kunjungan grafik (recharts)
+   623→
+   624→> 💡 Punya ide fitur? Silakan ajukan lewat kontak di bawah!
+   625→
+   626→---
+   627→
+   628→## 🤝 Kontribusi
+   629→
+   630→Kontribusi sangat diterima! 🎉
+   631→
+   632→1. 🍴 Fork repositori ini
+   633→2. 🌿 Buat branch fitur: `git checkout -b fitur/KeunikanBaru`
+   634→3. 💾 Commit: `git commit -m "Tambah: fitur keunikan baru"`
+   635→4. 📤 Push: `git push origin fitur/KeunikanBaru`
+   636→5. 🔃 Buka Pull Request
+   637→
+   638→---
+   639→
+   640→## 📄 Lisensi
+   641→
+   642→Proyek ini dibuat untuk kebutuhan bisnis **Berkat Mandiri Pendingin**.
+   643→Bebas digunakan dan dimodifikasi untuk kepentingan pemilik toko. 🧊
+   644→
+   645→---
+   646→
+   647→## 🏆 Kredit
+   648→
+   649→Karya ini lahir dari kolaborasi para ahli:
+   650→
+   651→| Peran | Pelaku |
+   652→|-------|--------|
+   653→| 💻 **Pengembangan Aplikasi** | **PT Digital Bisnis Manajemen (Digiman)** |
+   654→| 🌐 **Hosting & Domain** | [**juraganwebsite.web.id**](https://juraganwebsite.web.id) |
+   655→
+   656→> Kredit ini juga tampil elegan di **footer website**, **halaman login admin**,
+   657→> dan **sidebar dashboard** — menghormati siapa pun yang berada di balik layar. 🙏
+   658→
+   659→---
+   660→
+   661→## 📞 Kontak
+   662→
+   663→<div align="center">
+   664→
+   665→**❄️ Berkat Mandiri Pendingin** — *Solusi Kompresor & Sparepart AC Terpercaya*
+   666→
+   667→🏪 Alamat & 📱 Nomor WhatsApp dapat dilihat di bagian **Kontak** website,
+   668→atau diatur sendiri lewat **Dashboard → Pengaturan**.
+   669→
+   670→| Kebutuhan | Ke Mana |
+   671→|-----------|---------|
+   672→| 🛒 Order & tanya stok | Tombol WhatsApp mengambang di website |
+   673→| 📨 Pesan tertulis | Form kontak di website |
+   674→| 🛠️ Kendala aplikasi | Lihat [TUTORIAL.md](./TUTORIAL.md) & menu **Panduan** di dashboard |
+   675→
+   676→---
+   677→
+   678→<div>
+   679→
+   680→![Fitur](https://img.shields.io/badge/Fitur-21%2B-14b8a6?style=flat-square)
+   681→![Endpoint API](https://img.shields.io/badge/Endpoint_API-20-0ea5e9?style=flat-square)
+   682→![Tabel DB](https://img.shields.io/badge/Tabel_Database-5-a855f7?style=flat-square)
+   683→![Bahasa](https://img.shields.io/badge/Bahasa-Indonesia%20🇮🇩-ef4444?style=flat-square)
+   684→
+   685→**Dibuat dengan ❄️ & ☕ — Terima kasih telah menggunakan Berkat Mandiri Pendingin!**
+   686→
+   687→</div>
+   688→
+   689→</div>
+   690→

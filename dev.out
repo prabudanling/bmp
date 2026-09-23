@@ -1,0 +1,114 @@
+$ next dev -p 3000 2>&1 | tee dev.log
+▲ Next.js 16.1.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.10.183:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 887ms
+○ Compiling / ...
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+ GET / 200 in 7.1s (compile: 6.3s, render: 842ms)
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+ GET / 200 in 366ms (compile: 5ms, render: 361ms)
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+ GET / 200 in 279ms (compile: 3ms, render: 276ms)
+$ next dev -p 3000 2>&1 | tee dev.log
+▲ Next.js 16.1.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.10.183:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 685ms
+○ Compiling / ...
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+ GET / 200 in 93ms (compile: 4ms, render: 89ms)
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+ GET / 200 in 127ms (compile: 4ms, render: 123ms)
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Product`.`id` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT `main`.`Product`.`id`, `main`.`Product`.`name`, `main`.`Product`.`slug`, `main`.`Product`.`sku`, `main`.`Product`.`brand`, `main`.`Product`.`categoryId`, `main`.`Product`.`price`, `main`.`Product`.`unit`, `main`.`Product`.`stock`, `main`.`Product`.`shortDesc`, `main`.`Product`.`description`, `main`.`Product`.`specs`, `main`.`Product`.`images`, `main`.`Product`.`isFeatured`, `main`.`Product`.`isActive`, `main`.`Product`.`views`, `main`.`Product`.`createdAt`, `main`.`Product`.`updatedAt` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? ORDER BY `main`.`Product`.`createdAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt` FROM `main`.`Category` WHERE `main`.`Category`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt`, COALESCE(`aggr_selection_0_Product`.`_aggr_count_products`, 0) AS `_aggr_count_products` FROM `main`.`Category` LEFT JOIN (SELECT `main`.`Product`.`categoryId`, COUNT(*) AS `_aggr_count_products` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? GROUP BY `main`.`Product`.`categoryId`) AS `aggr_selection_0_Product` ON (`main`.`Category`.`id` = `aggr_selection_0_Product`.`categoryId`) WHERE 1=1 ORDER BY `main`.`Category`.`name` ASC LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Product`.`id` FROM `main`.`Product` WHERE (`main`.`Product`.`isActive` = ? AND `main`.`Product`.`isFeatured` = ?) LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT `main`.`Product`.`id`, `main`.`Product`.`name`, `main`.`Product`.`slug`, `main`.`Product`.`sku`, `main`.`Product`.`brand`, `main`.`Product`.`categoryId`, `main`.`Product`.`price`, `main`.`Product`.`unit`, `main`.`Product`.`stock`, `main`.`Product`.`shortDesc`, `main`.`Product`.`description`, `main`.`Product`.`specs`, `main`.`Product`.`images`, `main`.`Product`.`isFeatured`, `main`.`Product`.`isActive`, `main`.`Product`.`views`, `main`.`Product`.`createdAt`, `main`.`Product`.`updatedAt` FROM `main`.`Product` WHERE (`main`.`Product`.`isActive` = ? AND `main`.`Product`.`isFeatured` = ?) ORDER BY `main`.`Product`.`createdAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt` FROM `main`.`Category` WHERE `main`.`Category`.`id` IN (?,?,?,?) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Page`.`id`, `main`.`Page`.`title`, `main`.`Page`.`slug`, `main`.`Page`.`content`, `main`.`Page`.`excerpt`, `main`.`Page`.`isPublished`, `main`.`Page`.`showInMenu`, `main`.`Page`.`sortOrder`, `main`.`Page`.`views`, `main`.`Page`.`createdAt`, `main`.`Page`.`updatedAt` FROM `main`.`Page` WHERE (`main`.`Page`.`isPublished` = ? AND `main`.`Page`.`showInMenu` = ?) ORDER BY `main`.`Page`.`sortOrder` ASC, `main`.`Page`.`updatedAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+ GET /api/auth/me 401 in 354ms (compile: 344ms, render: 10ms)
+ GET /api/products?limit=1 200 in 361ms (compile: 164ms, render: 197ms)
+ GET /api/categories 200 in 367ms (compile: 230ms, render: 138ms)
+ GET /api/products?featured=1&limit=8 200 in 400ms (compile: 237ms, render: 163ms)
+ GET /api/pages?menu=1 200 in 436ms (compile: 295ms, render: 142ms)
+ GET /api/settings 200 in 447ms (compile: 352ms, render: 95ms)
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt`, COALESCE(`aggr_selection_0_Product`.`_aggr_count_products`, 0) AS `_aggr_count_products` FROM `main`.`Category` LEFT JOIN (SELECT `main`.`Product`.`categoryId`, COUNT(*) AS `_aggr_count_products` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? GROUP BY `main`.`Product`.`categoryId`) AS `aggr_selection_0_Product` ON (`main`.`Category`.`id` = `aggr_selection_0_Product`.`categoryId`) WHERE 1=1 ORDER BY `main`.`Category`.`name` ASC LIMIT ? OFFSET ?
+ GET /api/categories 200 in 17ms (compile: 4ms, render: 12ms)
+ GET /api/pages?menu=1 200 in 19ms (compile: 9ms, render: 10ms)
+prisma:query SELECT `main`.`Page`.`id`, `main`.`Page`.`title`, `main`.`Page`.`slug`, `main`.`Page`.`content`, `main`.`Page`.`excerpt`, `main`.`Page`.`isPublished`, `main`.`Page`.`showInMenu`, `main`.`Page`.`sortOrder`, `main`.`Page`.`views`, `main`.`Page`.`createdAt`, `main`.`Page`.`updatedAt` FROM `main`.`Page` WHERE (`main`.`Page`.`isPublished` = ? AND `main`.`Page`.`showInMenu` = ?) ORDER BY `main`.`Page`.`sortOrder` ASC, `main`.`Page`.`updatedAt` DESC LIMIT ? OFFSET ?
+$ next dev -p 3000 2>&1 | tee dev.log
+▲ Next.js 16.1.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.10.183:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 778ms
+○ Compiling / ...
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`SeoPageMeta`.`id`, `main`.`SeoPageMeta`.`routePath`, `main`.`SeoPageMeta`.`title`, `main`.`SeoPageMeta`.`description`, `main`.`SeoPageMeta`.`keywords`, `main`.`SeoPageMeta`.`ogImage`, `main`.`SeoPageMeta`.`robots`, `main`.`SeoPageMeta`.`priority`, `main`.`SeoPageMeta`.`updatedAt` FROM `main`.`SeoPageMeta` WHERE (`main`.`SeoPageMeta`.`routePath` = ? AND 1=1) LIMIT ? OFFSET ?
+ GET / 200 in 1264ms (compile: 668ms, render: 596ms)
+ GET / 200 in 6.1s (compile: 5.4s, render: 692ms)
+prisma:query SELECT `main`.`Admin`.`id`, `main`.`Admin`.`username`, `main`.`Admin`.`password`, `main`.`Admin`.`name`, `main`.`Admin`.`role`, `main`.`Admin`.`createdAt`, `main`.`Admin`.`updatedAt` FROM `main`.`Admin` WHERE (`main`.`Admin`.`username` = ? AND 1=1) LIMIT ? OFFSET ?
+ POST /api/auth/login 200 in 1271ms (compile: 1023ms, render: 249ms)
+prisma:query SELECT `main`.`Setting`.`key`, `main`.`Setting`.`value` FROM `main`.`Setting` WHERE 1=1 LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Page`.`id`, `main`.`Page`.`title`, `main`.`Page`.`slug`, `main`.`Page`.`content`, `main`.`Page`.`excerpt`, `main`.`Page`.`isPublished`, `main`.`Page`.`showInMenu`, `main`.`Page`.`sortOrder`, `main`.`Page`.`views`, `main`.`Page`.`createdAt`, `main`.`Page`.`updatedAt` FROM `main`.`Page` WHERE (`main`.`Page`.`isPublished` = ? AND `main`.`Page`.`showInMenu` = ?) ORDER BY `main`.`Page`.`sortOrder` ASC, `main`.`Page`.`updatedAt` DESC LIMIT ? OFFSET ?
+ GET /api/settings 200 in 361ms (compile: 121ms, render: 240ms)
+ GET /api/pages?menu=1 200 in 387ms (compile: 146ms, render: 241ms)
+ GET /api/categories 200 in 386ms (compile: 215ms, render: 171ms)
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt`, COALESCE(`aggr_selection_0_Product`.`_aggr_count_products`, 0) AS `_aggr_count_products` FROM `main`.`Category` LEFT JOIN (SELECT `main`.`Product`.`categoryId`, COUNT(*) AS `_aggr_count_products` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? GROUP BY `main`.`Product`.`categoryId`) AS `aggr_selection_0_Product` ON (`main`.`Category`.`id` = `aggr_selection_0_Product`.`categoryId`) WHERE 1=1 ORDER BY `main`.`Category`.`name` ASC LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Product`.`id` FROM `main`.`Product` WHERE (`main`.`Product`.`isActive` = ? AND `main`.`Product`.`isFeatured` = ?) LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT `main`.`Product`.`id`, `main`.`Product`.`name`, `main`.`Product`.`slug`, `main`.`Product`.`sku`, `main`.`Product`.`brand`, `main`.`Product`.`categoryId`, `main`.`Product`.`price`, `main`.`Product`.`unit`, `main`.`Product`.`stock`, `main`.`Product`.`shortDesc`, `main`.`Product`.`description`, `main`.`Product`.`specs`, `main`.`Product`.`images`, `main`.`Product`.`isFeatured`, `main`.`Product`.`isActive`, `main`.`Product`.`views`, `main`.`Product`.`createdAt`, `main`.`Product`.`updatedAt` FROM `main`.`Product` WHERE (`main`.`Product`.`isActive` = ? AND `main`.`Product`.`isFeatured` = ?) ORDER BY `main`.`Product`.`createdAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt` FROM `main`.`Category` WHERE `main`.`Category`.`id` IN (?,?,?,?) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Product`.`id` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT `main`.`Product`.`id`, `main`.`Product`.`name`, `main`.`Product`.`slug`, `main`.`Product`.`sku`, `main`.`Product`.`brand`, `main`.`Product`.`categoryId`, `main`.`Product`.`price`, `main`.`Product`.`unit`, `main`.`Product`.`stock`, `main`.`Product`.`shortDesc`, `main`.`Product`.`description`, `main`.`Product`.`specs`, `main`.`Product`.`images`, `main`.`Product`.`isFeatured`, `main`.`Product`.`isActive`, `main`.`Product`.`views`, `main`.`Product`.`createdAt`, `main`.`Product`.`updatedAt` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? ORDER BY `main`.`Product`.`createdAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt` FROM `main`.`Category` WHERE `main`.`Category`.`id` IN (?) LIMIT ? OFFSET ?
+ GET /api/products?featured=1&limit=8 200 in 384ms (compile: 293ms, render: 91ms)
+ GET /api/products?limit=1 200 in 380ms (compile: 310ms, render: 70ms)
+ GET /api/auth/me 401 in 124ms (compile: 116ms, render: 8ms)
+prisma:query SELECT `main`.`Page`.`id`, `main`.`Page`.`title`, `main`.`Page`.`slug`, `main`.`Page`.`content`, `main`.`Page`.`excerpt`, `main`.`Page`.`isPublished`, `main`.`Page`.`showInMenu`, `main`.`Page`.`sortOrder`, `main`.`Page`.`views`, `main`.`Page`.`createdAt`, `main`.`Page`.`updatedAt` FROM `main`.`Page` WHERE (`main`.`Page`.`isPublished` = ? AND `main`.`Page`.`showInMenu` = ?) ORDER BY `main`.`Page`.`sortOrder` ASC, `main`.`Page`.`updatedAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt`, COALESCE(`aggr_selection_0_Product`.`_aggr_count_products`, 0) AS `_aggr_count_products` FROM `main`.`Category` LEFT JOIN (SELECT `main`.`Product`.`categoryId`, COUNT(*) AS `_aggr_count_products` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? GROUP BY `main`.`Product`.`categoryId`) AS `aggr_selection_0_Product` ON (`main`.`Category`.`id` = `aggr_selection_0_Product`.`categoryId`) WHERE 1=1 ORDER BY `main`.`Category`.`name` ASC LIMIT ? OFFSET ?
+ GET /api/pages?menu=1 200 in 122ms (compile: 9ms, render: 113ms)
+ GET /api/categories 200 in 123ms (compile: 16ms, render: 107ms)
+ GET /api/stats 200 in 264ms (compile: 218ms, render: 46ms)
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Product`.`id` FROM `main`.`Product` WHERE 1=1 LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Message`.`id` FROM `main`.`Message` WHERE `main`.`Message`.`isRead` = ? LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT SUM(`views`) AS `_sum$views` FROM (SELECT `main`.`Product`.`views` FROM `main`.`Product` WHERE 1=1 LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT `main`.`Product`.`id`, `main`.`Product`.`name`, `main`.`Product`.`stock`, `main`.`Product`.`images` FROM `main`.`Product` WHERE (`main`.`Product`.`isActive` = ? AND `main`.`Product`.`stock` <= ?) ORDER BY `main`.`Product`.`stock` ASC LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Product`.`id` FROM `main`.`Product` WHERE `main`.`Product`.`isActive` = ? LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT COUNT(*) AS `_count$_all` FROM (SELECT `main`.`Category`.`id` FROM `main`.`Category` WHERE 1=1 LIMIT ? OFFSET ?) AS `sub`
+prisma:query SELECT `main`.`Message`.`id`, `main`.`Message`.`name`, `main`.`Message`.`phone`, `main`.`Message`.`email`, `main`.`Message`.`message`, `main`.`Message`.`isRead`, `main`.`Message`.`createdAt` FROM `main`.`Message` WHERE 1=1 ORDER BY `main`.`Message`.`createdAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Product`.`id`, `main`.`Product`.`name`, `main`.`Product`.`slug`, `main`.`Product`.`sku`, `main`.`Product`.`brand`, `main`.`Product`.`categoryId`, `main`.`Product`.`price`, `main`.`Product`.`unit`, `main`.`Product`.`stock`, `main`.`Product`.`shortDesc`, `main`.`Product`.`description`, `main`.`Product`.`specs`, `main`.`Product`.`images`, `main`.`Product`.`isFeatured`, `main`.`Product`.`isActive`, `main`.`Product`.`views`, `main`.`Product`.`createdAt`, `main`.`Product`.`updatedAt` FROM `main`.`Product` WHERE 1=1 ORDER BY `main`.`Product`.`createdAt` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`Category`.`id`, `main`.`Category`.`name`, `main`.`Category`.`slug`, `main`.`Category`.`icon`, `main`.`Category`.`createdAt` FROM `main`.`Category` WHERE `main`.`Category`.`id` IN (?) LIMIT ? OFFSET ?
