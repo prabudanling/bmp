@@ -67,6 +67,8 @@ export interface StoreSettings {
   phone: string
   email: string
   address: string
+  /** Nama kontak person / penanggung jawab toko */
+  contactPerson: string
   hours: string
   about: string
   /** URL logo perusahaan (kosong = ikon bawaan) */

@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Snowflake,
   Truck,
+  UserRound,
   Youtube,
 } from 'lucide-react'
 import { useApp } from '@/lib/store'
@@ -150,6 +151,10 @@ export function SiteFooter() {
         <div>
           <h3 className="text-sm font-bold text-white">Kontak</h3>
           <ul className="mt-4 space-y-3 text-xs">
+            <li className="flex items-center gap-2">
+              <UserRound className="h-3.5 w-3.5 shrink-0 text-teal-400" />
+              {settings?.contactPerson || '-'}
+            </li>
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-400" />
               {settings?.address || '-'}

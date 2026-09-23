@@ -12,6 +12,7 @@ import {
   Send,
   ShieldCheck,
   Truck,
+  UserRound,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -144,6 +145,11 @@ export function ContactSection() {
   }
 
   const contactItems = [
+    {
+      icon: UserRound,
+      title: 'Kontak Person',
+      value: settings?.contactPerson || '-',
+    },
     { icon: MapPin, title: 'Alamat Toko', value: settings?.address || '-' },
     {
       icon: Phone,

@@ -44,6 +44,7 @@ const FIELDS: {
   { key: 'tagline', label: 'Tagline', placeholder: 'Spesialis Kompresor & Sparepart AC' },
   { key: 'heroTitle', label: 'Judul Banner Beranda', type: 'textarea' },
   { key: 'heroSubtitle', label: 'Sub-judul Banner Beranda', type: 'textarea' },
+  { key: 'contactPerson', label: 'Nama Kontak Person', placeholder: 'Mr. Encep Sihabudin', hint: 'Tampil di halaman kontak & footer' },
   { key: 'whatsapp', label: 'Nomor WhatsApp', hint: 'Format bebas, contoh: 081234567890 atau 6281234567890' },
   { key: 'phone', label: 'Nomor Telepon', placeholder: '(021) 555-0123' },
   { key: 'email', label: 'Email', placeholder: 'toko@contoh.com' },
