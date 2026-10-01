@@ -434,3 +434,26 @@ Stage Summary:
 - SEO foundation complete: metadata + JSON-LD + sitemap.xml + robots.txt all live
 - Domain used: berkatmandiripendingin.com (from official contact email)
 - Post-deploy recommendation for user: submit sitemap to Google Search Console
+
+---
+Task ID: 5
+Agent: Main (Z.ai Code)
+Task: Add ID/EN bilingual language switcher, eliminate ALL dead links, create 5 info pages
+
+Work Log:
+- Created src/stores/lang-store.ts (zustand + persist, lang id/en)
+- Created src/lib/i18n.ts: 320+ key bilingual dictionary (nav, hero, about, categories, catalog, why-us, featured, promo, testimonials, gallery, coverage, contact, cart, modal, whatsapp, footer, CTA) with useT() hook + tx() helper
+- Created src/components/berkat/LangSwitcher.tsx (ID|EN pill toggle, dark variant for topbar/mobile menu) — placed in header topbar + mobile menu
+- Created src/components/berkat/InfoPages.tsx: hash-routed info pages (#/tentang, #/layanan, #/faq, #/privasi, #/syarat) with premium teal design, bilingual content, back-to-home; FAQ uses native <details> accordions (8 Q&As); PageClient renders InfoPages INSTEAD of main content when hash route active
+- Translated ALL UI chrome across 16 components (Header, Hero, AboutSection, CategoryGrid, ProductCatalog+cards, WhyChooseUs, FeaturedProducts, PromoBanner, Testimonials, GallerySection, ServiceCoverage, ContactSection, CartDrawer, ProductDetailModal, WhatsAppButton, Footer incl. CTA banner)
+- DEAD LINKS ELIMINATED: replaced all href="#" social icons with real links — WhatsApp (wa.me/6281350003423), tel:081220030092, mailto, Google Maps (maps.search MM2100); grep confirms 0 href="#" remain
+- Footer Navigation column: added info page links (About Us, FAQ, Privacy Policy, Terms & Conditions)
+- Fixed footer CTA outline button white-on-white text (bg-transparent) — same bug class as Hero
+- DB content (product names/descriptions, testimonial texts) intentionally kept in original Indonesian
+- Verified in browser: ID version renders, EN toggle switches EVERYTHING (nav/hero/about/footer/tooltip), FAQ page EN + accordion works, Services page EN, footer EN with credits, cart drawer EN, back-to-home works
+- bun run lint: 0 errors
+
+Stage Summary:
+- Website now fully bilingual (ID/EN) with persistent language preference
+- 5 new info pages live via hash routing; zero dead links site-wide
+- Language switcher in header topbar (desktop) and mobile menu

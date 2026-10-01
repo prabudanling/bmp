@@ -2,23 +2,24 @@
 
 import { motion } from 'framer-motion';
 import { Package, Wrench } from 'lucide-react';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const promoItems = [
   {
     icon: Package,
-    title: 'GRATIS ONGKIR',
-    description: 'Untuk pembelian di atas Rp10.000.000',
+    titleKey: 'promo.shipping',
+    descKey: 'promo.shippingDesc',
     gradient: 'from-teal-600 via-teal-500 to-emerald-500',
     hoverGradient: 'hover:from-teal-700 hover:via-teal-600 hover:to-emerald-600',
   },
   {
     icon: Wrench,
-    title: 'INSTALASI GRATIS',
-    description: 'Untuk pembelian unit AC minimal 2 unit',
+    titleKey: 'promo.install',
+    descKey: 'promo.installDesc',
     gradient: 'from-amber-600 via-orange-500 to-amber-500',
     hoverGradient: 'hover:from-amber-700 hover:via-orange-600 hover:to-amber-600',
   },
-];
+] as const;
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -39,6 +40,7 @@ const cardVariants = {
 };
 
 export function PromoBanner() {
+  const t = useT();
   const scrollToContact = () => {
     const el = document.getElementById('kontak');
     if (el) {
@@ -60,7 +62,7 @@ export function PromoBanner() {
             const Icon = item.icon;
             return (
               <motion.button
-                key={item.title}
+                key={item.titleKey}
                 variants={cardVariants}
                 whileHover={{ y: -4, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -76,10 +78,10 @@ export function PromoBanner() {
                     <Icon className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="text-xl lg:text-2xl font-bold mb-2 tracking-wide">
-                    {item.title}
+                    {t(item.titleKey)}
                   </h3>
                   <p className="text-sm lg:text-base text-white/90 font-medium leading-relaxed">
-                    {item.description}
+                    {t(item.descKey)}
                   </p>
                   <div className="mt-4 flex items-center gap-2 text-white/80 text-sm font-medium group-hover:text-white transition-colors">
                     <span>Syarat & Ketentuan berlaku</span>

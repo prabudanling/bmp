@@ -28,12 +28,13 @@ import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const guarantees = [
-  { icon: Shield, label: 'Garansi Resmi' },
-  { icon: Truck, label: 'Pengiriman Aman' },
-  { icon: RotateCcw, label: 'Bisa Tukar' },
-];
+  { icon: Shield, labelKey: 'modal.warranty' },
+  { icon: Truck, labelKey: 'modal.safeShipping' },
+  { icon: RotateCcw, labelKey: 'modal.returnable' },
+] as const;
 
 type Product = {
   id: string;
@@ -92,6 +93,7 @@ const infoItemVariants = {
 };
 
 export function ProductDetailModal({ product, open, onClose }: Props) {
+  const t = useT();
   const [qty, setQty] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
 
@@ -117,7 +119,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
       category: product.category?.name,
       image: product.images || undefined,
     });
-    toast.success(`${qty} produk ditambahkan ke keranjang`, {
+    toast.success(`${qty} ${t('categories.count')} ${t('catalog.added')}`, {
       description: product.name,
     });
     onClose();
@@ -157,11 +159,11 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               )}
               <div className="absolute top-3 left-3 flex flex-col gap-1">
                 {product.isNew && (
-                  <Badge className="bg-emerald-600 text-white font-semibold">BARU</Badge>
+                  <Badge className="bg-emerald-600 text-white font-semibold">{t('catalog.badge.new')}</Badge>
                 )}
                 {product.isFeatured && (
                   <Badge className="bg-amber-600 text-white font-semibold flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" /> UNGGULAN
+                    <Sparkles className="h-3 w-3" /> {t('catalog.badge.featured')}
                   </Badge>
                 )}
                 {discount > 0 && (
@@ -213,7 +215,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                   )}
                 </div>
                 <p className="text-xs text-gray-600 mt-1 font-medium">
-                  Minimal order: {product.minOrder} {product.unit}
+                  Min. order: {product.minOrder} {product.unit}
                 </p>
               </motion.div>
 
@@ -221,7 +223,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               {(product.shortDesc || product.description) && (
                 <motion.div variants={infoItemVariants} className="mb-4">
                   <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Deskripsi
+                    {t('modal.desc')}
                   </h4>
                   <p className="text-sm text-gray-700 leading-relaxed">
                     {product.description || product.shortDesc}
@@ -233,7 +235,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               {Object.keys(specs).length > 0 && (
                 <motion.div variants={infoItemVariants} className="mb-4">
                   <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Spesifikasi
+                    {t('modal.specs')}
                   </h4>
                   <div className="rounded-lg border border-gray-200 overflow-hidden">
                     {Object.entries(specs).map(([key, val], i) => (
@@ -256,9 +258,9 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               {/* Guarantees */}
               <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
                 {guarantees.map((g) => (
-                  <div key={g.label} className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                  <div key={g.labelKey} className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
                     <g.icon className="h-3.5 w-3.5 text-teal-600" />
-                    {g.label}
+                    {t(g.labelKey)}
                   </div>
                 ))}
               </motion.div>
@@ -266,7 +268,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               {/* Quantity + Actions */}
               <motion.div variants={infoItemVariants} className="mt-auto space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-700 font-medium">Jumlah:</span>
+                  <span className="text-sm text-gray-700 font-medium">{t('modal.qty')}</span>
                   <div className="flex items-center border border-gray-200 rounded-lg">
                     <button
                       className="h-9 w-9 flex items-center justify-center hover:bg-gray-100 rounded-l-lg transition-colors text-gray-700"
@@ -294,7 +296,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                       onClick={handleAddToCart}
                     >
                       <ShoppingCart className="h-4 w-4 mr-2" />
-                      Tambah ke Keranjang
+                      {t('modal.addToCart')}
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -314,11 +316,11 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                   className="w-full text-gray-500 hover:text-gray-800 hover:bg-gray-100 font-medium"
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
-                    toast.success('Link produk disalin!');
+                    toast.success(t('modal.copied'));
                   }}
                 >
                   <Share2 className="h-3.5 w-3.5 mr-1.5" />
-                  Bagikan Produk
+                  {t('modal.share')}
                 </Button>
               </motion.div>
             </motion.div>

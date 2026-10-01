@@ -4,26 +4,28 @@ import { motion } from 'framer-motion';
 import { Building2, Target, Eye, AirVent, Snowflake, Cog, Wrench, Fan, Thermometer, Droplets, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const stats = [
-  { value: '13+', label: 'Tahun' },
-  { value: '5000+', label: 'Proyek' },
-  { value: '50+', label: 'Brand' },
-  { value: '34', label: 'Provinsi' },
-];
+  { value: '13+', labelKey: 'about.stat.years' },
+  { value: '5000+', labelKey: 'about.stat.projects' },
+  { value: '50+', labelKey: 'about.stat.brands' },
+  { value: '34', labelKey: 'about.stat.provinces' },
+] as const;
 
 const specialties = [
-  { icon: AirVent, label: 'AC Split' },
-  { icon: Snowflake, label: 'Refrigerant' },
-  { icon: Cog, label: 'Kompresor' },
-  { icon: Wrench, label: 'Spare Part' },
-  { icon: Fan, label: 'Ventilasi' },
-  { icon: Thermometer, label: 'Termostat' },
-  { icon: Droplets, label: 'Chiller' },
-  { icon: Zap, label: 'Instalasi' },
-];
+  { icon: AirVent, labelKey: 'about.spec.ac' },
+  { icon: Snowflake, labelKey: 'about.spec.refrigerant' },
+  { icon: Cog, labelKey: 'about.spec.compressor' },
+  { icon: Wrench, labelKey: 'about.spec.sparepart' },
+  { icon: Fan, labelKey: 'about.spec.ventilation' },
+  { icon: Thermometer, labelKey: 'about.spec.thermostat' },
+  { icon: Droplets, labelKey: 'about.spec.chiller' },
+  { icon: Zap, labelKey: 'about.spec.installation' },
+] as const;
 
 export function AboutSection() {
+  const t = useT();
   return (
     <section id="tentang" className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -43,13 +45,13 @@ export function AboutSection() {
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
           >
             <Building2 className="h-3.5 w-3.5 text-teal-700" />
-            <span className="text-teal-800 text-sm font-semibold">Tentang Kami</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('about.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Profil Perusahaan
+            {t('about.heading')}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Mengenal lebih dekat PT Berkat Mandiri Pendingin, mitra terpercaya Anda dalam solusi pendingin.
+            {t('about.sub')}
           </p>
         </motion.div>
 
@@ -81,26 +83,26 @@ export function AboutSection() {
                   </h3>
                   <div className="flex flex-wrap gap-2 mt-3">
                     <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
-                      Didirikan 2010
+                      {t('about.badge.founded')}
                     </Badge>
                     <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
-                      Kawasan MM2100 Bekasi
+                      {t('about.badge.location')}
                     </Badge>
                   </div>
                   <Badge className="mt-3 bg-emerald-500/80 text-white border-emerald-400/50 hover:bg-emerald-500/90">
-                    Distributor HVAC Resmi
+                    {t('about.badge.distributor')}
                   </Badge>
                 </div>
 
                 {/* Specialization mini-grid */}
                 <div className="relative my-6">
                   <p className="text-[11px] uppercase tracking-widest text-white/70 font-semibold mb-3">
-                    Spesialisasi Kami
+                    {t('about.specialties')}
                   </p>
                   <div className="grid grid-cols-4 gap-3">
                     {specialties.map((item, i) => (
                       <motion.div
-                        key={item.label}
+                        key={item.labelKey}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
@@ -110,7 +112,7 @@ export function AboutSection() {
                       >
                         <item.icon className="h-5 w-5 text-white" />
                         <span className="text-[9px] leading-[1.15] text-white/85 font-medium text-center px-1">
-                          {item.label}
+                          {t(item.labelKey)}
                         </span>
                       </motion.div>
                     ))}
@@ -121,7 +123,7 @@ export function AboutSection() {
                 <div className="grid grid-cols-2 gap-4 mt-auto">
                   {stats.map((stat, i) => (
                     <motion.div
-                      key={stat.label}
+                      key={stat.labelKey}
                       initial={{ opacity: 0, scale: 0.85 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
@@ -133,7 +135,7 @@ export function AboutSection() {
                         {stat.value}
                       </div>
                       <div className="text-sm text-teal-100 mt-0.5 font-medium">
-                        {stat.label}
+                        {t(stat.labelKey)}
                       </div>
                     </motion.div>
                   ))}
@@ -153,10 +155,10 @@ export function AboutSection() {
             {/* Story */}
             <div>
               <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                Cerita Kami
+                {t('about.story.heading')}
               </h3>
               <p className="text-gray-600 leading-relaxed text-base lg:text-lg">
-                Berkat Mandiri Pendingin didirikan pada tahun 2010 di kawasan industri MM2100 Bekasi. Bermula dari toko spare part AC kecil, kami terus berkembang menjadi salah satu distributor pendingin terbesar di Indonesia. Dengan komitmen menghadirkan produk berkualitas tinggi dan layanan terbaik, kami telah melayani lebih dari 5.000 proyek di 34 provinsi seluruh Indonesia. Kami percaya bahwa setiap proyek pendingin membutuhkan mitra yang dapat dipercaya — itulah mengapa kami selalu mengutamakan kejujuran, kualitas, dan pelayanan prima dalam setiap transaksi.
+                {t('about.story.text')}
               </p>
             </div>
 
@@ -173,9 +175,9 @@ export function AboutSection() {
                     <div className="w-11 h-11 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center mb-4">
                       <Eye className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-gray-900 text-lg mb-2">Visi</h4>
+                    <h4 className="font-semibold text-gray-900 text-lg mb-2">{t('about.vision')}</h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      Menjadi distributor pendingin terpercaya dan terlengkap di Indonesia dengan jaringan distribusi terluas.
+                      {t('about.vision.text')}
                     </p>
                   </CardContent>
                 </Card>
@@ -192,9 +194,9 @@ export function AboutSection() {
                     <div className="w-11 h-11 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center mb-4">
                       <Target className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-gray-900 text-lg mb-2">Misi</h4>
+                    <h4 className="font-semibold text-gray-900 text-lg mb-2">{t('about.mission')}</h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      Menyediakan produk pendingin berkualitas tinggi dengan harga kompetitif, didukung layanan purna jual terbaik untuk kepuasan pelanggan.
+                      {t('about.mission.text')}
                     </p>
                   </CardContent>
                 </Card>

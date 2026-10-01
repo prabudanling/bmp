@@ -17,41 +17,42 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const WA_NUMBER = '6281350003423';
 
 const contactInfo = [
   {
     icon: Phone,
-    label: 'Telepon',
+    labelKey: 'contact.phone' as const,
     value: '081220030092',
-    desc: 'Senin - Sabtu, 08:00 - 17:00',
+    descKey: 'contact.hoursDesc' as const,
     href: 'tel:081220030092',
   },
   {
     icon: MessageCircle,
-    label: 'WhatsApp',
+    labelKey: 'contact.whatsapp' as const,
     value: '+62 813-5000-3423',
-    desc: 'Respon cepat 24 jam',
+    descKey: 'contact.waDesc' as const,
     href: 'https://wa.me/6281350003423?text=Halo%20Berkat%20Mandiri%20Pendingin%2C%20saya%20ingin%20bertanya.',
   },
   {
     icon: Mail,
-    label: 'Email',
+    labelKey: 'contact.email' as const,
     value: 'info@berkatmandiripendingin.com',
-    desc: 'Respon dalam 1x24 jam',
+    descKey: 'contact.emailDesc' as const,
     href: 'mailto:info@berkatmandiripendingin.com',
   },
   {
     icon: MapPin,
-    label: 'Alamat',
+    labelKey: 'contact.address' as const,
     value: 'Jl. Raya Industri No. 88',
     desc: 'Kawasan Industri MM2100, Bekasi 17520',
   },
   {
     icon: Clock,
-    label: 'Jam Operasional',
-    value: 'Senin - Sabtu',
+    labelKey: 'contact.hours' as const,
+    valueKey: 'contact.hoursValue' as const,
     desc: '08:00 - 17:00 WIB',
   },
 ];
@@ -83,6 +84,7 @@ const formVariants = {
 };
 
 export function ContactSection() {
+  const t = useT();
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({
@@ -96,7 +98,7 @@ export function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) {
-      toast.error('Mohon isi nama, email, dan pesan');
+      toast.error(t('contact.error'));
       return;
     }
     setSending(true);
@@ -121,13 +123,13 @@ export function ContactSection() {
       );
 
       setSent(true);
-      toast.success('Pesan dikirim via WhatsApp!', {
-        description: 'Tim kami akan segera merespon.',
+      toast.success(t('contact.sent'), {
+        description: t('contact.sentDesc'),
       });
       setForm({ name: '', email: '', phone: '', subject: '', message: '' });
       setTimeout(() => setSent(false), 3000);
     } catch {
-      toast.error('Gagal membuka WhatsApp');
+      toast.error(t('contact.waError'));
     } finally {
       setSending(false);
     }
@@ -189,14 +191,14 @@ export function ContactSection() {
                         <div className="flex-1">
                           <div className="flex items-center gap-1">
                             <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
-                              {info.label}
+                              {t(info.labelKey)}
                             </p>
                             <ArrowUpRight className="h-3 w-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                           <p className="text-sm font-semibold text-gray-900 mt-0.5 group-hover:text-teal-700 transition-colors">
-                            {info.value}
+                            {'valueKey' in info ? t(info.valueKey) : info.value}
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">{info.desc}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{'descKey' in info ? t(info.descKey) : info.desc}</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -209,12 +211,12 @@ export function ContactSection() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
-                          {info.label}
+                          {t(info.labelKey)}
                         </p>
                         <p className="text-sm font-semibold text-gray-900 mt-0.5">
-                          {info.value}
+                          {'valueKey' in info ? t(info.valueKey) : info.value}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">{info.desc}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{'descKey' in info ? t(info.descKey) : info.desc}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -234,19 +236,19 @@ export function ContactSection() {
             <Card className="border-gray-200">
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-1">
-                  Kirim Pesan
+                  {t('contact.form.heading')}
                 </h3>
                 <p className="text-sm text-gray-600 mb-5">
-                  Isi formulir di bawah — pesan akan dikirim langsung via WhatsApp ke tim kami.
+                  {t('contact.form.note')}
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-semibold text-gray-700">Nama *</label>
+                      <label className="text-xs font-semibold text-gray-700">{t('contact.form.name')} *</label>
                       <Input
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        placeholder="Nama Anda"
+                        placeholder={t('contact.form.namePh')}
                         className="mt-1"
                         required
                       />
@@ -265,7 +267,7 @@ export function ContactSection() {
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-semibold text-gray-700">No. Telepon</label>
+                      <label className="text-xs font-semibold text-gray-700">{t('contact.form.phone')}</label>
                       <Input
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -274,21 +276,21 @@ export function ContactSection() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-gray-700">Subjek</label>
+                      <label className="text-xs font-semibold text-gray-700">{t('contact.form.subject')}</label>
                       <Input
                         value={form.subject}
                         onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                        placeholder="Subjek pesan"
+                        placeholder={t('contact.form.subjectPh')}
                         className="mt-1"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-700">Pesan *</label>
+                    <label className="text-xs font-semibold text-gray-700">{t('contact.form.message')} *</label>
                     <Textarea
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      placeholder="Tulis pesan Anda di sini..."
+                      placeholder={t('contact.form.messagePh')}
                       className="mt-1"
                       rows={5}
                       required
@@ -302,11 +304,11 @@ export function ContactSection() {
                         disabled={sending}
                       >
                         {sent ? (
-                          <><CheckCircle2 className="h-4 w-4 mr-1.5" /> Terkirim!</>
+                          <><CheckCircle2 className="h-4 w-4 mr-1.5" /> {t('contact.sent')}</>
                         ) : sending ? (
-                          'Mengirim...'
+                          t('cart.sending')
                         ) : (
-                          <><Send className="h-4 w-4 ml-1.5" /> Kirim via WhatsApp</>
+                          <><Send className="h-4 w-4 ml-1.5" /> {t('contact.form.send')} (WhatsApp)</>
                         )}
                       </Button>
                     </motion.div>

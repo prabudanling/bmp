@@ -3,8 +3,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useT } from '@/lib/i18n';
 
 export function WhatsAppButton() {
+  const t = useT();
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
@@ -33,9 +35,9 @@ export function WhatsAppButton() {
             >
               ✕
             </button>
-            <p className="text-xs text-gray-900 font-bold">Butuh bantuan? 💬</p>
+            <p className="text-xs text-gray-900 font-bold">{t('wa.help')}</p>
             <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
-              Chat langsung via WhatsApp untuk respon cepat!
+              {t('wa.tooltip')}
             </p>
             <a
               href="https://wa.me/6281350003423?text=Halo%20Berkat%20Mandiri%20Pendingin%2C%20saya%20ingin%20bertanya."
@@ -55,7 +57,7 @@ export function WhatsAppButton() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         className="relative flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 hover:shadow-emerald-500/50 transition-all"
-        aria-label="Chat via WhatsApp"
+        aria-label={t('wa.aria')}
       >
         <MessageCircle className="h-7 w-7" />
         {/* Pulse ring */}

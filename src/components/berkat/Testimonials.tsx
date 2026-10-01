@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star, Quote } from 'lucide-react';
+import { useT, type DictKey } from '@/lib/i18n';
 
 type Testimonial = {
   id: string;
@@ -35,6 +36,7 @@ const cardVariants = {
 };
 
 export function Testimonials({ testimonials }: Props) {
+  const t = useT();
   return (
     <section id="testimoni" className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -53,14 +55,13 @@ export function Testimonials({ testimonials }: Props) {
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
           >
             <Star className="h-3.5 w-3.5 text-teal-700 fill-teal-700" />
-            <span className="text-teal-800 text-sm font-semibold">Testimoni Pelanggan</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('testimonials.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Dipercaya <span className="text-teal-800">Ribuan Klien</span>
+            {t('testimonials.heading1')} <span className="text-teal-800">{t('testimonials.headingHighlight')}</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Kepuasan pelanggan adalah prioritas utama kami. Berikut beberapa
-            testimoni dari klien yang telah bekerja sama dengan kami.
+            {t('testimonials.sub')}
           </p>
         </motion.div>
 

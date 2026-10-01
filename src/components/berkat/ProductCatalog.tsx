@@ -32,6 +32,7 @@ import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
+import { useT, type DictKey } from '@/lib/i18n';
 
 type Category = {
   id: string;
@@ -89,6 +90,7 @@ const listItemVariants = {
 };
 
 export function ProductCatalog({ categories, allProducts, onProductClick }: Props) {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [brand, setBrand] = useState('all');
@@ -204,7 +206,7 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
       category: product.category?.name,
       image: product.images || undefined,
     });
-    toast.success('Ditambahkan ke keranjang', { description: product.name });
+    toast.success(t('catalog.added'), { description: product.name });
   };
 
   return (
@@ -226,14 +228,14 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-3"
           >
             <Sparkles className="h-3.5 w-3.5 text-teal-700" />
-            <span className="text-teal-800 text-sm font-semibold">Katalog Produk</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('catalog.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Semua <span className="text-teal-800">Produk</span> Kami
+            {t('catalog.heading1')} <span className="text-teal-800">{t('catalog.headingHighlight')}</span>{' '}
+            {t('catalog.heading2')}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Jelajahi koleksi lengkap produk pendingin berkualitas tinggi.
-            Gunakan filter untuk menemukan produk yang Anda butuhkan.
+            {t('catalog.sub')}
           </p>
         </motion.div>
 
@@ -243,7 +245,7 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <Input
-                placeholder="Cari produk, brand, atau model..."
+                placeholder={t('catalog.searchPlaceholder')}
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10 h-11"
@@ -264,7 +266,7 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filter
+                {t('catalog.filter')}
               </Button>
               <NoSSR fallback={
                 <div className="flex gap-2">
@@ -275,10 +277,10 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
               }>
                 <Select value={category} onValueChange={handleCategoryChange}>
                   <SelectTrigger className="w-full sm:w-48 h-11">
-                    <SelectValue placeholder="Semua Kategori" />
+                    <SelectValue placeholder={t('catalog.allCategories')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Semua Kategori</SelectItem>
+                    <SelectItem value="all">{t('catalog.allCategories')}</SelectItem>
                     {categories.map((c) => (
                       <SelectItem key={c.id} value={c.slug}>
                         {c.name}
@@ -288,10 +290,10 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
                 </Select>
                 <Select value={brand} onValueChange={handleBrandChange} disabled={brands.length === 0}>
                   <SelectTrigger className="w-full sm:w-44 h-11">
-                    <SelectValue placeholder="Semua Brand" />
+                    <SelectValue placeholder={t('catalog.allBrands')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Semua Brand</SelectItem>
+                    <SelectItem value="all">{t('catalog.allBrands')}</SelectItem>
                     {brands.map((b) => (
                       <SelectItem key={b} value={b}>
                         {b}
@@ -301,13 +303,13 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
                 </Select>
                 <Select value={sort} onValueChange={handleSortChange}>
                   <SelectTrigger className="w-full sm:w-44 h-11">
-                    <SelectValue placeholder="Urutkan" />
+                    <SelectValue placeholder={t('catalog.sort')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">Terbaru</SelectItem>
-                    <SelectItem value="name">Nama A-Z</SelectItem>
-                    <SelectItem value="price-asc">Harga Terendah</SelectItem>
-                    <SelectItem value="price-desc">Harga Tertinggi</SelectItem>
+                    <SelectItem value="newest">{t('catalog.sort.newest')}</SelectItem>
+                    <SelectItem value="name">{t('catalog.sort.name')}</SelectItem>
+                    <SelectItem value="price-asc">{t('catalog.sort.priceLow')}</SelectItem>
+                    <SelectItem value="price-desc">{t('catalog.sort.priceHigh')}</SelectItem>
                   </SelectContent>
                 </Select>
               </NoSSR>
@@ -336,7 +338,7 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
               )}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-700 font-medium">{total} produk</span>
+              <span className="text-sm text-gray-700 font-medium">{total} {t('categories.count')}</span>
               <div className="hidden sm:flex items-center gap-1 border rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
@@ -365,14 +367,14 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
             <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
               <PackageSearch className="h-10 w-10 text-gray-400" />
             </div>
-            <p className="text-gray-900 font-semibold text-lg">Produk tidak ditemukan</p>
-            <p className="text-sm text-gray-600">Coba ubah filter atau kata kunci pencarian Anda.</p>
+            <p className="text-gray-900 font-semibold text-lg">{t('catalog.notFound')}</p>
+            <p className="text-sm text-gray-600">{t('catalog.notFoundSub')}</p>
             <Button
               variant="outline"
               className="mt-2 border-teal-300 text-teal-800 hover:bg-teal-50"
               onClick={() => { setSearch(''); setCategory('all'); setBrand('all'); setPage(1); }}
             >
-              Reset Filter
+              {t('catalog.reset')}
             </Button>
           </motion.div>
         ) : viewMode === 'grid' ? (
@@ -472,6 +474,7 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
   onClick: () => void;
   onAddToCart: (e: React.MouseEvent) => void;
 }) {
+  const t = useT();
   return (
     <motion.div
       layout
@@ -496,12 +499,12 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
           )}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.isNew && (
-              <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0 font-semibold">BARU</Badge>
+              <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0 font-semibold">{t('catalog.badge.new')}</Badge>
             )}
             {product.isFeatured && (
               <Badge className="bg-amber-600 text-white text-[10px] px-1.5 py-0 flex items-center gap-0.5 font-semibold">
                 <Sparkles className="h-2.5 w-2.5" />
-                UNGGULAN
+                {t('catalog.badge.featured')}
               </Badge>
             )}
             {product.originalPrice && product.originalPrice > product.price && (
@@ -565,6 +568,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
   onClick: () => void;
   onAddToCart: (e: React.MouseEvent) => void;
 }) {
+  const t = useT();
   return (
     <motion.div
       layout
@@ -587,7 +591,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
               <Snowflake className="h-8 w-8 text-teal-300 opacity-40" />
             )}
             <div className="absolute top-1 left-1 flex flex-col gap-0.5">
-              {product.isNew && <Badge className="bg-emerald-600 text-white text-[8px] px-1 py-0 font-semibold">BARU</Badge>}
+              {product.isNew && <Badge className="bg-emerald-600 text-white text-[8px] px-1 py-0 font-semibold">{t('catalog.badge.new')}</Badge>}
               {product.originalPrice && product.originalPrice > product.price && (
                 <Badge className="bg-red-600 text-white text-[8px] px-1 py-0 font-semibold">
                   -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
@@ -637,7 +641,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                   onClick={(e) => { e.stopPropagation(); onClick(); }}
                 >
                   <Eye className="h-3.5 w-3.5 mr-1" />
-                  Detail
+                  {t('catalog.detail')}
                 </Button>
                 <Button
                   size="sm"
@@ -645,7 +649,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                   onClick={onAddToCart}
                 >
                   <ShoppingCart className="h-3.5 w-3.5 mr-1" />
-                  Keranjang
+                  {t('catalog.cart')}
                 </Button>
               </div>
             </div>

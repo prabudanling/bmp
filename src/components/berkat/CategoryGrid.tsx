@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Snowflake, Wind, Droplets, Wrench, Building2, Factory, Layers } from 'lucide-react';
 import Image from 'next/image';
 import type { Category } from './types';
+import { useT } from '@/lib/i18n';
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   'ac-split': Wind,
@@ -39,6 +40,7 @@ interface Props {
 }
 
 export function CategoryGrid({ categories }: Props) {
+  const t = useT();
   const scrollToProducts = (slug?: string) => {
     const el = document.querySelector('#produk');
     if (el) {
@@ -68,14 +70,13 @@ export function CategoryGrid({ categories }: Props) {
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
           >
             <Layers className="h-3.5 w-3.5 text-teal-700" />
-            <span className="text-teal-800 text-sm font-semibold">Kategori Produk</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('categories.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Solusi Pendingin <span className="text-teal-800">Lengkap</span>
+            {t('categories.heading1')} <span className="text-teal-800">{t('categories.headingHighlight')}</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Temukan berbagai macam produk pendingin berkualitas tinggi dari brand-brand
-            terkemuka dunia untuk kebutuhan residensial, komersial, dan industri.
+            {t('categories.sub')}
           </p>
         </motion.div>
 
@@ -118,7 +119,7 @@ export function CategoryGrid({ categories }: Props) {
                       <h3 className="font-semibold text-sm text-gray-900 group-hover:text-teal-700 transition-colors line-clamp-2">
                         {cat.name}
                       </h3>
-                      <p className="text-xs text-gray-600 mt-1 font-semibold">{count} produk</p>
+                      <p className="text-xs text-gray-600 mt-1 font-semibold">{count} {t('categories.count')}</p>
                     </CardContent>
                   </Card>
                 </motion.div>

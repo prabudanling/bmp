@@ -5,15 +5,17 @@ import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Truck, Clock, Headphones } from 'lucide-react';
 import Image from 'next/image';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const trustBadges = [
-  { icon: Shield, label: 'Garansi Resmi' },
-  { icon: Truck, label: 'Pengiriman Se-Indonesia' },
-  { icon: Clock, label: 'Respon Cepat 24 Jam' },
-  { icon: Headphones, label: 'Konsultasi Gratis' },
-];
+  { icon: Shield, labelKey: 'hero.badge.warranty' },
+  { icon: Truck, labelKey: 'hero.badge.shipping' },
+  { icon: Clock, labelKey: 'hero.badge.fast' },
+  { icon: Headphones, labelKey: 'hero.badge.consult' },
+] as const;
 
 export function Hero() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -63,7 +65,7 @@ export function Hero() {
             >
               <span className="w-2 h-2 bg-teal-300 rounded-full animate-pulse" />
               <span className="text-white text-sm font-medium">
-                Distributor Resmi HVAC Terpercaya Sejak 2010
+                {t('hero.badge')}
               </span>
             </motion.div>
 
@@ -73,10 +75,10 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white leading-tight mb-6"
             >
-              Solusi{' '}
-              <span className="text-gradient-teal">Pendingin</span>{' '}
-              Terlengkap untuk{' '}
-              <span className="text-teal-200">Setiap Kebutuhan</span>
+              {t('hero.title1')}{' '}
+              <span className="text-gradient-teal">{t('hero.titleHighlight')}</span>{' '}
+              {t('hero.title2')}{' '}
+              <span className="text-teal-200">{t('hero.titleHighlight2')}</span>
             </motion.h1>
 
             <motion.p
@@ -85,9 +87,7 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
               className="text-white/90 text-base sm:text-lg leading-relaxed mb-8 max-w-xl"
             >
-              Pusat penjualan AC, kompresor, refrigerant, spare part, dan
-              sistem pendingin gedung dari brand-brand terkemuka dunia.
-              Harga bersaing, garansi resmi, dan layanan purna jual terbaik.
+              {t('hero.subtitle')}
             </motion.p>
 
             <motion.div
@@ -102,7 +102,7 @@ export function Hero() {
                   className="bg-white text-teal-800 hover:bg-gray-100 shadow-xl shadow-teal-900/30 text-base px-8 h-12 font-semibold"
                   onClick={() => scrollTo('#produk')}
                 >
-                  Lihat Katalog Produk
+                  {t('hero.ctaCatalog')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </motion.div>
@@ -113,7 +113,7 @@ export function Hero() {
                   className="bg-transparent border-white/40 text-white hover:bg-white/15 hover:text-white text-base px-8 h-12 font-semibold"
                   onClick={() => scrollTo('#kontak')}
                 >
-                  Konsultasi Gratis
+                  {t('hero.ctaConsult')}
                 </Button>
               </motion.div>
             </motion.div>
@@ -122,14 +122,14 @@ export function Hero() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {trustBadges.map((badge, i) => (
                 <motion.div
-                  key={badge.label}
+                  key={badge.labelKey}
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 + i * 0.1, duration: 0.5, ease: 'easeOut' }}
                   className="flex items-center gap-2 text-white/90"
                 >
                   <badge.icon className="h-4 w-4 text-teal-300 shrink-0" />
-                  <span className="text-xs font-medium">{badge.label}</span>
+                  <span className="text-xs font-medium">{t(badge.labelKey)}</span>
                 </motion.div>
               ))}
             </div>
@@ -176,7 +176,7 @@ export function Hero() {
                 </div>
                 <div>
                   <div className="text-xl font-bold text-gray-900">5,000+</div>
-                  <div className="text-xs text-gray-600 font-medium">Proyek Selesai</div>
+                  <div className="text-xs text-gray-600 font-medium">{t('hero.stat.projects')}</div>
                 </div>
               </div>
             </motion.div>
@@ -200,7 +200,7 @@ export function Hero() {
                 </div>
                 <div>
                   <div className="text-xl font-bold text-gray-900">4.9/5</div>
-                  <div className="text-xs text-gray-600 font-medium">Rating Kepuasan</div>
+                  <div className="text-xs text-gray-600 font-medium">{t('hero.stat.rating')}</div>
                 </div>
               </div>
             </motion.div>

@@ -13,64 +13,65 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const features = [
   {
     icon: Shield,
-    title: 'Garansi Resmi',
-    desc: 'Semua produk bergaransi resmi dari brand ternama dengan jaminan kualitas.',
+    titleKey: 'why.f1.title',
+    descKey: 'why.f1.desc',
     color: 'bg-teal-100 text-teal-800',
   },
   {
     icon: Truck,
-    title: 'Pengiriman Se-Indonesia',
-    desc: 'Jaringan logistik luas memastikan pesanan sampai aman dan tepat waktu.',
+    titleKey: 'why.f2.title',
+    descKey: 'why.f2.desc',
     color: 'bg-sky-100 text-sky-800',
   },
   {
     icon: Clock,
-    title: 'Respon 24 Jam',
-    desc: 'Tim customer service siap membantu Anda kapan saja, termasuk hari libur.',
+    titleKey: 'why.f3.title',
+    descKey: 'why.f3.desc',
     color: 'bg-amber-100 text-amber-800',
   },
   {
     icon: Headphones,
-    title: 'Konsultasi Gratis',
-    desc: 'Tim ahli HVAC siap memberikan konsultasi teknis untuk proyek Anda.',
+    titleKey: 'why.f4.title',
+    descKey: 'why.f4.desc',
     color: 'bg-fuchsia-100 text-fuchsia-800',
   },
   {
     icon: Award,
-    title: 'Distributor Resmi',
-    desc: 'Mitra resmi brand Daikin, Panasonic, Samsung, LG, Gree, dan lainnya.',
+    titleKey: 'why.f5.title',
+    descKey: 'why.f5.desc',
     color: 'bg-emerald-100 text-emerald-800',
   },
   {
     icon: ThumbsUp,
-    title: 'Harga Kompetitif',
-    desc: 'Harga langsung dari distributor dengan penawaran terbaik di kelasnya.',
+    titleKey: 'why.f6.title',
+    descKey: 'why.f6.desc',
     color: 'bg-rose-100 text-rose-800',
   },
   {
     icon: Wrench,
-    title: 'Layanan Instalasi',
-    desc: 'Tim teknisi berpengalaman siap membantu pemasangan dan instalasi.',
+    titleKey: 'why.f7.title',
+    descKey: 'why.f7.desc',
     color: 'bg-orange-100 text-orange-800',
   },
   {
     icon: Users,
-    title: '5,000+ Klien Puas',
-    desc: 'Dipercaya oleh ribuan perusahaan, hotel, rumah sakit, dan pabrik di Indonesia.',
+    titleKey: 'why.f8.title',
+    descKey: 'why.f8.desc',
     color: 'bg-cyan-100 text-cyan-800',
   },
-];
+] as const;
 
 const stats = [
-  { value: 13, suffix: '+', label: 'Tahun Pengalaman' },
-  { value: 5000, suffix: '+', label: 'Proyek Selesai' },
-  { value: 50, suffix: '+', label: 'Brand Ternama' },
-  { value: 34, suffix: '', label: 'Provinsi Terjangkau' },
-];
+  { value: 13, suffix: '+', labelKey: 'why.stat.years' },
+  { value: 5000, suffix: '+', labelKey: 'why.stat.projects' },
+  { value: 50, suffix: '+', labelKey: 'why.stat.brands' },
+  { value: 34, suffix: '', labelKey: 'why.stat.provinces' },
+] as const;
 
 function formatNumber(n: number): string {
   if (n >= 1000) {
@@ -133,6 +134,7 @@ const featureVariants = {
 };
 
 export function WhyChooseUs() {
+  const t = useT();
   return (
     <section id="keunggulan" className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -151,14 +153,13 @@ export function WhyChooseUs() {
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
           >
             <Zap className="h-3.5 w-3.5 text-teal-700" />
-            <span className="text-teal-800 text-sm font-semibold">Mengapa Berkat Mandiri?</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('why.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Keunggulan Kami
+            {t('why.heading')}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Komitmen kami menghadirkan produk pendingin berkualitas tinggi dengan
-            layanan terbaik untuk memastikan kepuasan pelanggan.
+            {t('why.sub')}
           </p>
         </motion.div>
 
@@ -172,7 +173,7 @@ export function WhyChooseUs() {
         >
           {stats.map((stat, i) => (
             <motion.div
-              key={stat.label}
+              key={stat.labelKey}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -183,7 +184,7 @@ export function WhyChooseUs() {
               <div className="text-3xl lg:text-4xl font-extrabold text-white">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-sm text-teal-100 mt-1 font-medium">{stat.label}</div>
+              <div className="text-sm text-teal-100 mt-1 font-medium">{t(stat.labelKey)}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -197,7 +198,7 @@ export function WhyChooseUs() {
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
         >
           {features.map((feat) => (
-            <motion.div key={feat.title} variants={featureVariants}>
+            <motion.div key={feat.titleKey} variants={featureVariants}>
               <motion.div
                 whileHover={{ y: -6, scale: 1.02 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -208,8 +209,8 @@ export function WhyChooseUs() {
                 >
                   <feat.icon className="h-5 w-5" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1.5">{feat.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{feat.desc}</p>
+                <h3 className="font-semibold text-gray-900 mb-1.5">{t(feat.titleKey)}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{t(feat.descKey)}</p>
               </motion.div>
             </motion.div>
           ))}

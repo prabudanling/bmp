@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
+import { useT, type DictKey } from '@/lib/i18n';
 
 type Product = {
   id: string;
@@ -45,6 +46,7 @@ const cardVariants = {
 };
 
 export function FeaturedProducts({ products, onProductClick }: Props) {
+  const t = useT();
   const addItem = useCartStore((s) => s.addItem);
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
@@ -57,7 +59,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
       category: product.category?.name,
       image: product.images || undefined,
     });
-    toast.success('Ditambahkan ke keranjang', {
+    toast.success(t('catalog.added'), {
       description: product.name,
     });
   };
@@ -85,10 +87,10 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
               className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-3"
             >
               <Zap className="h-3.5 w-3.5 text-teal-700" />
-              <span className="text-teal-800 text-sm font-semibold">Pilihan Terbaik</span>
+              <span className="text-teal-800 text-sm font-semibold">{t('featured.badge')}</span>
             </motion.div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
-              Produk <span className="text-teal-800">Unggulan</span>
+              {t('featured.heading1')} <span className="text-teal-800">{t('featured.headingHighlight')}</span>
             </h2>
           </div>
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -97,7 +99,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
               className="border-teal-400 text-teal-800 hover:bg-teal-50 font-semibold self-start sm:self-auto"
               onClick={scrollToProducts}
             >
-              Lihat Semua Produk
+              {t('featured.viewAll')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </motion.div>
@@ -136,7 +138,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                     <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
                       {product.isNew && (
                         <Badge className="bg-emerald-600 text-white text-[10px] px-2 font-semibold">
-                          BARU
+                          {t('catalog.badge.new')}
                         </Badge>
                       )}
                       {product.originalPrice && product.originalPrice > product.price && (

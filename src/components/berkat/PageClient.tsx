@@ -19,6 +19,7 @@ import { ContactSection } from './ContactSection';
 import { ServiceCoverage } from './ServiceCoverage';
 import { Footer } from './Footer';
 import { WhatsAppButton } from './WhatsAppButton';
+import { InfoPages, useInfoRoute } from './InfoPages';
 
 // Plain types — no Prisma dependency needed for client components
 type Category = {
@@ -87,6 +88,7 @@ export function PageClient({
 }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const infoRoute = useInfoRoute();
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -98,25 +100,31 @@ export function PageClient({
       <ScrollProgress />
       <Header />
       <main className="flex-1">
-        <Hero />
-        <AboutSection />
-        <CategoryGrid categories={categories} />
-        <FeaturedProducts
-          products={featuredProducts}
-          onProductClick={handleProductClick}
-        />
-        <PromoBanner />
-        <WhyChooseUs />
-        <BrandPartners />
-        <ProductCatalog
-          categories={categories}
-          allProducts={allProducts}
-          onProductClick={handleProductClick}
-        />
-        <Testimonials testimonials={testimonials} />
-        <GallerySection />
-        <ContactSection />
-        <ServiceCoverage />
+        {infoRoute ? (
+          <InfoPages />
+        ) : (
+          <>
+            <Hero />
+            <AboutSection />
+            <CategoryGrid categories={categories} />
+            <FeaturedProducts
+              products={featuredProducts}
+              onProductClick={handleProductClick}
+            />
+            <PromoBanner />
+            <WhyChooseUs />
+            <BrandPartners />
+            <ProductCatalog
+              categories={categories}
+              allProducts={allProducts}
+              onProductClick={handleProductClick}
+            />
+            <Testimonials testimonials={testimonials} />
+            <GallerySection />
+            <ContactSection />
+            <ServiceCoverage />
+          </>
+        )}
       </main>
       <Footer />
       <WhatsAppButton />

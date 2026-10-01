@@ -30,6 +30,7 @@ import { useCartStore, type CartItem } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
+import { useT } from '@/lib/i18n';
 
 const WA_NUMBER = '6281350003423';
 
@@ -50,6 +51,7 @@ const cartItemVariants = {
 } as const;
 
 export function CartDrawer() {
+  const t = useT();
   const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart, getTotal, getTotalItems } =
     useCartStore();
   const [showInquiry, setShowInquiry] = useState(false);
@@ -115,7 +117,7 @@ export function CartDrawer() {
         setSent(false);
       }, 1500);
     } catch {
-      toast.error('Gagal membuka WhatsApp');
+      toast.error(t('contact.waError'));
     } finally {
       setSending(false);
     }
@@ -129,18 +131,18 @@ export function CartDrawer() {
           // Inquiry Form View
           <>
             <SheetHeader className="p-4 pb-2 border-b">
-              <SheetTitle className="text-base text-gray-900">Permintaan Penawaran</SheetTitle>
+              <SheetTitle className="text-base text-gray-900">{t('cart.quote')}</SheetTitle>
             </SheetHeader>
             <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
               <p className="text-sm text-gray-700">
-                Lengkapi data berikut. Penawaran akan dikirim via WhatsApp ke tim kami.
+                {t('contact.form.note')}
               </p>
               <div>
-                <label className="text-xs font-medium text-gray-700">Nama Lengkap *</label>
+                <label className="text-xs font-medium text-gray-700">{t('cart.form.fullName')} *</label>
                 <Input
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="Nama Anda"
+                  placeholder={t('cart.form.namePh')}
                   className="mt-1"
                 />
               </div>
@@ -166,20 +168,20 @@ export function CartDrawer() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-700">Perusahaan</label>
+                <label className="text-xs font-medium text-gray-700">{t('cart.form.company')}</label>
                 <Input
                   value={form.company}
                   onChange={(e) => setForm({ ...form, company: e.target.value })}
-                  placeholder="Nama perusahaan (opsional)"
+                  placeholder={t('cart.form.companyPh')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-700">Catatan</label>
+                <label className="text-xs font-medium text-gray-700">{t('cart.form.message')}</label>
                 <Textarea
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  placeholder="Catatan tambahan..."
+                  placeholder={t('cart.form.messagePh')}
                   className="mt-1"
                   rows={3}
                 />
@@ -187,7 +189,7 @@ export function CartDrawer() {
 
               {/* Order summary in inquiry */}
               <div className="bg-gray-50 rounded-lg p-3">
-                <h4 className="text-xs font-semibold text-gray-800 mb-2">Ringkasan Pesanan</h4>
+                <h4 className="text-xs font-semibold text-gray-800 mb-2">{t('cart.subtotal')} Pesanan</h4>
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between text-xs text-gray-700 py-1">
                     <span className="flex-1 truncate mr-2">{item.name} x{item.quantity}</span>
@@ -196,7 +198,7 @@ export function CartDrawer() {
                 ))}
                 <Separator className="my-2" />
                 <div className="flex justify-between text-sm font-bold">
-                  <span className="text-gray-900">Total</span>
+                  <span className="text-gray-900">{t('cart.total')}</span>
                   <span className="text-teal-800">{formatRupiah(total)}</span>
                 </div>
               </div>
@@ -207,7 +209,7 @@ export function CartDrawer() {
                 className="flex-1"
                 onClick={() => setShowInquiry(false)}
               >
-                Kembali
+                {t('cart.back')}
               </Button>
               <Button
                 className={`flex-1 ${sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-teal-600 hover:bg-teal-700'} text-white`}
@@ -215,11 +217,11 @@ export function CartDrawer() {
                 disabled={sending}
               >
                 {sent ? (
-                  <><CheckCircle2 className="h-4 w-4 mr-1.5" /> Terkirim!</>
+                  <><CheckCircle2 className="h-4 w-4 mr-1.5" /> {t('contact.sent')}</>
                 ) : sending ? (
-                  'Mengirim...'
+                  t('cart.sending')
                 ) : (
-                  <><Send className="h-4 w-4 mr-1.5" /> Kirim via WA</>
+                  <><Send className="h-4 w-4 mr-1.5" /> {t('contact.form.send')} (WA)</>
                 )}
               </Button>
             </div>
@@ -230,10 +232,10 @@ export function CartDrawer() {
             <SheetHeader className="p-4 pb-2 border-b">
               <SheetTitle className="text-base flex items-center gap-2 text-gray-900">
                 <ShoppingCart className="h-4 w-4" />
-                Keranjang Belanja
+                {t('cart.title')}
                 {count > 0 && (
                   <span className="text-xs bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-semibold">
-                    {count} item
+                    {count} {t('cart.item')}
                   </span>
                 )}
               </SheetTitle>
@@ -249,9 +251,9 @@ export function CartDrawer() {
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                   <Package className="h-8 w-8 text-gray-400" />
                 </div>
-                <p className="font-medium text-gray-700">Keranjang kosong</p>
+                <p className="font-medium text-gray-700">{t('cart.empty')}</p>
                 <p className="text-sm text-gray-600 mt-1">
-                  Tambahkan produk untuk memulai pemesanan.
+                  {t('cart.emptyDesc')}
                 </p>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                   <Button
@@ -259,7 +261,7 @@ export function CartDrawer() {
                     className="mt-4 border-teal-200 text-teal-800"
                     onClick={closeCart}
                   >
-                    Jelajahi Produk
+                    {t('cart.browse')}
                     <ArrowRight className="h-4 w-4 ml-1.5" />
                   </Button>
                 </motion.div>
@@ -288,11 +290,11 @@ export function CartDrawer() {
                   className="border-t p-4 space-y-3"
                 >
                   <div className="flex justify-between text-sm text-gray-600">
-                    <span>Subtotal ({count} item)</span>
+                    <span>{t('cart.subtotal')} ({count} {t('cart.item')})</span>
                     <span className="text-gray-900">{formatRupiah(total)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold">
-                    <span className="text-gray-900">Total</span>
+                    <span className="text-gray-900">{t('cart.total')}</span>
                     <span className="text-teal-800">{formatRupiah(total)}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -311,7 +313,7 @@ export function CartDrawer() {
                         onClick={() => setShowInquiry(true)}
                       >
                         <Send className="h-4 w-4 mr-1.5" />
-                        Minta Penawaran
+                        {t('cart.quote')}
                       </Button>
                     </motion.div>
                   </div>
@@ -319,7 +321,7 @@ export function CartDrawer() {
                     className="w-full text-center text-xs text-gray-500 hover:text-red-500 transition-colors"
                     onClick={clearCart}
                   >
-                    Kosongkan Keranjang
+                    {t('cart.clear')}
                   </button>
                 </motion.div>
               </>

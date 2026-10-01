@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone } from 'lucide-react';
+import { useT, type DictKey } from '@/lib/i18n';
 
 const regions = [
   {
@@ -52,6 +53,7 @@ const cardVariants = {
 };
 
 export function ServiceCoverage() {
+  const t = useT();
   return (
     <section id="coverage" className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -71,15 +73,13 @@ export function ServiceCoverage() {
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
           >
             <MapPin className="h-3.5 w-3.5 text-teal-700" />
-            <span className="text-teal-800 text-sm font-semibold">Jangkauan Layanan</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('coverage.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Melayani <span className="text-teal-800">Seluruh Indonesia</span>
+            {t('coverage.heading1')} <span className="text-teal-800">{t('coverage.headingHighlight')}</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Jaringan distribusi dan layanan purna jual kami mencakup lebih dari 50 kota
-            di seluruh Indonesia, memastikan produk dan layanan HVAC terbaik selalu
-            terjangkau di dekat Anda.
+            {t('coverage.sub')}
           </p>
 
           {/* Total Count Badge */}
@@ -91,7 +91,7 @@ export function ServiceCoverage() {
             className="mt-6 inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 rounded-full px-5 py-2"
           >
             <MapPin className="h-4 w-4 text-white" />
-            <span className="text-white text-sm font-bold">50+ Kota di Indonesia</span>
+            <span className="text-white text-sm font-bold">50+ {t('coverage.cities')}</span>
           </motion.div>
         </motion.div>
 

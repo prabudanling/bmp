@@ -12,43 +12,44 @@ import {
 } from '@/components/ui/dialog';
 import { NoSSR } from '@/components/ui/no-ssr';
 import { Play, Camera, Youtube, ImagePlus } from 'lucide-react';
+import { useT, type DictKey } from '@/lib/i18n';
 
 type GalleryItem = {
   id: string;
   type: 'video' | 'image';
-  title: string;
+  titleKey: DictKey;
 };
 
 const galleryItems: GalleryItem[] = [
   {
     id: 'g1',
     type: 'video',
-    title: 'Proses Pengiriman AC ke Proyek Hotel Jakarta',
+    titleKey: 'gallery.cap1',
   },
   {
     id: 'g2',
     type: 'video',
-    title: 'Demo Unit Chiller Daikin 20 PK',
+    titleKey: 'gallery.cap2',
   },
   {
     id: 'g3',
     type: 'video',
-    title: 'Pemasangan VRV/VRF di Gedung Perkantoran',
+    titleKey: 'gallery.cap3',
   },
   {
     id: 'g4',
     type: 'image',
-    title: 'Pameran HVAC Indonesia 2024',
+    titleKey: 'gallery.cap4',
   },
   {
     id: 'g5',
     type: 'image',
-    title: 'Pelatihan Teknisi Bersama Daikin',
+    titleKey: 'gallery.cap5',
   },
   {
     id: 'g6',
     type: 'image',
-    title: 'Kunjungan Pabrik Mitsubishi Electric',
+    titleKey: 'gallery.cap6',
   },
 ];
 
@@ -70,6 +71,7 @@ const cardVariants = {
 };
 
 export function GallerySection() {
+  const t = useT();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
@@ -100,11 +102,11 @@ export function GallerySection() {
           >
             <ImagePlus className="h-3.5 w-3.5 text-teal-700" />
             <span className="text-teal-800 text-sm font-semibold">
-              Galeri & Aktivitas
+              {t('gallery.badge')}
             </span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
-            Dokumentasi <span className="text-teal-800">Kegiatan Kami</span>
+            {t('gallery.heading1')} <span className="text-teal-800">{t('gallery.headingHighlight')}</span>
           </h2>
         </motion.div>
 
@@ -168,7 +170,7 @@ export function GallerySection() {
                   {/* Title bar */}
                   <div className="p-4">
                     <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 group-hover:text-teal-700 transition-colors">
-                      {item.title}
+                      {t(item.titleKey)}
                     </h3>
                   </div>
                 </Card>
