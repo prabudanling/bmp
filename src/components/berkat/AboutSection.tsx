@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Building2, Target, Eye } from 'lucide-react';
+import { Building2, Target, Eye, AirVent, Snowflake, Cog, Wrench, Fan, Thermometer, Droplets, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -10,6 +10,17 @@ const stats = [
   { value: '5000+', label: 'Proyek' },
   { value: '50+', label: 'Brand' },
   { value: '34', label: 'Provinsi' },
+];
+
+const specialties = [
+  { icon: AirVent, label: 'AC Split' },
+  { icon: Snowflake, label: 'Refrigerant' },
+  { icon: Cog, label: 'Kompresor' },
+  { icon: Wrench, label: 'Spare Part' },
+  { icon: Fan, label: 'Ventilasi' },
+  { icon: Thermometer, label: 'Termostat' },
+  { icon: Droplets, label: 'Chiller' },
+  { icon: Zap, label: 'Instalasi' },
 ];
 
 export function AboutSection() {
@@ -81,19 +92,26 @@ export function AboutSection() {
                   </Badge>
                 </div>
 
-                {/* Visual decorative element - stylized building/HVAC illustration */}
+                {/* Specialization mini-grid */}
                 <div className="relative my-6">
+                  <p className="text-[11px] uppercase tracking-widest text-white/70 font-semibold mb-3">
+                    Spesialisasi Kami
+                  </p>
                   <div className="grid grid-cols-4 gap-3">
-                    {[...Array(8)].map((_, i) => (
+                    {specialties.map((item, i) => (
                       <motion.div
-                        key={i}
+                        key={item.label}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 + i * 0.08, type: 'spring', stiffness: 200, damping: 18 }}
-                        className="aspect-square rounded-lg bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center"
+                        whileHover={{ scale: 1.06 }}
+                        className="aspect-square rounded-lg bg-white/15 backdrop-blur-sm border border-white/20 flex flex-col items-center justify-center gap-1.5 hover:bg-white/25 transition-colors duration-300"
                       >
-                        <div className="w-3 h-3 rounded-sm bg-white/40" />
+                        <item.icon className="h-5 w-5 text-white" />
+                        <span className="text-[9px] leading-[1.15] text-white/85 font-medium text-center px-1">
+                          {item.label}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
