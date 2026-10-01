@@ -154,15 +154,12 @@ export function ContactSection() {
             className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
           >
             <span className="w-2 h-2 bg-teal-600 rounded-full" />
-            <span className="text-teal-800 text-sm font-semibold">Hubungi Kami</span>
+            <span className="text-teal-800 text-sm font-semibold">{t('contact.badge')}</span>
           </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Siap <span className="text-teal-800">Membantu Anda</span>
+            {t('contact.heading1')} <span className="text-teal-800">{t('contact.headingHighlight')}</span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Hubungi tim kami untuk konsultasi gratis, penawaran harga, atau
-            informasi lebih lanjut mengenai produk dan layanan kami.
-          </p>
+          <p className="text-gray-600 max-w-2xl mx-auto">{t('contact.sub')}</p>
         </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-8">
@@ -175,7 +172,7 @@ export function ContactSection() {
             viewport={{ once: true }}
           >
             {contactInfo.map((info) => (
-              <motion.div key={info.label} variants={cardVariants}>
+              <motion.div key={info.labelKey} variants={cardVariants}>
                 {info.href ? (
                   <a
                     href={info.href}

@@ -457,3 +457,22 @@ Stage Summary:
 - Website now fully bilingual (ID/EN) with persistent language preference
 - 5 new info pages live via hash routing; zero dead links site-wide
 - Language switcher in header topbar (desktop) and mobile menu
+
+---
+Task ID: 6
+Agent: Main (Z.ai Code)
+Task: Fix React "unique key prop" console error in ContactSection + complete missed section-header translation
+
+Work Log:
+- Root cause: ContactSection.tsx line 178 used key={info.label} but contactInfo objects were renamed to labelKey during i18n work (Task 5) → every key was undefined → "Each child in a list should have a unique key prop" warning on motion.div
+- Fixed: key={info.label} → key={info.labelKey} (unique per card: contact.phone/whatsapp/email/address/hours)
+- Audited ALL 38 .map() calls across berkat components for same bug class — all other keys valid (item.id, labelKey, titleKey, region.name, page numbers, unique brand strings)
+- Found & fixed translation gap: ContactSection header was hardcoded Indonesian while dictionary already had keys → wired t('contact.badge'), t('contact.heading1'), t('contact.headingHighlight'), t('contact.sub')
+- Verified in browser: ID mode shows "Siap Membantu Anda | Hubungi Kami", EN mode shows "Ready to Help You | Contact Us"
+- Full-page scroll to trigger all whileInView animations: 0 errors, 0 key warnings, 0 console errors
+- FAQ hash page (#/faq) EN still works; bun run lint: 0 errors
+
+Stage Summary:
+- Console key-prop error eliminated (single-character root cause: label vs labelKey)
+- ContactSection now 100% bilingual (last remaining hardcoded section)
+- No regressions: lint clean, dev log clean, both languages verified visually
