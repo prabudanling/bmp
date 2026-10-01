@@ -193,3 +193,10 @@
   0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
   100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
 }
+/* ── Framer Motion useScroll({target}) fix ─────────────────────
+   framer-motion memvalidasi getComputedStyle(document.scrollingElement)
+   tidak boleh position:static. Root element diberi position relative
+   (aman: geometri absolute/fixed tidak berubah). */
+html {
+  position: relative;
+}

@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     images: ["/images/hero/hero-1.png"],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/images/logo.svg",
   },
 };
 
