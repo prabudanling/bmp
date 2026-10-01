@@ -284,21 +284,83 @@ export function Footer() {
 
       <Separator className="bg-gray-800" />
 
+      {/* Premium Credits — Strategic Consulting & Digital Platform */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className="border-t border-gray-800/70"
+      >
+        <div className="container mx-auto px-4 py-10">
+          {/* Center ornament — hairline + diamond */}
+          <div className="flex items-center justify-center gap-4 mb-8" aria-hidden="true">
+            <div className="h-px w-16 sm:w-28 bg-gradient-to-r from-transparent to-teal-700/60" />
+            <div className="w-1.5 h-1.5 rotate-45 bg-teal-500/90" />
+            <div className="h-px w-16 sm:w-28 bg-gradient-to-l from-transparent to-teal-700/60" />
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-0">
+            {/* Strategic Consulting Partner */}
+            <div className="text-center md:w-1/2 md:px-12">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gray-500 mb-2">
+                Strategic Consulting
+              </p>
+              <p className="font-serif text-base sm:text-lg text-gray-100 tracking-wide">
+                PT Top Konsultan Internasional
+              </p>
+            </div>
+
+            {/* Vertical hairline divider */}
+            <div className="hidden md:block w-px h-12 bg-gray-800" aria-hidden="true" />
+
+            {/* Digital Platform Provider */}
+            <div className="text-center md:w-1/2 md:px-12">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gray-500 mb-2">
+                Digital Platform &amp; System
+              </p>
+              <a
+                href="https://digiman.id"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex flex-col sm:flex-row sm:items-baseline sm:gap-2.5"
+              >
+                <span className="font-serif text-base sm:text-lg text-gray-100 tracking-wide group-hover:text-teal-300 transition-colors duration-300">
+                  PT Digital Bisnis Manajemen
+                </span>
+                <span className="text-xs font-medium text-teal-400/80 group-hover:text-teal-300 transition-colors duration-300">
+                  digiman.id ↗
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Bottom Bar */}
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Berkat Mandiri Pendingin. Hak Cipta Dilindungi.</p>
-          <div className="flex items-center gap-4">
-            <p>Developed by PT Digital Bisnis Manajemen (DIGIMAN)</p>
-            <motion.button
-              onClick={scrollToTop}
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.9 }}
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
-              aria-label="Kembali ke atas"
-            >
-              <ArrowUp className="h-4 w-4" />
-            </motion.button>
+      <div className="border-t border-gray-800/70">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+            <p>© {new Date().getFullYear()} PT Berkat Mandiri Pendingin. Seluruh Hak Cipta Dilindungi.</p>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://digiman.id"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-teal-300 transition-colors"
+              >
+                Sistem oleh DIGIMAN
+              </a>
+              <motion.button
+                onClick={scrollToTop}
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                aria-label="Kembali ke atas"
+              >
+                <ArrowUp className="h-4 w-4" />
+              </motion.button>
+            </div>
           </div>
         </div>
       </div>

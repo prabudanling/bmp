@@ -409,3 +409,28 @@ Work Log:
 Stage Summary:
 - AboutSection decorative grid transformed into meaningful specialization showcase
 - Visual style consistent (frosted glass tiles, white icons, teal gradient card preserved)
+
+---
+Task ID: 4
+Agent: Main (Z.ai Code)
+Task: Add premium company credits (PT Top Konsultan Internasional + PT Digital Bisnis Manajemen/digiman.id) and full SEO foundation
+
+Work Log:
+- Footer.tsx: replaced plain "Developed by DIGIMAN" line with McKinsey-class premium credit strip:
+  - Center ornament (hairlines + rotated-square diamond), two-column layout with vertical hairline divider
+  - Uppercase tracking-[0.3em] micro-labels: "STRATEGIC CONSULTING" / "DIGITAL PLATFORM & SYSTEM"
+  - Serif names (font-serif): PT Top Konsultan Internasional | PT Digital Bisnis Manajemen + digiman.id external link (target=_blank rel=noopener)
+  - Fade-in on scroll via framer-motion whileInView
+  - Bottom bar updated: "© year PT Berkat Mandiri Pendingin. Seluruh Hak Cipta Dilindungi." + "Sistem oleh DIGIMAN" link + scroll-top button
+- layout.tsx: full SEO metadata — metadataBase (https://www.berkatmandiripendingin.com, derived from contact email domain), title template, expanded keywords (25 terms), creator=PT Digital Bisnis Manajemen, publisher, robots index/follow + googleBot max-image-preview:large/max-snippet:-1, canonical "/", OpenGraph (locale id_ID, siteName, hero image), Twitter summary_large_image card
+- page.tsx: JSON-LD @graph structured data — Organization+LocalBusiness (name, alternateName, url, logo, image, description, foundingDate 2010, email, telephone, address MM2100 Bekasi, contactPoint, areaServed Indonesia) + WebSite (inLanguage id-ID, publisher ref)
+- src/app/sitemap.ts: NEW — MetadataRoute.Sitemap with dynamic="force-static" (required by output:export config); verified /sitemap.xml serves valid XML
+- public/robots.txt: added "Sitemap: https://www.berkatmandiripendingin.com/sitemap.xml"
+- Verified: JSON-LD + meta tags present in served HTML, sitemap.xml valid, robots.txt served, footer credits render on desktop (1280px) & mobile (390px), 0 console errors
+- bun run lint: 0 errors
+
+Stage Summary:
+- Both companies credited in premium footer strip (visual verified)
+- SEO foundation complete: metadata + JSON-LD + sitemap.xml + robots.txt all live
+- Domain used: berkatmandiripendingin.com (from official contact email)
+- Post-deploy recommendation for user: submit sitemap to Google Search Console
