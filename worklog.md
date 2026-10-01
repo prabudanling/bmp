@@ -367,3 +367,25 @@ Stage Summary:
 - 2 pre-existing visual bugs fixed in src/components/berkat/Hero.tsx
 - All core interactions browser-verified: catalog, modal, cart, search, mobile layout
 - Database ships with data (120 products), no seeding needed
+
+---
+Task ID: 2
+Agent: Main (Z.ai Code)
+Task: Fix Radix UI accessibility console error (missing DialogTitle in Header mobile Sheet)
+
+Work Log:
+- User reported console error: "DialogContent requires a DialogTitle" at SheetContent (sheet.tsx:58) rendered from Header.tsx:246
+- Root cause: mobile menu Sheet in Header.tsx had no SheetTitle inside SheetContent
+- Fixed Header.tsx: imported SheetTitle, added <SheetTitle className="sr-only">Menu Navigasi</SheetTitle> inside SheetContent (visual design unchanged)
+- Also fixed related Radix "Missing Description" warnings (aria-describedby) in:
+  - Header.tsx SheetContent: added aria-describedby={undefined}
+  - CartDrawer.tsx SheetContent: added aria-describedby={undefined}
+  - ProductDetailModal.tsx DialogContent: added aria-describedby={undefined}
+  - GallerySection.tsx DialogContent: added aria-describedby={undefined}
+- Agent Browser verification (mobile 390px): opened mobile menu sheet -> 0 console issues; opened product detail modal -> 0 console issues; page errors 0
+- bun run lint: 0 errors
+
+Stage Summary:
+- Accessibility error resolved: all Sheet/Dialog primitives now have accessible titles and no description warnings
+- Screen reader users get proper dialog labels; visual design 100% unchanged
+- Verified via fresh page loads to avoid stale Fast Refresh code

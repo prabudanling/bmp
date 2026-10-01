@@ -180,7 +180,7 @@ export function GallerySection() {
         {/* Video Dialog - wrapped in NoSSR */}
         <NoSSR>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogContent className="sm:max-w-2xl">
+            <DialogContent aria-describedby={undefined} className="sm:max-w-2xl">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-gray-900">
                   <Youtube className="h-5 w-5 text-red-600" />

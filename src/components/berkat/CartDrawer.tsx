@@ -124,7 +124,7 @@ export function CartDrawer() {
   return (
     <NoSSR>
       <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
-      <SheetContent className="w-full sm:max-w-md flex flex-col p-0">
+      <SheetContent aria-describedby={undefined} className="w-full sm:max-w-md flex flex-col p-0">
         {showInquiry ? (
           // Inquiry Form View
           <>

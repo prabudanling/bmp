@@ -134,7 +134,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   return (
     <NoSSR>
       <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 scrollbar-thin">
+        <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 scrollbar-thin">
           <motion.div
             variants={slideUpVariants}
             initial="hidden"
