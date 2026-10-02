@@ -22,6 +22,7 @@ import {
   ChevronLeft,
   ChevronRight,
   PackageSearch,
+  MessageCircle,
   Grid3X3,
   List,
   Sparkles,
@@ -33,6 +34,7 @@ import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
 import { useT, type DictKey } from '@/lib/i18n';
+import Link from 'next/link';
 
 type Category = {
   id: string;
@@ -44,13 +46,20 @@ type Category = {
 type Product = {
   id: string;
   name: string;
+  slug?: string;
   price: number;
   originalPrice?: number | null;
   shortDesc?: string | null;
+  description?: string | null;
   brand?: string | null;
+  model?: string | null;
+  specifications?: string | null;
+  images?: string | null;
+  inStock: boolean;
   isNew: boolean;
   isFeatured: boolean;
-  images?: string | null;
+  minOrder: number;
+  unit: string;
   category: { name: string; slug: string } | null;
 };
 
@@ -78,7 +87,7 @@ const gridItemVariants = {
     scale: 1,
     transition: { type: 'spring', stiffness: 260, damping: 24 },
   },
-};
+} as const;
 
 const listItemVariants = {
   hidden: { opacity: 0, y: 16 },
@@ -87,7 +96,7 @@ const listItemVariants = {
     y: 0,
     transition: { type: 'spring', stiffness: 220, damping: 22 },
   },
-};
+} as const;
 
 export function ProductCatalog({ categories, allProducts, onProductClick }: Props) {
   const t = useT();
@@ -98,7 +107,7 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
-  const searchTimer = useRef<ReturnType<typeof setTimeout>>();
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const addItem = useCartStore((s) => s.addItem);
 
   // Compute available brands from filtered products
@@ -198,6 +207,10 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
+    if (product.price <= 0) {
+      toast.info('Harga melalui penawaran', { description: 'Buka detail untuk menanyakan harga dan ketersediaan.' });
+      return;
+    }
     addItem({
       productId: product.id,
       name: product.name,
@@ -237,6 +250,9 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
           <p className="text-gray-600 max-w-2xl mx-auto">
             {t('catalog.sub')}
           </p>
+          <Link href="/produk" className="mt-5 inline-flex h-10 items-center rounded-lg border border-teal-700 px-4 text-sm font-semibold text-teal-900 transition hover:bg-teal-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2">
+            Telusuri katalog kompresor lengkap
+          </Link>
         </motion.div>
 
         {/* Search & Filter Bar */}
@@ -490,7 +506,7 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             <img
               src={product.images}
               alt={product.name}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className={`absolute inset-0 w-full h-full ${product.brand === 'Embraco' ? 'bg-white object-contain p-5' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center">
@@ -529,9 +545,10 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             <Button
               size="icon"
               className="h-9 w-9 rounded-full bg-teal-600 hover:bg-teal-700 shadow-md text-white"
-              onClick={onAddToCart}
+              onClick={(event) => product.price > 0 ? onAddToCart(event) : (event.stopPropagation(), onClick())}
+              aria-label={product.price > 0 ? 'Tambahkan ke keranjang' : 'Tanyakan harga dan ketersediaan'}
             >
-              <ShoppingCart className="h-4 w-4" />
+              {product.price > 0 ? <ShoppingCart className="h-4 w-4" /> : <MessageCircle className="h-4 w-4" />}
             </Button>
           </motion.div>
         </div>
@@ -549,7 +566,7 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
           )}
           <div className="flex items-baseline gap-1.5">
             <span className="text-sm font-bold text-teal-800">
-              {formatRupiah(product.price)}
+              {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
               <span className="text-[10px] text-red-500 line-through font-medium">
@@ -625,7 +642,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
             <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
               <div className="flex items-baseline gap-2">
                 <span className="text-base font-bold text-teal-800">
-                  {formatRupiah(product.price)}
+                  {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
                 </span>
                 {product.originalPrice && product.originalPrice > product.price && (
                   <span className="text-xs text-red-500 line-through font-medium">
@@ -646,10 +663,11 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                 <Button
                   size="sm"
                   className="h-8 text-xs bg-teal-600 hover:bg-teal-700 text-white"
-                  onClick={onAddToCart}
+                  onClick={(event) => product.price > 0 ? onAddToCart(event) : (event.stopPropagation(), onClick())}
+                  aria-label={product.price > 0 ? t('catalog.cart') : 'Tanyakan harga dan ketersediaan'}
                 >
-                  <ShoppingCart className="h-3.5 w-3.5 mr-1" />
-                  {t('catalog.cart')}
+                  {product.price > 0 ? <ShoppingCart className="h-3.5 w-3.5 mr-1" /> : <MessageCircle className="h-3.5 w-3.5 mr-1" />}
+                  {product.price > 0 ? t('catalog.cart') : 'Tanya harga'}
                 </Button>
               </div>
             </div>

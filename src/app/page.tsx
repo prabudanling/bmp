@@ -3,8 +3,8 @@ import { PageClient } from '@/components/berkat/PageClient';
 import {
   getApprovedTestimonials,
   getCategoryProductCounts,
+  getHomepageCatalogPreview,
   getPublicFeaturedProducts,
-  getPublishedCatalog,
   getSiteSeoSettings,
 } from '@/lib/cms-db';
 
@@ -79,7 +79,7 @@ export default async function HomePage() {
   const [categoryRows, featuredRows, catalogRows, testimonials] = await Promise.all([
     getCategoryProductCounts(),
     getPublicFeaturedProducts(),
-    getPublishedCatalog(),
+    getHomepageCatalogPreview(),
     getApprovedTestimonials(),
   ]);
 

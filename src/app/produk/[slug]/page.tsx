@@ -9,6 +9,29 @@ const SITE_URL = 'https://www.berkatmandiripendingin.com';
 type RouteProps = { params: Promise<{ slug: string }> };
 type ProductSpecs = Record<string, string>;
 
+const specLabels: Record<string, string> = {
+  family: 'Seri',
+  compressor_type: 'Tipe kompresor',
+  technology: 'Teknologi',
+  refrigerant: 'Refrigeran',
+  power_supply: 'Catu daya',
+  horsepower: 'Daya kuda',
+  capacity_values_w: 'Nilai kapasitas selector (W)',
+  cop_values: 'Nilai COP',
+  displacement: 'Perpindahan volume',
+  displacement_m3_h: 'Perpindahan (m³/jam)',
+  displacement_cm3_rev: 'Perpindahan (cm³/putaran)',
+  application: 'Aplikasi',
+  test_application: 'Aplikasi pengujian',
+  test_standard: 'Standar pengujian',
+  motor_type: 'Tipe motor',
+  starting_torque: 'Torsi awal',
+  regional_listing: 'Wilayah pada katalog',
+  rotation: 'Rotasi',
+  bare_part_numbers: 'Nomor suku cadang',
+  kit: 'Kit',
+};
+
 function readSpecs(value: string | null | undefined): ProductSpecs {
   if (!value) return {};
   try {
@@ -72,20 +95,33 @@ export default async function ProductDetailPage({ params }: RouteProps) {
   const quoteMessage = `Halo, saya ingin menanyakan harga dan ketersediaan ${product.brand || ''} ${product.model || product.name}. Mohon bantu cek kecocokan produk ini untuk kebutuhan saya.`;
   const productStructuredData = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    model: product.model || undefined,
-    sku: product.model || undefined,
-    brand: product.brand ? { '@type': 'Brand', name: product.brand } : undefined,
-    category: category.name,
-    description: product.description || product.shortDesc || product.name,
-    image: product.images ? [product.images] : undefined,
-    url: canonicalUrl,
-    additionalProperty: displaySpecs.map(([name, value]) => ({
-      '@type': 'PropertyValue',
-      name: name.replaceAll('_', ' '),
-      value,
-    })),
+    '@graph': [
+      {
+        '@type': 'Product',
+        name: product.name,
+        model: product.model || undefined,
+        sku: product.id,
+        brand: product.brand ? { '@type': 'Brand', name: product.brand } : undefined,
+        category: category.name,
+        description: product.description || product.shortDesc || product.name,
+        image: product.images ? [product.images] : undefined,
+        url: canonicalUrl,
+        additionalProperty: displaySpecs.map(([name, value]) => ({
+          '@type': 'PropertyValue',
+          name: name.replaceAll('_', ' '),
+          value,
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Beranda', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Katalog kompresor', item: `${SITE_URL}/produk` },
+          { '@type': 'ListItem', position: 3, name: category.name, item: `${SITE_URL}/produk?category=${encodeURIComponent(category.slug)}` },
+          { '@type': 'ListItem', position: 4, name: product.model || product.name, item: canonicalUrl },
+        ],
+      },
+    ],
   };
 
   return (
@@ -127,7 +163,7 @@ export default async function ProductDetailPage({ params }: RouteProps) {
               <dl className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200">
                 {displaySpecs.map(([key, value]) => (
                   <div key={key} className="grid grid-cols-[minmax(0,0.75fr)_minmax(0,1fr)] gap-4 px-4 py-3 text-sm even:bg-slate-50">
-                    <dt className="text-slate-600">{key.replaceAll('_', ' ')}</dt>
+                    <dt className="text-slate-600">{specLabels[key] || key.replaceAll('_', ' ')}</dt>
                     <dd className="break-words font-medium text-slate-900">{value}</dd>
                   </div>
                 ))}

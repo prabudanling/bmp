@@ -85,7 +85,8 @@ function text(value: string | null | undefined) {
 }
 
 function arrayText(value: string[] | null | undefined) {
-  return value?.length ? value.join(', ') : 'Tidak dicantumkan pada katalog resmi';
+  const uniqueValues = value ? [...new Set(value)] : [];
+  return uniqueValues.length ? uniqueValues.join(', ') : 'Tidak dicantumkan pada katalog resmi';
 }
 
 function preferenceScore(row: Compressor) {
@@ -111,14 +112,14 @@ function categoryFor(row: Compressor) {
   };
 }
 
-function productFor(row: Compressor, categoryId: string, index: number) {
+function productFor(row: Compressor, categoryId: string) {
   const model = text(row.model);
   const refrigerant = text(row.refrigerant);
   const supply = text(row.power_supply);
   const key = [model, refrigerant, supply].join('|');
   const slug = `embraco-${slugPart(key)}-${stableHash(key)}`;
-  const capacity = row.CAP?.find((value) => value !== null);
-  const efficiency = row.COP?.find((value) => value !== null);
+  const capacityValues = [...new Set(row.CAP?.filter((value): value is number => value !== null) ?? [])];
+  const copValues = [...new Set(row.COP?.filter((value): value is number => value !== null) ?? [])];
   const type = text(row.type);
   const family = text(row.family);
   const photo = row.photo
@@ -131,8 +132,8 @@ function productFor(row: Compressor, categoryId: string, index: number) {
     refrigerant,
     power_supply: supply,
     horsepower: text(row.horse_power_label),
-    capacity_w: capacity === undefined ? 'Tidak dicantumkan pada katalog resmi' : String(capacity),
-    efficiency_w_per_w: efficiency === undefined ? 'Tidak dicantumkan pada katalog resmi' : String(efficiency),
+    capacity_values_w: capacityValues.length ? capacityValues.join(', ') : 'Tidak dicantumkan pada katalog resmi',
+    cop_values: copValues.length ? copValues.join(', ') : 'Tidak dicantumkan pada katalog resmi',
     displacement: text(row.displacement_trusted ?? row.displacement),
     displacement_m3_h: text(row.displacement_m3_h),
     displacement_cm3_rev: text(row.displacement_cm3_rev),
@@ -141,7 +142,7 @@ function productFor(row: Compressor, categoryId: string, index: number) {
     test_standard: text(row.standard),
     motor_type: text(row.motor_type),
     starting_torque: text(row.starting_torque),
-    regional_listing: row.regionsList?.flat().join(', ') || 'Tidak dicantumkan pada katalog resmi',
+    regional_listing: arrayText(row.regionsList?.flat()),
     rotation: arrayText(row.rotation_trusted ?? row.rotation),
     bare_part_numbers: arrayText(row.bareList),
     kit: arrayText(row.kit),
@@ -149,7 +150,7 @@ function productFor(row: Compressor, categoryId: string, index: number) {
     _sourceUrl: CATALOG_URL,
   };
   const displaySupply = supply === 'Tidak dicantumkan pada katalog resmi' ? '' : ` · ${supply}`;
-  const description = `Kompresor ${type.toLowerCase()} Embraco model ${model}, dari katalog resmi produsen. Katalog mencantumkan refrigeran ${refrigerant} dan catu daya ${supply}.${capacity === undefined ? '' : ` Kapasitas terukur pada titik uji ${text(row.test_application)} (${text(row.standard)}) adalah ${capacity} W.`} Kinerja aktual bergantung pada kondisi sistem. Periksa kecocokan refrigeran, kelistrikan, dan aplikasi sebelum memesan.`;
+  const description = `Kompresor ${type.toLowerCase()} Embraco model ${model}, tercantum pada katalog resmi produsen. Katalog mencantumkan refrigeran ${refrigerant} dan catu daya ${supply}.${capacityValues.length ? ` Nilai kapasitas tercatat pada selector (W): ${capacityValues.join(', ')}.` : ''} Kinerja aktual bergantung pada kondisi pengujian dan sistem. Periksa kecocokan refrigeran, kelistrikan, dan aplikasi sebelum memesan.`;
 
   return {
     id: `embraco-${stableHash(key)}`,
@@ -165,7 +166,7 @@ function productFor(row: Compressor, categoryId: string, index: number) {
     specifications: JSON.stringify(sourceSpecs),
     images: photo,
     in_stock: true,
-    is_featured: index < 8,
+    is_featured: false,
     is_new: false,
     min_order: 1,
     unit: 'unit',
@@ -203,7 +204,7 @@ async function main() {
   const sourceRows = await loadOfficialCatalog();
   const variants = new Map<string, Compressor>();
   for (const row of sourceRows) {
-    if (!row.model || !row.refrigerant || !row.power_supply) continue;
+    if (!row.model || !row.refrigerant || !row.power_supply || !row.photo) continue;
     const key = [row.model, row.refrigerant, row.power_supply].join('|');
     const current = variants.get(key);
     if (!current || preferenceScore(row) > preferenceScore(current)) variants.set(key, row);
@@ -241,14 +242,14 @@ async function main() {
       [categorySlugs],
     );
     const categoryIds = new Map(categoryRows.rows.map(({ id, slug }) => [slug, id]));
-    const products = selected.map(([, row], index) => {
+    const products = selected.map(([, row]) => {
       const category = categoryFor(row);
       const categoryId = categoryIds.get(category.slug);
       if (!categoryId) throw new Error(`Kategori ${category.slug} tidak tersimpan.`);
-      return productFor(row, categoryId, index);
+      return productFor(row, categoryId);
     });
 
-    let inserted = 0;
+    let upserted = 0;
     const columns = [
       'id', 'name', 'slug', 'description', 'short_desc', 'price', 'original_price',
       'category_id', 'brand', 'model', 'specifications', 'images', 'in_stock',
@@ -269,10 +270,11 @@ async function main() {
         return `(${columns.map((__, columnIndex) => `$${offset + columnIndex + 1}`).join(', ')})`;
       });
       const result = await client.query(
-        `INSERT INTO products (${columns.join(', ')}) VALUES ${placeholders.join(', ')} ON CONFLICT (slug) DO NOTHING`,
+        `INSERT INTO products (${columns.join(', ')}) VALUES ${placeholders.join(', ')}
+         ON CONFLICT (slug) DO UPDATE SET specifications = EXCLUDED.specifications, images = EXCLUDED.images, updated_at = NOW()`,
         values,
       );
-      inserted += result.rowCount ?? 0;
+      upserted += result.rowCount ?? 0;
     }
 
     await client.query('COMMIT');
@@ -286,7 +288,7 @@ async function main() {
       officialSourceRecords: sourceRows.length,
       uniqueModelRefrigerantPowerVariants: variants.size,
       requestedCatalogListings: products.length,
-      insertedThisRun: inserted,
+      upsertedThisRun: upserted,
       matchingEmbracoListings: Number(totals.rows[0]?.count ?? 0),
       categories: categoryMap.size,
       officialSource: CATALOG_URL,

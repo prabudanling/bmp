@@ -148,6 +148,9 @@ export function Header() {
                 </button>
               ))}
   </nav>
+              <a href="/produk" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-700 rounded-lg hover:bg-teal-50 transition-all duration-200">
+                Katalog kompresor
+              </a>
               <a href="/insights" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-700 rounded-lg hover:bg-teal-50 transition-all duration-200">
                 Insight HVAC
               </a>

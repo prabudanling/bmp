@@ -8,7 +8,7 @@ export const metadata = { title: 'Produk katalog', robots: { index: false, follo
 const PAGE_SIZE = 24;
 const number = new Intl.NumberFormat('id-ID');
 const currency = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
-type PageProps = { searchParams: Promise<{ q?: string; page?: string }> };
+type PageProps = { searchParams: Promise<{ q?: string; page?: string; error?: string }> };
 
 export default async function AdminProductsPage({ searchParams }: PageProps) {
   const params = await searchParams;
@@ -37,6 +37,8 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
           <span className="font-semibold">{number.format(total)}</span><span className="ml-1 text-muted-foreground">produk</span>
         </div>
       </header>
+
+      {params.error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Produk tidak ditemukan atau perubahan belum valid. Periksa kembali data produk.</p>}
 
       <form action="/admin/products" method="get" role="search" className="flex flex-col gap-2 sm:flex-row">
         <label className="sr-only" htmlFor="catalog-search">Cari model, merek, atau nama produk</label>

@@ -347,3 +347,83 @@ export async function getAdminCatalog() {
   const [productsList, categoriesList] = await Promise.all([getAdminProducts(), getAdminCategories()]);
   return { products: productsList, categories: categoriesList };
 }
+
+export async function getCatalogProductsPage(
+  query: string,
+  categorySlug: string,
+  pageSize: number,
+  offset: number,
+) {
+  const { and, count, eq, ilike, or } = await import('drizzle-orm');
+  const predicates = [eq(products.inStock, true), eq(products.brand, 'Embraco')];
+  const normalizedQuery = query.trim().slice(0, 100);
+  if (normalizedQuery) {
+    const escapedQuery = normalizedQuery.replace(/[\\%_]/g, '\\$&');
+    const search = `%${escapedQuery}%`;
+    predicates.push(or(
+      ilike(products.name, search),
+      ilike(products.model, search),
+      ilike(products.brand, search),
+      ilike(products.shortDesc, search),
+    )!);
+  }
+  if (categorySlug) {
+    predicates.push(eq(categories.slug, categorySlug));
+  }
+
+  const where = and(...predicates);
+  const [rows, [{ total }]] = await Promise.all([
+    cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(where)
+      .orderBy(products.name)
+      .limit(Math.min(Math.max(pageSize, 1), 48))
+      .offset(Math.max(offset, 0)),
+    cmsDb.select({ total: count() })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(where),
+  ]);
+
+  return { products: rows, total: Number(total) };
+}
+
+export async function getAdminProductsPage(query: string, pageSize: number, offset: number) {
+  const { count, ilike, or } = await import('drizzle-orm');
+  const normalizedQuery = query.trim().slice(0, 100);
+  const escapedQuery = normalizedQuery.replace(/[\\%_]/g, '\\$&');
+  const search = `%${escapedQuery}%`;
+  const where = normalizedQuery
+    ? or(
+        ilike(products.name, search),
+        ilike(products.model, search),
+        ilike(products.brand, search),
+        ilike(products.shortDesc, search),
+      )
+    : undefined;
+  const [rows, [{ total }]] = await Promise.all([
+    cmsDb.select({ product: products, categoryName: categories.name })
+      .from(products)
+      .leftJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id))
+      .where(where)
+      .orderBy((await import('drizzle-orm')).desc(products.updatedAt), products.name)
+      .limit(Math.min(Math.max(pageSize, 1), 100))
+      .offset(Math.max(offset, 0)),
+    cmsDb.select({ total: count() }).from(products).where(where),
+  ]);
+
+  return { products: rows, total: Number(total) };
+}
+
+export async function getHomepageCatalogPreview() {
+  return cmsDb.select({
+    product: products,
+    category: { id: categories.id, name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id))
+    .where((await import('drizzle-orm')).eq(products.inStock, true))
+    .orderBy((await import('drizzle-orm')).desc(products.createdAt), products.name)
+    .limit(12);
+}

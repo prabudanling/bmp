@@ -10,6 +10,8 @@ import {
   cmsSettings,
   deleteCmsArticle,
   getAdminArticle,
+  getAdminProduct,
+  products,
   saveCmsArticle,
 } from '@/lib/cms-db';
 
@@ -133,4 +135,65 @@ export async function saveSiteSettingsAction(formData: FormData) {
   ]);
   revalidatePath('/');
   redirect('/admin/settings?saved=1');
+}
+
+export async function updateCatalogProductAction(formData: FormData) {
+  const user = await getAdminUser();
+  if (!user) redirect('/admin/login');
+
+  const id = asText(formData, 'id');
+  if (!id || id.length > 120) redirect('/admin/products?error=not-found');
+  const previous = await getAdminProduct(id);
+  if (!previous) redirect('/admin/products?error=not-found');
+
+  const name = asText(formData, 'name').slice(0, 180);
+  const shortDesc = asText(formData, 'shortDesc').slice(0, 320);
+  const description = asText(formData, 'description').slice(0, 5000);
+  const rawPrice = asText(formData, 'price');
+  const price = Number(rawPrice);
+  const visibility = asText(formData, 'visibility');
+  const image = asText(formData, 'images').slice(0, 2048);
+  const featured = asText(formData, 'featured');
+
+  if (
+    name.length < 5 ||
+    description.length < 20 ||
+    !/^\\d{1,13}$/.test(rawPrice) ||
+    !Number.isSafeInteger(price) ||
+    price < 0 ||
+    price > 1_000_000_000_000 ||
+    !['listed', 'hidden'].includes(visibility) ||
+    !['yes', 'no'].includes(featured)
+  ) {
+    redirect(`/admin/products/${encodeURIComponent(id)}?error=validation`);
+  }
+
+  if (image) {
+    let isSecureUrl = false;
+    try {
+      isSecureUrl = new URL(image).protocol === 'https:';
+    } catch {
+      isSecureUrl = false;
+    }
+    if (!isSecureUrl) redirect(`/admin/products/${encodeURIComponent(id)}?error=image`);
+  }
+
+  const now = new Date();
+  await cmsDb.update(products).set({
+    name,
+    shortDesc: shortDesc || null,
+    description,
+    price,
+    images: image || null,
+    inStock: visibility === 'listed',
+    isFeatured: featured === 'yes',
+    updatedAt: now,
+  }).where((await import('drizzle-orm')).eq(products.id, id));
+
+  revalidatePath('/');
+  revalidatePath('/produk');
+  revalidatePath(`/produk/${previous.slug}`);
+  revalidatePath('/sitemap.xml');
+  revalidatePath('/admin/products');
+  redirect(`/admin/products/${encodeURIComponent(id)}?saved=1`);
 }

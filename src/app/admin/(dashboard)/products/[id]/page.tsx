@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { getAdminProduct } from '@/lib/cms-db';
 
 export const metadata = { title: 'Kelola produk', robots: { index: false, follow: false } };
-type PageProps = { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> };
+type PageProps = { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; saved?: string }> };
 type ProductSpecs = Record<string, string>;
 
 function readSpecs(value: string | null): ProductSpecs {
@@ -40,6 +40,7 @@ export default async function AdminProductEditorPage({ params, searchParams }: P
       </header>
 
       {query.error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Perubahan belum tersimpan. Periksa nilai harga, deskripsi, dan URL foto.</p>}
+      {query.saved && <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Produk berhasil diperbarui.</p>}
 
       <form action={updateCatalogProductAction} className="flex flex-col gap-5 rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-7">
         <input type="hidden" name="id" value={product.id} />

@@ -46,6 +46,7 @@ type Product = {
   brand?: string | null;
   model?: string | null;
   specifications?: string | null;
+  images?: string | null;
   isNew: boolean;
   isFeatured: boolean;
   minOrder: number;
@@ -73,7 +74,7 @@ const slideUpVariants = {
     scale: 0.97,
     transition: { duration: 0.2 },
   },
-};
+} as const;
 
 const infoVariants = {
   hidden: { opacity: 0 },
@@ -90,7 +91,7 @@ const infoItemVariants = {
     x: 0,
     transition: { type: 'spring', stiffness: 200, damping: 22 },
   },
-};
+} as const;
 
 export function ProductDetailModal({ product, open, onClose }: Props) {
   const t = useT();
@@ -102,6 +103,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   const specs: Record<string, string> = product.specifications
     ? JSON.parse(product.specifications)
     : {};
+  const displaySpecs = Object.entries(specs).filter(([key]) => !key.startsWith('_'));
 
   const discount =
     product.originalPrice && product.originalPrice > product.price
@@ -126,7 +128,8 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   };
 
   const handleWhatsApp = () => {
-    const msg = `Halo, saya tertarik dengan produk:\n\n*${product.name}*\nHarga: ${formatRupiah(product.price)}\nJumlah: ${qty} ${product.unit}\n\nMohon info ketersediaan dan cara pemesanan. Terima kasih!`;
+    const priceLine = product.price > 0 ? `Harga: ${formatRupiah(product.price)}\n` : '';
+    const msg = `Halo, saya tertarik dengan produk:\n\n*${product.name}*\n${priceLine}Jumlah: ${qty} ${product.unit}\n\nMohon konfirmasi harga, stok, dan kecocokan aplikasi. Terima kasih!`;
     window.open(
       `https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`,
       '_blank'
@@ -150,7 +153,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                 <img
                   src={product.images}
                   alt={product.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className={`absolute inset-0 w-full h-full ${product.brand === 'Embraco' ? 'bg-white object-contain p-6' : 'object-cover'}`}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -206,7 +209,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               <motion.div variants={infoItemVariants} className="mb-4">
                 <div className="flex items-baseline gap-3">
                   <span className="text-2xl font-extrabold text-teal-800">
-                    {formatRupiah(product.price)}
+                    {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
                   </span>
                   {product.originalPrice && product.originalPrice > product.price && (
                     <span className="text-sm text-red-500 line-through font-medium">
@@ -232,13 +235,13 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
               )}
 
               {/* Specs */}
-              {Object.keys(specs).length > 0 && (
+              {displaySpecs.length > 0 && (
                 <motion.div variants={infoItemVariants} className="mb-4">
                   <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
                     {t('modal.specs')}
                   </h4>
                   <div className="rounded-lg border border-gray-200 overflow-hidden">
-                    {Object.entries(specs).map(([key, val], i) => (
+                    {displaySpecs.map(([key, val], i) => (
                       <div
                         key={key}
                         className={`flex justify-between text-xs px-3 py-2.5 ${
@@ -255,15 +258,16 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
 
               <Separator className="my-4" />
 
-              {/* Guarantees */}
-              <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
-                {guarantees.map((g) => (
-                  <div key={g.labelKey} className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
-                    <g.icon className="h-3.5 w-3.5 text-teal-600" />
-                    {t(g.labelKey)}
-                  </div>
-                ))}
-              </motion.div>
+              {product.price > 0 && (
+                <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
+                  {guarantees.map((g) => (
+                    <div key={g.labelKey} className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                      <g.icon className="h-3.5 w-3.5 text-teal-600" />
+                      {t(g.labelKey)}
+                    </div>
+                  ))}
+                </motion.div>
+              )}
 
               {/* Quantity + Actions */}
               <motion.div variants={infoItemVariants} className="mt-auto space-y-3">
@@ -290,22 +294,26 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                 </div>
 
                 <div className="flex gap-2">
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
+                  {product.price > 0 && (
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
+                      <Button
+                        className="w-full bg-teal-600 hover:bg-teal-700 h-11 text-white font-semibold"
+                        onClick={handleAddToCart}
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        {t('modal.addToCart')}
+                      </Button>
+                    </motion.div>
+                  )}
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className={product.price > 0 ? '' : 'flex-1'}>
                     <Button
-                      className="w-full bg-teal-600 hover:bg-teal-700 h-11 text-white font-semibold"
-                      onClick={handleAddToCart}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      {t('modal.addToCart')}
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      variant="outline"
-                      className="h-11 px-4 border-emerald-300 text-emerald-800 hover:bg-emerald-50 font-semibold"
+                      variant={product.price > 0 ? 'outline' : 'default'}
+                      className={product.price > 0 ? 'h-11 px-4 border-emerald-300 text-emerald-800 hover:bg-emerald-50 font-semibold' : 'h-11 w-full bg-teal-900 font-semibold text-white hover:bg-teal-800'}
                       onClick={handleWhatsApp}
+                      aria-label="Tanyakan harga dan ketersediaan melalui WhatsApp"
                     >
-                      <MessageCircle className="h-4 w-4" />
+                      <MessageCircle className="h-4 w-4" data-icon={product.price > 0 ? undefined : 'inline-start'} />
+                      {product.price > 0 ? null : 'Tanyakan harga & stok'}
                     </Button>
                   </motion.div>
                 </div>
