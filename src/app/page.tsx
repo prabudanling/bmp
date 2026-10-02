@@ -10,12 +10,26 @@ import {
 
 const SITE_URL = 'https://www.berkatmandiripendingin.com';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSeoSettings().catch(() => null);
+  const title = settings?.siteTitle ?? 'Berkat Mandiri Pendingin';
+  const description = settings?.siteDescription ?? 'Distributor HVAC resmi sejak 2010 di Kawasan MM2100 Bekasi.';
   return {
-    title: settings?.siteTitle,
-    description: settings?.siteDescription,
+    title,
+    description,
     alternates: { canonical: '/' },
+    openGraph: {
+      type: 'website',
+      url: '/',
+      siteName: title,
+      locale: 'id_ID',
+      title,
+      description,
+      images: [{ url: '/images/hero/hero-1.png', alt: 'Sistem pendingin HVAC modern — PT Berkat Mandiri Pendingin' }],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: ['/images/hero/hero-1.png'] },
   };
 }
 

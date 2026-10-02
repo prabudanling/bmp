@@ -134,6 +134,38 @@ export async function getAdminArticle(id: string) {
   return article ?? null;
 }
 
+export async function articleSlugExists(slug: string, excludingId?: string) {
+  const { and, eq, ne } = await import('drizzle-orm');
+  const predicate = excludingId
+    ? and(eq(cmsArticles.slug, slug), ne(cmsArticles.id, excludingId))
+    : eq(cmsArticles.slug, slug);
+  const [article] = await cmsDb.select({ id: cmsArticles.id }).from(cmsArticles).where(predicate).limit(1);
+  return Boolean(article);
+}
+
+export async function saveCmsArticle(article: typeof cmsArticles.$inferInsert) {
+  await cmsDb.insert(cmsArticles).values(article).onConflictDoUpdate({
+    target: cmsArticles.id,
+    set: {
+      title: article.title,
+      slug: article.slug,
+      excerpt: article.excerpt,
+      content: article.content,
+      coverImage: article.coverImage,
+      seoTitle: article.seoTitle,
+      seoDescription: article.seoDescription,
+      status: article.status,
+      authorName: article.authorName,
+      publishedAt: article.publishedAt,
+      updatedAt: article.updatedAt,
+    },
+  });
+}
+
+export async function deleteCmsArticle(id: string) {
+  await cmsDb.delete(cmsArticles).where((await import('drizzle-orm')).eq(cmsArticles.id, id));
+}
+
 export async function getAdminOverview() {
   const [{ count: articleCount }] = await cmsDb.select({ count: (await import('drizzle-orm')).count() }).from(cmsArticles);
   const [{ count: publishedCount }] = await cmsDb.select({ count: (await import('drizzle-orm')).count() }).from(cmsArticles).where((await import('drizzle-orm')).eq(cmsArticles.status, 'published'));

@@ -276,6 +276,7 @@ export function Header() {
                           {t(item.labelKey)}
                         </motion.button>
                       ))}
+                      <a href="/insights" onClick={() => setMobileOpen(false)} className="block w-full rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-800 transition-colors hover:bg-teal-50 hover:text-teal-700">Insight HVAC</a>
                       <motion.div
                         className="mt-3 px-4 flex flex-col gap-3"
                         initial={{ opacity: 0, y: 10 }}
