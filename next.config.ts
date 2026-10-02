@@ -1,24 +1,31 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // STATIC EXPORT — generates pure HTML/CSS/JS files
-  // No Node.js needed on the server! Upload to any shared hosting.
-  output: 'export',
-
-  // Trailing slash for shared hosting compatibility (Apache/Nginx)
-  trailingSlash: true,
-
-  // Shared hosting friendly — no image optimization server needed
   images: {
     unoptimized: true,
   },
-
-  // Disable strict TS checks for build (Framer Motion type widening issue)
-  // ESLint already catches real errors
   typescript: {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

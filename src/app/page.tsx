@@ -1,9 +1,24 @@
-import { db } from '@/lib/db';
+import type { Metadata } from 'next';
 import { PageClient } from '@/components/berkat/PageClient';
+import {
+  getApprovedTestimonials,
+  getCategoryProductCounts,
+  getPublicFeaturedProducts,
+  getPublishedCatalog,
+  getSiteSeoSettings,
+} from '@/lib/cms-db';
 
 const SITE_URL = 'https://www.berkatmandiripendingin.com';
 
-// Structured data (JSON-LD) — helps Google understand and permanently index the business
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSeoSettings().catch(() => null);
+  return {
+    title: settings?.siteTitle,
+    description: settings?.siteDescription,
+    alternates: { canonical: '/' },
+  };
+}
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -15,8 +30,7 @@ const jsonLd = {
       url: SITE_URL,
       logo: `${SITE_URL}/images/logo.svg`,
       image: `${SITE_URL}/images/hero/hero-1.png`,
-      description:
-        'Distributor HVAC resmi sejak 2010 — pusat penjualan AC, kompresor, refrigerant, spare part, chiller, dan sistem pendingin gedung terlengkap di Indonesia.',
+      description: 'Distributor HVAC resmi sejak 2010 — pusat penjualan AC, kompresor, refrigerant, spare part, chiller, dan sistem pendingin gedung terlengkap di Indonesia.',
       foundingDate: '2010',
       email: 'berkatmandiripendingin@gmail.com',
       telephone: '+62-21-2268-2617',
@@ -34,10 +48,7 @@ const jsonLd = {
         areaServed: 'ID',
         availableLanguage: ['id'],
       },
-      areaServed: {
-        '@type': 'Country',
-        name: 'Indonesia',
-      },
+      areaServed: { '@type': 'Country', name: 'Indonesia' },
     },
     {
       '@type': 'WebSite',
@@ -51,46 +62,24 @@ const jsonLd = {
 };
 
 export default async function HomePage() {
-  // Fetch ALL data at BUILD TIME — becomes static HTML
-  // No server needed at runtime!
-  const categories = await db.category.findMany({
-    orderBy: { sortOrder: 'asc' },
-    include: { _count: { select: { products: true } } },
-  });
+  const [categoryRows, featuredRows, catalogRows, testimonials] = await Promise.all([
+    getCategoryProductCounts(),
+    getPublicFeaturedProducts(),
+    getPublishedCatalog(),
+    getApprovedTestimonials(),
+  ]);
 
-  // Featured products for the hero section
-  const featuredProducts = await db.product.findMany({
-    where: { isFeatured: true, inStock: true },
-    include: { category: { select: { name: true, slug: true } } },
-    orderBy: { createdAt: 'desc' },
-    take: 8,
-  });
-
-  // ALL products — filtering/sorting/pagination happens in the browser!
-  const allProducts = await db.product.findMany({
-    where: { inStock: true },
-    include: { category: { select: { name: true, slug: true } } },
-    orderBy: { createdAt: 'desc' },
-  });
-
-  // Approved testimonials
-  const testimonials = await db.testimonial.findMany({
-    where: { isApproved: true },
-    orderBy: { createdAt: 'desc' },
-  });
+  const categories = categoryRows.map(({ category, count }) => ({
+    ...category,
+    _count: { products: Number(count) },
+  }));
+  const featuredProducts = featuredRows.map(({ product, category }) => ({ ...product, category }));
+  const allProducts = catalogRows.map(({ product, category }) => ({ ...product, category }));
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <PageClient
-        categories={JSON.parse(JSON.stringify(categories))}
-        featuredProducts={JSON.parse(JSON.stringify(featuredProducts))}
-        allProducts={JSON.parse(JSON.stringify(allProducts))}
-        testimonials={JSON.parse(JSON.stringify(testimonials))}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <PageClient categories={categories} featuredProducts={featuredProducts} allProducts={allProducts} testimonials={testimonials} />
     </>
   );
 }

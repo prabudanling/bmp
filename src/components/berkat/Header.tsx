@@ -147,9 +147,12 @@ export function Header() {
                   {t(item.labelKey)}
                 </button>
               ))}
-            </nav>
-
-            {/* Actions */}
+  </nav>
+              <a href="/insights" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-700 rounded-lg hover:bg-teal-50 transition-all duration-200">
+                Insight HVAC
+              </a>
+              
+              {/* Actions */}
             <div className="flex items-center gap-2">
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Button

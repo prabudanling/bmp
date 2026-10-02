@@ -58,6 +58,18 @@ export const products = pgTable('products', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
 });
 
+export const testimonials = pgTable('testimonials', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  company: text('company'),
+  position: text('position'),
+  content: text('content').notNull(),
+  rating: integer('rating').notNull(),
+  avatar: text('avatar'),
+  isApproved: boolean('is_approved').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+});
+
 const globalForCms = globalThis as typeof globalThis & { cmsPool?: Pool };
 const pool = globalForCms.cmsPool ?? new Pool({
   connectionString: process.env.POSTGRES_URL ?? process.env.DATABASE_URL,
@@ -68,7 +80,7 @@ const pool = globalForCms.cmsPool ?? new Pool({
 
 if (process.env.NODE_ENV !== 'production') globalForCms.cmsPool = pool;
 
-export const cmsDb = drizzle(pool, { schema: { cmsArticles, cmsSettings, categories, products } });
+export const cmsDb = drizzle(pool, { schema: { cmsArticles, cmsSettings, categories, products, testimonials } });
 
 export type CmsArticle = typeof cmsArticles.$inferSelect;
 export type CmsCategory = typeof categories.$inferSelect;
@@ -90,6 +102,17 @@ export async function getSiteSeoSettings() {
 
 export async function getPublishedArticles() {
   return cmsDb.select().from(cmsArticles).where((await import('drizzle-orm')).eq(cmsArticles.status, 'published')).orderBy((await import('drizzle-orm')).desc(cmsArticles.publishedAt));
+}
+
+export async function getApprovedTestimonials() {
+  return cmsDb.select({
+    id: testimonials.id,
+    name: testimonials.name,
+    company: testimonials.company,
+    position: testimonials.position,
+    content: testimonials.content,
+    rating: testimonials.rating,
+  }).from(testimonials).where((await import('drizzle-orm')).eq(testimonials.isApproved, true)).orderBy((await import('drizzle-orm')).desc(testimonials.createdAt));
 }
 
 export async function getArticleBySlug(slug: string) {
