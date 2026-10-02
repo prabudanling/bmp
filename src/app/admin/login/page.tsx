@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ error?: string; reset?: string }> }) {
   const [user, params] = await Promise.all([getAdminUser(), searchParams]);
   if (user) redirect('/admin');
 
@@ -32,7 +32,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
         <p className="mt-2 text-sm leading-6 text-muted-foreground">Masuk dengan email admin dan kata sandi akun Neon Auth. Email adalah ID login untuk workspace ini.</p>
         <div className="mt-8">
           {authConfigured() ? (
-            <AdminLoginForm accessError={params.error === 'access'} />
+            <AdminLoginForm accessError={params.error === 'access'} resetSuccess={params.reset === 'success'} />
           ) : (
             <div role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
               Login admin belum dikonfigurasi. Hubungi pengelola website untuk mengaktifkan Neon Auth dan email admin.

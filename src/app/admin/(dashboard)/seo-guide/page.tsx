@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const ownerRoadmap = [
   {
     title: 'Mulai dari pencarian yang paling relevan',
-    description: 'Fokus awal pada kompresor pendingin dan calon pembeli di Indonesia. Gunakan kata yang memang dipakai pembeli, seperti merek, nomor model, tipe, refrigeran, dan tegangan. Target nomor satu dunia tidak bisa dijanjikan; kita ukur kemajuan lewat pencarian yang tepat dan permintaan pelanggan.',
+    description: 'Fokus awal pada kompresor untuk air conditioner kelas menengah-atas dan pembeli teknis di Indonesia. Gunakan istilah yang benar-benar dicari: merek, nomor model, scroll/rotary, inverter, refrigeran, tegangan, dan kapasitas. Posisi nomor satu dunia tidak bisa dijanjikan; ukur kemajuan dari pencarian yang tepat dan permintaan pelanggan.',
   },
   {
     title: 'Satu produk, satu halaman yang berguna',
@@ -32,34 +32,39 @@ const ownerRoadmap = [
 
 const compressorBenchmark = [
   {
-    name: 'Embraco',
-    href: 'https://products.embraco.com/',
-    features: 'Product Selector, pencarian padanan model, dan pencari distributor.',
-  },
-  {
-    name: 'Secop',
-    href: 'https://toolkit.secop.com/',
-    features: 'Pemilih aplikasi dan paket tunggal, filter kebutuhan teknis, serta lembar data produk.',
-  },
-  {
     name: 'Copeland',
     href: 'https://www.copeland.com/',
-    features: 'Alat pemilihan kompresor, pencari suku cadang, dan informasi produk/cross-reference.',
+    features: 'Rangkaian scroll HVAC fixed-speed, two-stage, digital, dan variable-speed; Copeland Select membantu pemilihan dan cross-reference model.',
   },
   {
     name: 'Danfoss',
-    href: 'https://www.danfoss.com/en/',
-    features: 'Coolselector untuk memilih kompresor, melihat data teknis, dan mencari komponen terkait.',
+    href: 'https://www.danfoss.com/en-us/service-and-support/downloads/dcs/coolselector-2/',
+    features: 'Coolselector² membandingkan komponen berdasarkan kapasitas, refrigeran, serta kondisi evaporasi/kondensasi dan dapat mengekspor laporan.',
   },
   {
     name: 'BITZER',
-    href: 'https://www.bitzer.de/',
-    features: 'Perangkat seleksi, data performa/dimensi, dokumentasi, dan katalog ePARTS.',
+    href: 'https://www.bitzer.de/us/en/software/',
+    features: 'Software seleksi kompresor dengan data performa, batas aplikasi, dokumentasi teknis, dan gambar dimensi.',
   },
   {
-    name: 'Tecumseh',
-    href: 'https://www.tecumseh.com/',
-    features: 'TecTools cross-reference serta pencarian model menurut refrigeran, aplikasi, kapasitas, dan tegangan.',
+    name: 'Panasonic Industrial',
+    href: 'https://industrial.panasonic.com/ww/products/motors-compressors/compressors',
+    features: 'Katalog resmi memisahkan keluarga reciprocating, rotary, dan scroll serta fixed-speed dan variable-speed untuk aplikasi HVAC/AC.',
+  },
+  {
+    name: 'LG Compressor & Motor',
+    href: 'https://www.lg.com/global/business/compressor-motor/',
+    features: 'Keluarga scroll fixed-speed, two-stage, dan variable-speed; lini produk dipisah menurut jenis kompresor dan aplikasi.',
+  },
+  {
+    name: 'Samsung Compressor',
+    href: 'https://www.samsung.com/global/business/compressor/',
+    features: 'Navigasi berdasarkan reciprocating, rotary, dan scroll serta aplikasi air conditioner, unitary, dan heat pump.',
+  },
+  {
+    name: 'GMCC',
+    href: 'https://www.gmcc-welling.com/',
+    features: 'Katalog rumah tangga dan komersial, solusi aplikasi, selection tool, dan unduhan untuk rotary serta scroll compressor.',
   },
 ];
 
@@ -144,7 +149,7 @@ export default function SeoGuidePage() {
       <section aria-labelledby="compressor-benchmark-heading" className="rounded-2xl border border-teal-900/10 bg-white p-5 shadow-sm sm:p-7">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-800">Benchmark fitur produsen</p>
         <h2 id="compressor-benchmark-heading" className="mt-2 text-2xl font-semibold tracking-tight">Fitur yang memudahkan orang memilih kompresor</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Riset awal ini memeriksa enam sumber resmi produsen kompresor pendingin, bukan audit penuh 100 website. Fitur yang berulang adalah pencarian berdasarkan model dan spesifikasi, cross-reference, data teknis, pemilih produk, suku cadang, dan pencari distributor.</p>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Benchmark awal ini meninjau tujuh sumber resmi produsen kompresor yang relevan untuk air conditioner: Copeland, Danfoss, BITZER, Panasonic, LG, Samsung, dan GMCC. Ini belum merupakan audit 100 website; jumlah itu perlu diteliti dan dicatat satu per satu agar hasilnya bisa dipercaya. Catatan fitur di bawah berasal dari katalog dan alat resmi yang tersedia saat ditinjau.</p>
         <ul className="mt-5 grid gap-3 md:grid-cols-2">
           {compressorBenchmark.map((item) => (
             <li key={item.name} className="rounded-xl border border-border p-4">
@@ -155,7 +160,8 @@ export default function SeoGuidePage() {
             </li>
           ))}
         </ul>
-        <p className="mt-4 rounded-xl bg-teal-50 p-4 text-sm leading-6 text-teal-950">Yang paling masuk akal untuk situs ini: satu halaman per model, filter model/refrigeran/tegangan, spesifikasi dengan sumber, lalu tombol minta penawaran. Harga tidak ditampilkan; jangan masukkan nominal tersembunyi ke data terstruktur.</p>
+        <p className="mt-4 rounded-xl bg-teal-50 p-4 text-sm leading-6 text-teal-950">Pola yang layak diadopsi: satu halaman per model, filter merek/tipe/refrigeran/tegangan/kapasitas, dokumen teknis bersumber, lalu tombol minta penawaran. Harga tetap tidak ditampilkan, termasuk dalam data terstruktur.</p>
+        <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950"><strong>Catatan katalog:</strong> data Embraco yang sudah ada belum berarti situs ini memiliki semua model premium untuk air conditioner. Jangan menambahkan model, kapasitas, stok, atau foto hanya dari nama merek; cocokkan nomor model dan spesifikasi dengan datasheet resmi serta konfirmasi ketersediaan dari pemasok. Dalam konteks ini, AC berarti air conditioner, bukan sekadar arus listrik AC.</p>
       </section>
 
       <section aria-labelledby="workflow-heading" className="flex flex-col gap-4">
