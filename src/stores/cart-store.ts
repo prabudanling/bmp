@@ -5,7 +5,6 @@ export interface CartItem {
   id: string;
   productId: string;
   name: string;
-  price: number;
   quantity: number;
   image?: string;
   category?: string;
@@ -21,7 +20,6 @@ interface CartState {
   toggleCart: () => void;
   openCart: () => void;
   closeCart: () => void;
-  getTotal: () => number;
   getTotalItems: () => number;
 }
 
@@ -61,11 +59,29 @@ export const useCartStore = create<CartState>()(
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
-      getTotal: () =>
-        get().items.reduce((sum, item) => sum + item.price * item.quantity, 0),
       getTotalItems: () =>
         get().items.reduce((sum, item) => sum + item.quantity, 0),
     }),
-    { name: 'berkat-cart' }
+    {
+      name: 'berkat-cart',
+      version: 2,
+      migrate: (persistedState) => {
+        const state = persistedState as { items?: Array<Record<string, unknown>> };
+        const items = Array.isArray(state.items)
+          ? state.items.flatMap((item) => {
+              if (typeof item.productId !== 'string' || typeof item.name !== 'string') return [];
+              return [{
+                id: typeof item.id === 'string' ? item.id : `quote-${item.productId}`,
+                productId: item.productId,
+                name: item.name,
+                quantity: typeof item.quantity === 'number' && item.quantity > 0 ? item.quantity : 1,
+                image: typeof item.image === 'string' ? item.image : undefined,
+                category: typeof item.category === 'string' ? item.category : undefined,
+              }];
+            })
+          : [];
+        return { ...state, items, isOpen: false } as CartState;
+      },
+    }
   )
 );

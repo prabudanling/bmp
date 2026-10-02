@@ -7,12 +7,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
 import {
   Minus,
   Plus,
@@ -25,10 +23,8 @@ import {
   CheckCircle2,
   Snowflake,
 } from 'lucide-react';
-import Image from 'next/image';
 import { useCartStore, type CartItem } from '@/stores/cart-store';
 import { toast } from 'sonner';
-import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
 import { useT } from '@/lib/i18n';
 
@@ -52,22 +48,19 @@ const cartItemVariants = {
 
 export function CartDrawer() {
   const t = useT();
-  const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart, getTotal, getTotalItems } =
+  const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart, getTotalItems } =
     useCartStore();
   const [showInquiry, setShowInquiry] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
 
-  const total = getTotal();
   const count = getTotalItems();
 
   const handleWhatsAppOrder = () => {
     if (items.length === 0) return;
-    const lines = items.map(
-      (item) => `\u2022 ${item.name} x${item.quantity} = ${formatRupiah(item.price * item.quantity)}`
-    );
-    const msg = `Halo, saya ingin memesan:\n\n${lines.join('\n')}\n\nTotal: ${formatRupiah(total)}\n\nMohon info ketersediaan dan ongkos kirim. Terima kasih!`;
+    const lines = items.map((item) => `\u2022 ${item.name} x${item.quantity}`);
+    const msg = `Halo, saya ingin meminta penawaran untuk produk berikut:\n\n${lines.join('\n')}\n\nMohon konfirmasi harga, stok, kecocokan produk, dan ongkos kirim. Terima kasih!`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
@@ -80,9 +73,7 @@ export function CartDrawer() {
 
     // Send inquiry via WhatsApp — no server needed!
     try {
-      const orderLines = items.map(
-        (item) => `  \u2022 ${item.name} x${item.quantity} = ${formatRupiah(item.price * item.quantity)}`
-      );
+      const orderLines = items.map((item) => `  \u2022 ${item.name} x${item.quantity}`);
 
       const lines = [
         `Halo, saya ingin *minta penawaran harga*:`,
@@ -92,13 +83,11 @@ export function CartDrawer() {
         `*Telepon:* ${form.phone}`,
         form.company ? `*Perusahaan:* ${form.company}` : '',
         ``,
-        `*Pesanan:*`,
+        `*Produk yang diminta:*`,
         ...orderLines,
-        ``,
-        `*Total Estimasi:* ${formatRupiah(total)}`,
         form.message ? `*Catatan:* ${form.message}` : '',
         ``,
-        `Mohon info ketersediaan dan harga terbaik. Terima kasih!`,
+        `Mohon konfirmasi harga, stok, kecocokan produk, dan ongkos kirim. Terima kasih!`,
       ].filter(Boolean).join('\n');
 
       window.open(
@@ -187,20 +176,12 @@ export function CartDrawer() {
                 />
               </div>
 
-              {/* Order summary in inquiry */}
-              <div className="bg-gray-50 rounded-lg p-3">
-                <h4 className="text-xs font-semibold text-gray-800 mb-2">{t('cart.subtotal')} Pesanan</h4>
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-xs text-gray-700 py-1">
-                    <span className="flex-1 truncate mr-2">{item.name} x{item.quantity}</span>
-                    <span className="text-gray-900 font-medium">{formatRupiah(item.price * item.quantity)}</span>
-                  </div>
-                ))}
-                <Separator className="my-2" />
-                <div className="flex justify-between text-sm font-bold">
-                  <span className="text-gray-900">{t('cart.total')}</span>
-                  <span className="text-teal-800">{formatRupiah(total)}</span>
-                </div>
+              <div className="rounded-lg bg-gray-50 p-3">
+                <h4 className="mb-2 text-xs font-semibold text-gray-800">Produk yang diminta ({count})</h4>
+                <ul className="space-y-1 text-xs text-gray-700">
+                  {items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
+                </ul>
+                <p className="mt-3 text-xs leading-5 text-gray-600">Tim kami akan mengonfirmasi harga, stok, dan pengiriman setelah menerima permintaan ini.</p>
               </div>
             </div>
             <div className="p-4 border-t flex gap-2">
@@ -289,14 +270,7 @@ export function CartDrawer() {
                   transition={{ delay: 0.1, duration: 0.3 }}
                   className="border-t p-4 space-y-3"
                 >
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>{t('cart.subtotal')} ({count} {t('cart.item')})</span>
-                    <span className="text-gray-900">{formatRupiah(total)}</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-bold">
-                    <span className="text-gray-900">{t('cart.total')}</span>
-                    <span className="text-teal-800">{formatRupiah(total)}</span>
-                  </div>
+                  <p className="rounded-lg bg-teal-50 p-3 text-xs leading-5 text-teal-900">Harga, stok, dan biaya kirim dikonfirmasi oleh tim setelah permintaan dikirim.</p>
                   <div className="grid grid-cols-2 gap-2">
                     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                       <Button
@@ -380,25 +354,25 @@ function CartItemRow({
         {item.category && (
           <p className="text-[10px] text-gray-600 mt-0.5">{item.category}</p>
         )}
-        <div className="flex items-center justify-between mt-1.5">
-          <div className="flex items-center border rounded-md">
+        <div className="mt-1.5 flex items-center gap-2">
+          <span className="text-xs text-gray-600">Jumlah</span>
+          <div className="flex items-center rounded-md border">
             <button
+              aria-label={`Kurangi jumlah ${item.name}`}
               className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded-l-md text-gray-600 transition-colors"
               onClick={() => onUpdateQty(item.quantity - 1)}
             >
-              <Minus className="h-3 w-3" />
+              <Minus aria-hidden="true" className="h-3 w-3" />
             </button>
             <span className="w-8 text-center text-xs font-semibold text-gray-900">{item.quantity}</span>
             <button
+              aria-label={`Tambah jumlah ${item.name}`}
               className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded-r-md text-gray-600 transition-colors"
               onClick={() => onUpdateQty(item.quantity + 1)}
             >
-              <Plus className="h-3 w-3" />
+              <Plus aria-hidden="true" className="h-3 w-3" />
             </button>
           </div>
-          <span className="text-sm font-bold text-teal-800">
-            {formatRupiah(item.price * item.quantity)}
-          </span>
         </div>
       </div>
     </motion.div>

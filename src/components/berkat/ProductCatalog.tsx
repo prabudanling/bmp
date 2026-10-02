@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/select';
 import {
   Search,
-  ShoppingCart,
   Eye,
   SlidersHorizontal,
   X,
@@ -28,12 +27,10 @@ import {
   Sparkles,
   Snowflake,
 } from 'lucide-react';
-import Image from 'next/image';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
-import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
-import { useT, type DictKey } from '@/lib/i18n';
+import { useT } from '@/lib/i18n';
 import Link from 'next/link';
 
 type Category = {
@@ -46,9 +43,7 @@ type Category = {
 type Product = {
   id: string;
   name: string;
-  slug?: string;
-  price: number;
-  originalPrice?: number | null;
+  slug: string;
   shortDesc?: string | null;
   description?: string | null;
   brand?: string | null;
@@ -150,12 +145,6 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'price-asc':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
       default: // newest — keep original order (already sorted by createdAt desc from seed)
         break;
     }
@@ -207,14 +196,9 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
-    if (product.price <= 0) {
-      toast.info('Harga melalui penawaran', { description: 'Buka detail untuk menanyakan harga dan ketersediaan.' });
-      return;
-    }
     addItem({
       productId: product.id,
       name: product.name,
-      price: product.price,
       quantity: 1,
       category: product.category?.name,
       image: product.images || undefined,
@@ -324,8 +308,6 @@ export function ProductCatalog({ categories, allProducts, onProductClick }: Prop
                   <SelectContent>
                     <SelectItem value="newest">{t('catalog.sort.newest')}</SelectItem>
                     <SelectItem value="name">{t('catalog.sort.name')}</SelectItem>
-                    <SelectItem value="price-asc">{t('catalog.sort.priceLow')}</SelectItem>
-                    <SelectItem value="price-desc">{t('catalog.sort.priceHigh')}</SelectItem>
                   </SelectContent>
                 </Select>
               </NoSSR>
@@ -497,22 +479,21 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
       variants={gridItemVariants}
       whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
     >
-      <Card
-        className="group cursor-pointer border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 overflow-hidden h-full"
-        onClick={onClick}
-      >
+      <Card className="group border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 overflow-hidden h-full">
         <div className="relative aspect-square bg-gray-100 overflow-hidden">
-          {product.images ? (
-            <img
-              src={product.images}
-              alt={product.name}
-              className={`absolute inset-0 w-full h-full ${product.brand === 'Embraco' ? 'bg-white object-contain p-5' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`}
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center">
-              <Snowflake className="h-12 w-12 text-teal-300 opacity-40" />
-            </div>
-          )}
+          <Link href={`/produk/${product.slug}`} aria-label={`Buka halaman ${product.name}`} className="absolute inset-0 block">
+            {product.images ? (
+              <img
+                src={product.images}
+                alt={product.name}
+                className={`absolute inset-0 size-full ${product.brand === 'Embraco' ? 'bg-white object-contain p-5' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`}
+              />
+            ) : (
+              <div className="flex size-full items-center justify-center bg-gradient-to-br from-teal-50 to-cyan-50">
+                <Snowflake aria-hidden="true" className="h-12 w-12 text-teal-300 opacity-40" />
+              </div>
+            )}
+          </Link>
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.isNew && (
               <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0 font-semibold">{t('catalog.badge.new')}</Badge>
@@ -521,11 +502,6 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
               <Badge className="bg-amber-600 text-white text-[10px] px-1.5 py-0 flex items-center gap-0.5 font-semibold">
                 <Sparkles className="h-2.5 w-2.5" />
                 {t('catalog.badge.featured')}
-              </Badge>
-            )}
-            {product.originalPrice && product.originalPrice > product.price && (
-              <Badge className="bg-red-600 text-white text-[10px] px-1.5 py-0 font-semibold">
-                -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
               </Badge>
             )}
           </div>
@@ -538,17 +514,18 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
               size="icon"
               variant="secondary"
               className="h-9 w-9 rounded-full shadow-md hover:bg-gray-200"
-              onClick={(e) => { e.stopPropagation(); onClick(); }}
+              onClick={onClick}
+              aria-label={`Pratinjau ${product.name}`}
             >
-              <Eye className="h-4 w-4 text-gray-800" />
+              <Eye aria-hidden="true" className="h-4 w-4 text-gray-800" />
             </Button>
             <Button
               size="icon"
               className="h-9 w-9 rounded-full bg-teal-600 hover:bg-teal-700 shadow-md text-white"
-              onClick={(event) => product.price > 0 ? onAddToCart(event) : (event.stopPropagation(), onClick())}
-              aria-label={product.price > 0 ? 'Tambahkan ke keranjang' : 'Tanyakan harga dan ketersediaan'}
+              onClick={onAddToCart}
+              aria-label="Tambahkan ke daftar penawaran"
             >
-              {product.price > 0 ? <ShoppingCart className="h-4 w-4" /> : <MessageCircle className="h-4 w-4" />}
+              <MessageCircle aria-hidden="true" className="h-4 w-4" />
             </Button>
           </motion.div>
         </div>
@@ -559,21 +536,16 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             </p>
           )}
           <h3 className="font-semibold text-xs text-gray-900 line-clamp-2 mb-1.5 group-hover:text-teal-700 transition-colors leading-snug min-h-[2.25rem]">
-            {product.name}
+            <Link href={`/produk/${product.slug}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+              {product.name}
+            </Link>
           </h3>
           {product.category && (
             <p className="text-[10px] text-gray-600 mb-1.5 font-medium">{product.category.name}</p>
           )}
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-sm font-bold text-teal-800">
-              {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
-            </span>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] text-red-500 line-through font-medium">
-                {formatRupiah(product.originalPrice)}
-              </span>
-            )}
-          </div>
+          <Link href={`/produk/${product.slug}`} className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-teal-800 hover:text-teal-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+            Lihat spesifikasi <ChevronRight aria-hidden="true" className="size-3.5" />
+          </Link>
         </CardContent>
       </Card>
     </motion.div>
@@ -592,30 +564,22 @@ function ProductCardList({ product, onClick, onAddToCart }: {
       variants={listItemVariants}
       whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
     >
-      <Card
-        className="group cursor-pointer border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300"
-        onClick={onClick}
-      >
+      <Card className="group border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300">
         <CardContent className="p-4 flex gap-4">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center shrink-0 relative overflow-hidden">
+          <Link href={`/produk/${product.slug}`} aria-label={`Buka halaman ${product.name}`} className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center shrink-0 relative overflow-hidden">
             {product.images ? (
               <img
                 src={product.images}
                 alt={product.name}
-                className="absolute inset-0 w-full h-full object-cover rounded-xl"
+                className="absolute inset-0 size-full object-cover rounded-xl"
               />
             ) : (
-              <Snowflake className="h-8 w-8 text-teal-300 opacity-40" />
+              <Snowflake aria-hidden="true" className="h-8 w-8 text-teal-300 opacity-40" />
             )}
             <div className="absolute top-1 left-1 flex flex-col gap-0.5">
               {product.isNew && <Badge className="bg-emerald-600 text-white text-[8px] px-1 py-0 font-semibold">{t('catalog.badge.new')}</Badge>}
-              {product.originalPrice && product.originalPrice > product.price && (
-                <Badge className="bg-red-600 text-white text-[8px] px-1 py-0 font-semibold">
-                  -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                </Badge>
-              )}
             </div>
-          </div>
+          </Link>
           <div className="flex-1 min-w-0 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -631,7 +595,9 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                 )}
               </div>
               <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 group-hover:text-teal-700 transition-colors">
-                {product.name}
+                <Link href={`/produk/${product.slug}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+                  {product.name}
+                </Link>
               </h3>
               {product.shortDesc && (
                 <p className="text-xs text-gray-600 mt-1 line-clamp-2 hidden sm:block">
@@ -640,34 +606,28 @@ function ProductCardList({ product, onClick, onAddToCart }: {
               )}
             </div>
             <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
-              <div className="flex items-baseline gap-2">
-                <span className="text-base font-bold text-teal-800">
-                  {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
-                </span>
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-xs text-red-500 line-through font-medium">
-                    {formatRupiah(product.originalPrice)}
-                  </span>
-                )}
-              </div>
+              <Link href={`/produk/${product.slug}`} className="inline-flex items-center gap-1 text-sm font-semibold text-teal-800 hover:text-teal-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+                Halaman produk <ChevronRight aria-hidden="true" className="size-4" />
+              </Link>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   className="h-8 text-xs hover:bg-gray-100"
-                  onClick={(e) => { e.stopPropagation(); onClick(); }}
+                  onClick={onClick}
+                  aria-label={`Pratinjau ${product.name}`}
                 >
-                  <Eye className="h-3.5 w-3.5 mr-1" />
+                  <Eye aria-hidden="true" className="h-3.5 w-3.5 mr-1" />
                   {t('catalog.detail')}
                 </Button>
                 <Button
                   size="sm"
                   className="h-8 text-xs bg-teal-600 hover:bg-teal-700 text-white"
-                  onClick={(event) => product.price > 0 ? onAddToCart(event) : (event.stopPropagation(), onClick())}
-                  aria-label={product.price > 0 ? t('catalog.cart') : 'Tanyakan harga dan ketersediaan'}
+                  onClick={onAddToCart}
+                  aria-label="Tambahkan ke daftar penawaran"
                 >
-                  {product.price > 0 ? <ShoppingCart className="h-3.5 w-3.5 mr-1" /> : <MessageCircle className="h-3.5 w-3.5 mr-1" />}
-                  {product.price > 0 ? t('catalog.cart') : 'Tanya harga'}
+                  <MessageCircle aria-hidden="true" className="h-3.5 w-3.5 mr-1" />
+                  Tambah
                 </Button>
               </div>
             </div>

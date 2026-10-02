@@ -106,6 +106,23 @@ export const testimonials = pgTable('testimonials', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
 });
 
+const publicProductFields = {
+  id: products.id,
+  name: products.name,
+  slug: products.slug,
+  description: products.description,
+  shortDesc: products.shortDesc,
+  brand: products.brand,
+  model: products.model,
+  specifications: products.specifications,
+  images: products.images,
+  inStock: products.inStock,
+  isFeatured: products.isFeatured,
+  isNew: products.isNew,
+  minOrder: products.minOrder,
+  unit: products.unit,
+};
+
 const globalForCms = globalThis as typeof globalThis & { cmsPool?: Pool };
 const pool = globalForCms.cmsPool ?? new Pool({
   connectionString: process.env.POSTGRES_URL ?? process.env.DATABASE_URL,
@@ -565,11 +582,28 @@ export async function getAdminProducts() {
 }
 
 export async function getPublishedCatalog() {
-  return cmsDb.select({ product: products, category: { id: categories.id, name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id)).where((await import('drizzle-orm')).eq(products.inStock, true)).orderBy((await import('drizzle-orm')).desc(products.createdAt));
+  const { desc, eq } = await import('drizzle-orm');
+  return cmsDb.select({
+    product: publicProductFields,
+    category: { id: categories.id, name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.inStock, true))
+    .orderBy(desc(products.createdAt));
 }
 
 export async function getFeaturedCatalog() {
-  return cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id)).where((await import('drizzle-orm')).eq(products.isFeatured, true)).orderBy((await import('drizzle-orm')).desc(products.createdAt)).limit(8);
+  const { desc, eq } = await import('drizzle-orm');
+  return cmsDb.select({
+    product: publicProductFields,
+    category: { name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.isFeatured, true))
+    .orderBy(desc(products.createdAt))
+    .limit(8);
 }
 
 export async function getCategoryList() {
@@ -587,7 +621,14 @@ export async function getCategoryProductCounts() {
 
 export async function getPublicProductsBySlug(slug: string) {
   const { and, eq } = await import('drizzle-orm');
-  return cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id)).where(and(eq(products.slug, slug), eq(products.inStock, true))).limit(1);
+  return cmsDb.select({
+    product: publicProductFields,
+    category: { name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(and(eq(products.slug, slug), eq(products.inStock, true)))
+    .limit(1);
 }
 
 export async function incrementPublicProductView(id: string) {
@@ -602,7 +643,21 @@ export async function getPublishedCatalogSlugs() {
 export async function getCatalogSearchResults(query: string) {
   const { and, eq, ilike, or } = await import('drizzle-orm');
   const search = `%${query.replace(/[\\%_]/g, '\\$&')}%`;
-  return cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, eq(products.categoryId, categories.id)).where(and(eq(products.inStock, true), or(ilike(products.name, search), ilike(products.shortDesc, search), ilike(products.brand, search)))).orderBy(products.name).limit(50);
+  return cmsDb.select({
+    product: publicProductFields,
+    category: { name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(and(eq(products.inStock, true), or(
+      ilike(products.name, search),
+      ilike(products.model, search),
+      ilike(products.shortDesc, search),
+      ilike(products.brand, search),
+      ilike(products.specifications, search),
+    )))
+    .orderBy(products.name)
+    .limit(50);
 }
 
 export async function getCatalogSummary() {
@@ -619,7 +674,14 @@ export async function getCatalogCategory(slug: string) {
 
 export async function getCatalogProductsByCategory(slug: string) {
   const { eq } = await import('drizzle-orm');
-  return cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, eq(products.categoryId, categories.id)).where(eq(categories.slug, slug)).orderBy(products.name);
+  return cmsDb.select({
+    product: publicProductFields,
+    category: { name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(categories.slug, slug))
+    .orderBy(products.name);
 }
 
 export async function getProductPriceRange() {
@@ -669,12 +731,28 @@ export async function getPublicCategories() {
 }
 
 export async function getPublicFeaturedProducts() {
-  return cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id)).where((await import('drizzle-orm')).and((await import('drizzle-orm')).eq(products.isFeatured, true), (await import('drizzle-orm')).eq(products.inStock, true))).orderBy((await import('drizzle-orm')).desc(products.createdAt)).limit(8);
+  const { and, desc, eq } = await import('drizzle-orm');
+  return cmsDb.select({
+    product: publicProductFields,
+    category: { name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(and(eq(products.isFeatured, true), eq(products.inStock, true)))
+    .orderBy(desc(products.createdAt))
+    .limit(8);
 }
 
 export async function getProductDetails(slug: string) {
   const { eq } = await import('drizzle-orm');
-  const [row] = await cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } }).from(products).innerJoin(categories, eq(products.categoryId, categories.id)).where(eq(products.slug, slug)).limit(1);
+  const [row] = await cmsDb.select({
+    product: publicProductFields,
+    category: { name: categories.name, slug: categories.slug },
+  })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.slug, slug))
+    .limit(1);
   return row ?? null;
 }
 
@@ -743,6 +821,7 @@ export async function getCatalogProductsPage(
       ilike(products.model, search),
       ilike(products.brand, search),
       ilike(products.shortDesc, search),
+      ilike(products.specifications, search),
     )!);
   }
   if (categorySlug) {
@@ -751,7 +830,7 @@ export async function getCatalogProductsPage(
 
   const where = and(...predicates);
   const [rows, [{ total }]] = await Promise.all([
-    cmsDb.select({ product: products, category: { name: categories.name, slug: categories.slug } })
+    cmsDb.select({ product: publicProductFields, category: { name: categories.name, slug: categories.slug } })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
       .where(where)
@@ -795,13 +874,14 @@ export async function getAdminProductsPage(query: string, pageSize: number, offs
 }
 
 export async function getHomepageCatalogPreview() {
+  const { desc, eq } = await import('drizzle-orm');
   return cmsDb.select({
-    product: products,
+    product: publicProductFields,
     category: { id: categories.id, name: categories.name, slug: categories.slug },
   })
     .from(products)
-    .innerJoin(categories, (await import('drizzle-orm')).eq(products.categoryId, categories.id))
-    .where((await import('drizzle-orm')).eq(products.inStock, true))
-    .orderBy((await import('drizzle-orm')).desc(products.createdAt), products.name)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.inStock, true))
+    .orderBy(desc(products.createdAt), products.name)
     .limit(12);
 }

@@ -7,6 +7,62 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+const ownerRoadmap = [
+  {
+    title: 'Mulai dari pencarian yang paling relevan',
+    description: 'Fokus awal pada kompresor pendingin dan calon pembeli di Indonesia. Gunakan kata yang memang dipakai pembeli, seperti merek, nomor model, tipe, refrigeran, dan tegangan. Target nomor satu dunia tidak bisa dijanjikan; kita ukur kemajuan lewat pencarian yang tepat dan permintaan pelanggan.',
+  },
+  {
+    title: 'Satu produk, satu halaman yang berguna',
+    description: 'Setiap produk yang tayang perlu halaman sendiri dengan nama model, spesifikasi resmi, sumber teknis, foto yang boleh digunakan, serta tombol konsultasi. Halaman model sekarang dapat dibuka lewat tautan spesifikasi di katalog.',
+  },
+  {
+    title: 'Jawab pertanyaan nyata pelanggan',
+    description: 'Tulis panduan dari pertanyaan yang benar-benar diterima tim, lalu minta orang yang paham teknis memeriksa isinya. Jangan menyalin katalog produsen mentah-mentah atau menerbitkan banyak artikel otomatis yang tidak membantu.',
+  },
+  {
+    title: 'Pakai alat gratis untuk mengukur',
+    description: 'Tambahkan website ke Google Search Console, kirim sitemap.xml, lalu periksa halaman yang belum terindeks, kata pencarian, klik, dan kesalahan. Search Console gratis; mengirim sitemap tidak menjamin halaman langsung muncul atau mendapat posisi tertentu.',
+  },
+  {
+    title: 'Bangun kepercayaan tanpa membeli tautan',
+    description: 'Pastikan alamat, kontak, garansi, status distributor, dan foto proyek benar. Minta mitra resmi menautkan halaman yang relevan dan minta izin sebelum memakai nama atau foto pelanggan. Hindari jasa backlink spam.',
+  },
+];
+
+const compressorBenchmark = [
+  {
+    name: 'Embraco',
+    href: 'https://products.embraco.com/',
+    features: 'Product Selector, pencarian padanan model, dan pencari distributor.',
+  },
+  {
+    name: 'Secop',
+    href: 'https://toolkit.secop.com/',
+    features: 'Pemilih aplikasi dan paket tunggal, filter kebutuhan teknis, serta lembar data produk.',
+  },
+  {
+    name: 'Copeland',
+    href: 'https://www.copeland.com/',
+    features: 'Alat pemilihan kompresor, pencari suku cadang, dan informasi produk/cross-reference.',
+  },
+  {
+    name: 'Danfoss',
+    href: 'https://www.danfoss.com/en/',
+    features: 'Coolselector untuk memilih kompresor, melihat data teknis, dan mencari komponen terkait.',
+  },
+  {
+    name: 'BITZER',
+    href: 'https://www.bitzer.de/',
+    features: 'Perangkat seleksi, data performa/dimensi, dokumentasi, dan katalog ePARTS.',
+  },
+  {
+    name: 'Tecumseh',
+    href: 'https://www.tecumseh.com/',
+    features: 'TecTools cross-reference serta pencarian model menurut refrigeran, aplikasi, kapasitas, dan tegangan.',
+  },
+];
+
 const steps = [
   {
     number: '01',
@@ -70,6 +126,37 @@ export default function SeoGuidePage() {
         <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">Ikuti alur singkat ini untuk menyiapkan halaman yang mudah dipahami manusia dan mesin pencari. CMS mengelola metadata dasar, canonical, data terstruktur, robots, dan sitemap; kualitas konten serta keputusan bisnis tetap perlu ditinjau oleh tim.</p>
         <p className="mt-4 max-w-3xl rounded-xl bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">SEO tidak dapat menjamin posisi atau waktu indeksasi tertentu. Google dapat memilih ulang judul dan cuplikan berdasarkan kueri; fokus pada informasi yang berguna, konsisten, dan dapat dipercaya.</p>
       </header>
+
+      <section aria-labelledby="owner-roadmap-heading" className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-800">Mulai dari sini</p>
+        <h2 id="owner-roadmap-heading" className="mt-2 text-2xl font-semibold tracking-tight">Langkah sederhana, tanpa harus membeli alat SEO</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">SEO bukan tombol untuk langsung menjadi nomor satu. Kita mulai dari calon pembeli yang tepat, halaman produk yang jelas, informasi yang benar, lalu ukur hasilnya dengan alat gratis.</p>
+        <ol className="mt-5 grid gap-3 md:grid-cols-2">
+          {ownerRoadmap.map((step, index) => (
+            <li key={step.title} className="flex gap-3 rounded-xl bg-muted/40 p-4">
+              <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-teal-900 text-xs font-semibold text-white">{index + 1}</span>
+              <div><h3 className="font-semibold">{step.title}</h3><p className="mt-1 text-sm leading-6 text-muted-foreground">{step.description}</p></div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section aria-labelledby="compressor-benchmark-heading" className="rounded-2xl border border-teal-900/10 bg-white p-5 shadow-sm sm:p-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-800">Benchmark fitur produsen</p>
+        <h2 id="compressor-benchmark-heading" className="mt-2 text-2xl font-semibold tracking-tight">Fitur yang memudahkan orang memilih kompresor</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Riset awal ini memeriksa enam sumber resmi produsen kompresor pendingin, bukan audit penuh 100 website. Fitur yang berulang adalah pencarian berdasarkan model dan spesifikasi, cross-reference, data teknis, pemilih produk, suku cadang, dan pencari distributor.</p>
+        <ul className="mt-5 grid gap-3 md:grid-cols-2">
+          {compressorBenchmark.map((item) => (
+            <li key={item.name} className="rounded-xl border border-border p-4">
+              <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-semibold text-teal-800 hover:text-teal-950">
+                {item.name}<ArrowUpRight aria-hidden="true" className="size-4" />
+              </a>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.features}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 rounded-xl bg-teal-50 p-4 text-sm leading-6 text-teal-950">Yang paling masuk akal untuk situs ini: satu halaman per model, filter model/refrigeran/tegangan, spesifikasi dengan sumber, lalu tombol minta penawaran. Harga tidak ditampilkan; jangan masukkan nominal tersembunyi ke data terstruktur.</p>
+      </section>
 
       <section aria-labelledby="workflow-heading" className="flex flex-col gap-4">
         <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-800">Alur kerja</p><h2 id="workflow-heading" className="mt-2 text-2xl font-semibold tracking-tight">Empat langkah sebelum dan sesudah terbit</h2></div>

@@ -29,7 +29,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
         </div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">Berkat Mandiri Pendingin</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Masuk ke CMS</h1>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">Kelola insight, artikel, dan metadata website melalui satu workspace.</p>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">Masuk dengan email admin dan kata sandi akun Neon Auth. Email adalah ID login untuk workspace ini.</p>
         <div className="mt-8">
           {authConfigured() ? (
             <AdminLoginForm accessError={params.error === 'access'} />
@@ -39,6 +39,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
             </div>
           )}
         </div>
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">Jangan kirim kata sandi lewat chat atau simpan sebagai teks biasa di GitHub/Dropbox. Gunakan pengelola kata sandi yang aman.</p>
         <div className="mt-7 flex items-center gap-2 border-t border-border pt-5 text-xs text-muted-foreground">
           <ShieldCheck aria-hidden="true" className="size-4 text-teal-700" /> Akses terbatas untuk admin terotorisasi.
         </div>

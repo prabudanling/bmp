@@ -4,19 +4,16 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ShoppingCart, Eye, Zap, Snowflake, MessageCircle } from 'lucide-react';
-import Image from 'next/image';
+import { ArrowRight, Eye, Zap, Snowflake, MessageCircle } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
-import { formatRupiah } from '@/lib/format';
-import { useT, type DictKey } from '@/lib/i18n';
+import { useT } from '@/lib/i18n';
+import Link from 'next/link';
 
 type Product = {
   id: string;
   name: string;
-  slug?: string;
-  price: number;
-  originalPrice?: number | null;
+  slug: string;
   shortDesc?: string | null;
   description?: string | null;
   brand?: string | null;
@@ -28,7 +25,7 @@ type Product = {
   minOrder: number;
   unit: string;
   images?: string | null;
-  category?: { id?: string; name: string; slug?: string } | null;
+  category: { name: string; slug: string } | null;
 };
 
 interface Props {
@@ -59,21 +56,14 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
-    if (product.price <= 0) {
-      toast.info('Harga melalui penawaran', { description: 'Buka detail untuk menanyakan harga dan ketersediaan.' });
-      return;
-    }
     addItem({
       productId: product.id,
       name: product.name,
-      price: product.price,
       quantity: 1,
       category: product.category?.name,
       image: product.images || undefined,
     });
-    toast.success(t('catalog.added'), {
-      description: product.name,
-    });
+    toast.success(t('catalog.added'), { description: product.name });
   };
 
   const scrollToProducts = () => {
@@ -133,8 +123,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
                 <Card
-                  className="group cursor-pointer border border-gray-200 hover:border-teal-400 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full"
-                  onClick={() => onProductClick(product)}
+                  className="group border border-gray-200 hover:border-teal-400 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full"
                 >
                   <div className="relative aspect-square bg-gray-100 overflow-hidden">
                     {product.images ? (
@@ -153,11 +142,6 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                       {product.isNew && (
                         <Badge className="bg-emerald-600 text-white text-[10px] px-2 font-semibold">
                           {t('catalog.badge.new')}
-                        </Badge>
-                      )}
-                      {product.originalPrice && product.originalPrice > product.price && (
-                        <Badge className="bg-red-600 text-white text-[10px] px-2 font-semibold">
-                          -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                         </Badge>
                       )}
                     </div>
@@ -180,10 +164,10 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                         <Button
                           size="icon"
                           className="h-8 w-8 rounded-full bg-teal-600 hover:bg-teal-700 shadow-sm"
-                          onClick={(e) => product.price > 0 ? handleAddToCart(e, product) : (e.stopPropagation(), onProductClick(product))}
-                          aria-label={product.price > 0 ? 'Tambahkan ke keranjang' : 'Tanyakan harga dan ketersediaan'}
+                          onClick={(e) => handleAddToCart(e, product)}
+                          aria-label="Tambahkan ke daftar penawaran"
                         >
-                          {product.price > 0 ? <ShoppingCart className="h-3.5 w-3.5 text-white" /> : <MessageCircle className="h-3.5 w-3.5 text-white" />}
+                          <MessageCircle className="h-3.5 w-3.5 text-white" />
                         </Button>
                       </motion.div>
                     </div>
@@ -195,18 +179,18 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                       </p>
                     )}
                     <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-teal-700 transition-colors">
-                      {product.name}
+                      <Link href={`/produk/${product.slug}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+                        {product.name}
+                      </Link>
                     </h3>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-base font-bold text-teal-800">
-                        {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
-                      </span>
-                      {product.originalPrice && product.originalPrice > product.price && (
-                        <span className="text-xs text-red-500 line-through font-medium">
-                          {formatRupiah(product.originalPrice)}
-                        </span>
-                      )}
-                    </div>
+                    {(product.shortDesc || product.description) && (
+                      <p className="line-clamp-2 text-xs leading-5 text-gray-600">
+                        {product.shortDesc || product.description}
+                      </p>
+                    )}
+                    <Link href={`/produk/${product.slug}`} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-800 hover:text-teal-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+                      Lihat halaman produk <ArrowRight aria-hidden="true" className="size-4" />
+                    </Link>
                   </CardContent>
                 </Card>
               </motion.div>

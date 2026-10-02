@@ -44,9 +44,7 @@ type Testimonial = {
 type Product = {
   id: string;
   name: string;
-  slug?: string;
-  price: number;
-  originalPrice?: number | null;
+  slug: string;
   shortDesc?: string | null;
   description?: string | null;
   brand?: string | null;

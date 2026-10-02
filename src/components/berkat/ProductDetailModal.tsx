@@ -16,31 +16,20 @@ import {
   Minus,
   Plus,
   Share2,
-  Truck,
-  Shield,
-  RotateCcw,
   MessageCircle,
   Sparkles,
   Snowflake,
 } from 'lucide-react';
-import Image from 'next/image';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
-import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
-import { useT, type DictKey } from '@/lib/i18n';
-
-const guarantees = [
-  { icon: Shield, labelKey: 'modal.warranty' },
-  { icon: Truck, labelKey: 'modal.safeShipping' },
-  { icon: RotateCcw, labelKey: 'modal.returnable' },
-] as const;
+import { useT } from '@/lib/i18n';
+import Link from 'next/link';
 
 type Product = {
   id: string;
   name: string;
-  price: number;
-  originalPrice?: number | null;
+  slug: string;
   shortDesc?: string | null;
   description?: string | null;
   brand?: string | null;
@@ -105,18 +94,10 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
     : {};
   const displaySpecs = Object.entries(specs).filter(([key]) => !key.startsWith('_'));
 
-  const discount =
-    product.originalPrice && product.originalPrice > product.price
-      ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) * 100
-        )
-      : 0;
-
   const handleAddToCart = () => {
     addItem({
       productId: product.id,
       name: product.name,
-      price: product.price,
       quantity: qty,
       category: product.category?.name,
       image: product.images || undefined,
@@ -128,8 +109,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   };
 
   const handleWhatsApp = () => {
-    const priceLine = product.price > 0 ? `Harga: ${formatRupiah(product.price)}\n` : '';
-    const msg = `Halo, saya tertarik dengan produk:\n\n*${product.name}*\n${priceLine}Jumlah: ${qty} ${product.unit}\n\nMohon konfirmasi harga, stok, dan kecocokan aplikasi. Terima kasih!`;
+    const msg = `Halo, saya ingin meminta penawaran untuk:\n\n*${product.name}*\nJumlah: ${qty} ${product.unit}\n\nMohon konfirmasi harga, stok, dan kecocokan aplikasi. Terima kasih!`;
     window.open(
       `https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`,
       '_blank'
@@ -169,9 +149,6 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                     <Sparkles className="h-3 w-3" /> {t('catalog.badge.featured')}
                   </Badge>
                 )}
-                {discount > 0 && (
-                  <Badge className="bg-red-600 text-white font-semibold">HEMAT {discount}%</Badge>
-                )}
               </div>
             </div>
 
@@ -205,20 +182,11 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                 </motion.div>
               </DialogHeader>
 
-              {/* Price */}
-              <motion.div variants={infoItemVariants} className="mb-4">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-2xl font-extrabold text-teal-800">
-                    {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
-                  </span>
-                  {product.originalPrice && product.originalPrice > product.price && (
-                    <span className="text-sm text-red-500 line-through font-medium">
-                      {formatRupiah(product.originalPrice)}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-gray-600 mt-1 font-medium">
-                  Min. order: {product.minOrder} {product.unit}
+              <motion.div variants={infoItemVariants} className="mb-4 rounded-xl border border-teal-100 bg-teal-50 p-3">
+                <p className="text-sm font-semibold text-teal-950">Harga dan ketersediaan melalui penawaran</p>
+                <p className="mt-1 text-xs leading-5 text-teal-900">Tim kami akan membantu memeriksa stok dan kecocokan produk sebelum pemesanan.</p>
+                <p className="mt-2 text-xs font-medium text-teal-900">
+                  Minimal pemesanan: {product.minOrder} {product.unit}
                 </p>
               </motion.div>
 
@@ -258,17 +226,6 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
 
               <Separator className="my-4" />
 
-              {product.price > 0 && (
-                <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
-                  {guarantees.map((g) => (
-                    <div key={g.labelKey} className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
-                      <g.icon className="h-3.5 w-3.5 text-teal-600" />
-                      {t(g.labelKey)}
-                    </div>
-                  ))}
-                </motion.div>
-              )}
-
               {/* Quantity + Actions */}
               <motion.div variants={infoItemVariants} className="mt-auto space-y-3">
                 <div className="flex items-center gap-3">
@@ -293,37 +250,34 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                   <span className="text-xs text-gray-500 font-medium">{product.unit}</span>
                 </div>
 
-                <div className="flex gap-2">
-                  {product.price > 0 && (
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
-                      <Button
-                        className="w-full bg-teal-600 hover:bg-teal-700 h-11 text-white font-semibold"
-                        onClick={handleAddToCart}
-                      >
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        {t('modal.addToCart')}
-                      </Button>
-                    </motion.div>
-                  )}
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className={product.price > 0 ? '' : 'flex-1'}>
-                    <Button
-                      variant={product.price > 0 ? 'outline' : 'default'}
-                      className={product.price > 0 ? 'h-11 px-4 border-emerald-300 text-emerald-800 hover:bg-emerald-50 font-semibold' : 'h-11 w-full bg-teal-900 font-semibold text-white hover:bg-teal-800'}
-                      onClick={handleWhatsApp}
-                      aria-label="Tanyakan harga dan ketersediaan melalui WhatsApp"
-                    >
-                      <MessageCircle className="h-4 w-4" data-icon={product.price > 0 ? undefined : 'inline-start'} />
-                      {product.price > 0 ? null : 'Tanyakan harga & stok'}
-                    </Button>
-                  </motion.div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Button
+                    className="h-11 bg-teal-900 font-semibold text-white hover:bg-teal-800"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart aria-hidden="true" className="h-4 w-4 mr-2" />
+                    {t('modal.addToCart')}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-11 border-emerald-300 font-semibold text-emerald-800 hover:bg-emerald-50"
+                    onClick={handleWhatsApp}
+                    aria-label="Tanyakan penawaran melalui WhatsApp"
+                  >
+                    <MessageCircle aria-hidden="true" className="h-4 w-4 mr-2" />
+                    Tanyakan penawaran
+                  </Button>
                 </div>
+                <Link href={`/produk/${product.slug}`} className="inline-flex w-fit items-center text-sm font-semibold text-teal-800 underline underline-offset-4 hover:text-teal-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700">
+                  Lihat halaman produk lengkap
+                </Link>
 
                 <Button
                   variant="ghost"
                   size="sm"
                   className="w-full text-gray-500 hover:text-gray-800 hover:bg-gray-100 font-medium"
                   onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
+                    navigator.clipboard.writeText(new URL(`/produk/${product.slug}`, window.location.origin).toString());
                     toast.success(t('modal.copied'));
                   }}
                 >

@@ -104,16 +104,14 @@ export const dict = {
   'catalog.sort': { id: 'Urutkan', en: 'Sort by' },
   'catalog.sort.newest': { id: 'Terbaru', en: 'Newest' },
   'catalog.sort.name': { id: 'Nama A-Z', en: 'Name A-Z' },
-  'catalog.sort.priceLow': { id: 'Harga Terendah', en: 'Lowest Price' },
-  'catalog.sort.priceHigh': { id: 'Harga Tertinggi', en: 'Highest Price' },
   'catalog.notFound': { id: 'Produk tidak ditemukan', en: 'No products found' },
   'catalog.notFoundSub': { id: 'Coba ubah filter atau kata kunci pencarian Anda.', en: 'Try adjusting your filters or search keywords.' },
   'catalog.reset': { id: 'Reset Filter', en: 'Reset Filters' },
   'catalog.badge.new': { id: 'BARU', en: 'NEW' },
   'catalog.badge.featured': { id: 'UNGGULAN', en: 'FEATURED' },
   'catalog.detail': { id: 'Detail', en: 'Details' },
-  'catalog.cart': { id: 'Keranjang', en: 'Cart' },
-  'catalog.added': { id: 'Ditambahkan ke keranjang', en: 'Added to cart' },
+  'catalog.cart': { id: 'Minta Penawaran', en: 'Request a Quote' },
+  'catalog.added': { id: 'Ditambahkan ke daftar penawaran', en: 'Added to quote list' },
 
   // ── Why Choose Us ──
   'why.badge': { id: 'Mengapa Berkat Mandiri?', en: 'Why Berkat Mandiri?' },
@@ -201,7 +199,7 @@ export const dict = {
 
   // ── Promo Banner ──
   'promo.shipping': { id: 'GRATIS ONGKIR', en: 'FREE SHIPPING' },
-  'promo.shippingDesc': { id: 'Untuk pembelian di atas Rp10.000.000', en: 'For purchases above IDR 10,000,000' },
+  'promo.shippingDesc': { id: 'Syarat pengiriman mengikuti area layanan', en: 'Shipping terms depend on the service area' },
   'promo.install': { id: 'INSTALASI GRATIS', en: 'FREE INSTALLATION' },
   'promo.installDesc': { id: 'Untuk pembelian unit AC minimal 2 unit', en: 'With any purchase of 2+ AC units' },
 
@@ -276,17 +274,16 @@ export const dict = {
   'contact.form.send': { id: 'Kirim Pesan', en: 'Send Message' },
 
   // ── Cart Drawer ──
-  'cart.title': { id: 'Keranjang Belanja', en: 'Shopping Cart' },
-  'cart.empty': { id: 'Keranjang Anda masih kosong', en: 'Your cart is still empty' },
+  'cart.title': { id: 'Daftar Penawaran', en: 'Quote List' },
+  'cart.empty': { id: 'Daftar produk masih kosong', en: 'Your quote list is empty' },
   'cart.emptyDesc': {
-    id: 'Jelajahi katalog produk kami dan tambahkan produk yang Anda butuhkan.',
-    en: 'Browse our product catalog and add the products you need.',
+    id: 'Jelajahi katalog lalu tambahkan produk yang ingin ditanyakan.',
+    en: 'Browse the catalog and add products you want to ask about.',
   },
-  'cart.browse': { id: 'Jelajahi Produk', en: 'Browse Products' },
-  'cart.subtotal': { id: 'Subtotal', en: 'Subtotal' },
-  'cart.item': { id: 'item', en: 'item(s)' },
-  'cart.total': { id: 'Total', en: 'Total' },
-  'cart.clear': { id: 'Kosongkan Keranjang', en: 'Clear Cart' },
+  'cart.browse': { id: 'Lihat Katalog', en: 'Browse Catalog' },
+  'cart.subtotal': { id: 'Produk yang diminta', en: 'Requested products' },
+  'cart.item': { id: 'produk', en: 'product(s)' },
+  'cart.clear': { id: 'Kosongkan Daftar', en: 'Clear List' },
   'cart.quote': { id: 'Minta Penawaran', en: 'Request a Quote' },
   'cart.error': { id: 'Mohon isi nama, email, dan nomor telepon', en: 'Please fill in your name, email, and phone number' },
   'cart.quoteSent': { id: 'Penawaran dikirim via WhatsApp!', en: 'Quote request sent via WhatsApp!' },
@@ -299,7 +296,7 @@ export const dict = {
   'cart.form.company': { id: 'Nama Perusahaan', en: 'Company Name' },
   'cart.form.companyPh': { id: 'Nama perusahaan (opsional)', en: 'Company name (optional)' },
   'cart.form.message': { id: 'Catatan Tambahan', en: 'Additional Notes' },
-  'cart.form.messagePh': { id: 'Catatan untuk pesanan Anda (opsional)', en: 'Notes for your order (optional)' },
+  'cart.form.messagePh': { id: 'Catatan untuk permintaan penawaran (opsional)', en: 'Notes for this quote request (optional)' },
 
   // ── Product Detail Modal ──
   'modal.warranty': { id: 'Garansi Resmi', en: 'Official Warranty' },
@@ -309,7 +306,7 @@ export const dict = {
   'modal.specs': { id: 'SPESIFIKASI', en: 'SPECIFICATIONS' },
   'modal.qty': { id: 'Jumlah:', en: 'Qty:' },
   'modal.minOrder': { id: 'Minimal order:', en: 'Min. order:' },
-  'modal.addToCart': { id: 'Tambah ke Keranjang', en: 'Add to Cart' },
+  'modal.addToCart': { id: 'Tambah ke daftar penawaran', en: 'Add to Quote List' },
   'modal.share': { id: 'Bagikan Produk', en: 'Share Product' },
   'modal.copied': { id: 'Link produk disalin!', en: 'Product link copied!' },
   'modal.category': { id: 'Kategori:', en: 'Category:' },

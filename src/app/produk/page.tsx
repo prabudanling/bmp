@@ -6,7 +6,6 @@ import { getCatalogProductsPage, getPublicCategories } from '@/lib/cms-db';
 const SITE_URL = 'https://www.berkatmandiripendingin.com';
 const PAGE_SIZE = 24;
 const number = new Intl.NumberFormat('id-ID');
-const currency = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
 type PageProps = { searchParams: Promise<{ q?: string; category?: string; page?: string }> };
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
@@ -112,7 +111,7 @@ export default async function ProductCatalogPage({ searchParams }: PageProps) {
               Kata kunci
               <span className="relative">
                 <Search aria-hidden="true" className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-                <input name="q" type="search" maxLength={100} defaultValue={query} placeholder="Model, refrigeran…" className="h-11 w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15" />
+                <input name="q" type="search" maxLength={100} defaultValue={query} placeholder="Model, refrigeran, tegangan…" className="h-11 w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15" />
               </span>
             </label>
             <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
@@ -155,7 +154,7 @@ export default async function ProductCatalogPage({ searchParams }: PageProps) {
                         <div><dt className="text-slate-500">Catu daya</dt><dd className="mt-1 font-semibold text-slate-800">{specs.power_supply || 'Lihat detail'}</dd></div>
                       </dl>
                       <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-                        <span className="text-sm font-semibold text-slate-800">{product.price > 0 ? currency.format(product.price) : 'Harga melalui penawaran'}</span>
+                        <span className="text-sm font-medium text-slate-600">Minta penawaran</span>
                         <Link href={`/produk/${product.slug}`} className="inline-flex h-9 items-center gap-1 rounded-lg bg-teal-900 px-3 text-xs font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2">Spesifikasi <ArrowRight aria-hidden="true" className="size-3.5" /></Link>
                       </div>
                     </div>

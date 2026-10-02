@@ -351,8 +351,8 @@ function FaqPage({ lang }: { lang: 'id' | 'en' }) {
     {
       q: { id: 'Apakah tersedia gratis ongkir?', en: 'Is free shipping available?' },
       a: {
-        id: 'Ya, gratis ongkir untuk pembelian di atas Rp10.000.000 (khusus area Jabodetabek). Untuk luar Jawa, ongkir dihitung sesuai berat dan tujuan.',
-        en: 'Yes, free shipping for purchases above IDR 10,000,000 (Greater Jakarta area only). For other regions, shipping is calculated by weight and destination.',
+        id: 'Syarat pengiriman dan ketersediaan gratis ongkir berbeda menurut area serta jenis pesanan. Hubungi tim kami untuk memastikan ketentuannya sebelum memesan.',
+        en: 'Shipping terms and free-shipping availability vary by area and order type. Contact our team to confirm the terms before ordering.',
       },
     },
     {

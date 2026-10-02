@@ -33,7 +33,7 @@ export function AdminLoginForm({ accessError = false }: { accessError?: boolean 
   return (
     <form action={submit} className="flex flex-col gap-5">
       <label className="flex flex-col gap-2 text-sm font-medium">
-        Email admin
+        Email admin (ID login)
         <input name="email" type="email" autoComplete="username" required className="h-12 rounded-xl border border-input bg-background px-4 outline-none transition focus-visible:ring-2 focus-visible:ring-ring" placeholder="nama@perusahaan.co.id" />
       </label>
       <label className="flex flex-col gap-2 text-sm font-medium">
