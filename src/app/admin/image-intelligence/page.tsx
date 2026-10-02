@@ -9,7 +9,7 @@ import {
   PRODUCT_IMAGE_REVIEW_STATUSES,
   type ProductImageReviewStatus,
 } from '@/lib/product-image-intelligence';
-import { disconnectDropboxAction, saveProductImageReviewAction, syncDropboxBatchAction } from './actions';
+import { disconnectDropboxAction, processProductImageBatchAction, saveProductImageReviewAction, syncDropboxBatchAction } from './actions';
 import { DropboxControls } from './dropbox-controls';
 
 export const metadata: Metadata = {
@@ -17,12 +17,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
 const statusLabels: Record<ProductImageReviewStatus, string> = {
   PENDING_REVIEW: 'Perlu ditinjau',
   OWNED: 'Milik perusahaan',
   LICENSED: 'Berlisensi',
   SUPPLIER_AUTHORIZED: 'Diizinkan pemasok',
+  MANUFACTURER_AUTHORIZED: 'Diizinkan produsen',
   PARTNER_AUTHORIZED: 'Diizinkan partner',
+  PUBLIC_REUSE_PERMITTED: 'Diizinkan untuk digunakan ulang',
   REJECTED: 'Jangan digunakan',
 };
 
@@ -30,7 +35,9 @@ const approvedStatuses = new Set<ProductImageReviewStatus>([
   'OWNED',
   'LICENSED',
   'SUPPLIER_AUTHORIZED',
+  'MANUFACTURER_AUTHORIZED',
   'PARTNER_AUTHORIZED',
+  'PUBLIC_REUSE_PERMITTED',
 ]);
 
 function formatBytes(value: number) {
@@ -53,8 +60,23 @@ function formatDate(value: Date | null) {
 export default async function ProductImageIntelligencePage({
   searchParams,
 }: {
-    searchParams: Promise<{ error?: string; synced?: string; hasMore?: string; scanned?: string; images?: string; reviewed?: string; disconnected?: string; folder?: string }>;
-
+    searchParams: Promise<{
+      error?: string;
+      synced?: string;
+      hasMore?: string;
+      scanned?: string;
+      images?: string;
+      reviewed?: string;
+      disconnected?: string;
+      processed?: string;
+      attempted?: string;
+      completed?: string;
+      duplicates?: string;
+      failed?: string;
+      invalid?: string;
+      remaining?: string;
+      folder?: string;
+    }>;
 }) {
   const [user, params] = await Promise.all([requireAdmin(), searchParams]);
   if (!user) redirect('/admin/login');
@@ -80,10 +102,13 @@ export default async function ProductImageIntelligencePage({
       </header>
 
       {params.synced ? <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900">Batch selesai: {Number(params.scanned) || 0} entri diperiksa, {Number(params.images) || 0} gambar ditemukan.{params.hasMore === '1' ? ' Masih ada batch berikutnya; jalankan sinkronisasi lagi.' : ' Semua perubahan saat ini sudah terindeks.'}</p> : null}
+      {params.processed ? <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-900">Batch pemrosesan: {Number(params.attempted) || 0} dicoba, {Number(params.completed) || 0} diproses, {Number(params.duplicates) || 0} duplikat, {Number(params.failed) || 0} gagal, {Number(params.invalid) || 0} tidak valid. Sisa siap proses: {Number(params.remaining) || 0}.{Number(params.remaining) > 0 ? ' Jalankan batch berikutnya untuk melanjutkan.' : ''}</p> : null}
       {params.reviewed ? <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900">Tinjauan hak penggunaan berhasil disimpan.</p> : null}
       {params.disconnected ? <p role="status" className="rounded-xl border border-border bg-white p-3 text-sm">Akses Dropbox telah dicabut untuk akun admin ini.</p> : null}
       {params.error === 'sync' ? <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">Sinkronisasi gagal. Pastikan Dropbox terhubung dan folder dapat diakses.</p> : null}
+      {params.error === 'process' ? <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">Batch tidak dapat diproses. Periksa koneksi Dropbox, izin membaca konten file, dan konfigurasi Blob lalu coba lagi.</p> : null}
       {params.error === 'review' ? <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">Tinjauan belum tersimpan. Untuk menyetujui gambar, isi bukti hak penggunaan minimal 20 karakter.</p> : null}
+      {params.error === 'withdraw' ? <p role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950">Status hak sudah diperbarui, tetapi penarikan salinan publik belum selesai. Simpan ulang tinjauan aset ini untuk mengulang pencabutan.</p> : null}
       {params.error === 'disconnect' ? <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">Akses Dropbox belum dapat dicabut. Coba lagi.</p> : null}
 
       <section className="grid gap-4 sm:grid-cols-3" aria-label="Ringkasan aset gambar">
@@ -131,6 +156,22 @@ export default async function ProductImageIntelligencePage({
                   Sinkronkan satu batch
                 </button>
               </form>
+              <div className="mt-5 rounded-xl border border-border bg-muted/40 p-4">
+                <h3 className="font-semibold">Pemrosesan katalog</h3>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">Satu eksekusi menangani maksimal 10 gambar yang telah disetujui, memvalidasi file, membuat hash dan watermark katalog, lalu menyimpan hasil publik ke Blob. Master Dropbox tidak diubah.</p>
+                <p className="mt-2 text-xs text-muted-foreground">Siap diproses: {overview.stats.ready.toLocaleString('id-ID')} · Gagal yang dapat dicoba ulang: {overview.stats.retryable.toLocaleString('id-ID')} · Selesai: {overview.stats.processed.toLocaleString('id-ID')} · Duplikat: {overview.stats.duplicates.toLocaleString('id-ID')}</p>
+                {overview.stats.ready > 0 ? (
+                  <form action={processProductImageBatchAction} className="mt-3">
+                    <button type="submit" className="inline-flex min-h-10 items-center justify-center rounded-lg bg-teal-900 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2">Proses batch berikutnya (maks. 10)</button>
+                  </form>
+                ) : null}
+                {overview.stats.retryable > 0 ? (
+                  <form action={processProductImageBatchAction} className="mt-2">
+                    <input type="hidden" name="retryFailed" value="1" />
+                    <button type="submit" className="inline-flex min-h-10 items-center justify-center rounded-lg border border-teal-900 px-4 text-sm font-semibold text-teal-900 transition hover:bg-teal-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2">Coba ulang batch gagal</button>
+                  </form>
+                ) : null}
+              </div>
               <form action={disconnectDropboxAction} className="mt-4">
                 <button type="submit" className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground">Cabut koneksi Dropbox</button>
               </form>
@@ -147,7 +188,7 @@ export default async function ProductImageIntelligencePage({
             </div>
           </div>
           <p className="mt-4 rounded-xl bg-muted/60 p-3 text-sm leading-6 text-muted-foreground">
-            {PRODUCT_IMAGE_EXPERT_COUNCIL.length} disiplin pemeriksaan tercakup dalam kerangka kerja. Aplikasi ini belum membuat watermark, derivative, ataupun memublikasikan file.
+            {PRODUCT_IMAGE_EXPERT_COUNCIL.length} disiplin pemeriksaan tercakup dalam kerangka kerja. Aset tanpa persetujuan dan dasar hak minimal 20 karakter tidak masuk batch publikasi. Pencocokan produk hanya dilakukan bila nama file sama persis dengan slug produk dan gambar produk masih kosong.
           </p>
         </article>
       </section>
@@ -177,7 +218,11 @@ export default async function ProductImageIntelligencePage({
                       <p className="mt-1 break-all text-xs leading-5 text-muted-foreground">{asset.sourcePath}</p>
                       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         <span>{asset.mimeType}</span><span>{formatBytes(asset.sizeBytes)}</span><span>Diubah {formatDate(asset.sourceModifiedAt)}</span>
+                        {asset.width && asset.height ? <span>{asset.width} × {asset.height}px</span> : null}
+                        {asset.qualityScore !== null ? <span>Kualitas {Math.round(asset.qualityScore)}/100</span> : null}
+                        <span>Proses: {asset.processingStatus}</span>
                       </div>
+                      {asset.processingError ? <p className="mt-2 text-xs leading-5 text-destructive">{asset.processingError}</p> : null}
                     </div>
                     <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${canUse ? 'bg-emerald-50 text-emerald-900' : status === 'REJECTED' ? 'bg-destructive/10 text-destructive' : 'bg-amber-50 text-amber-900'}`}>
                       {statusLabels[status] ?? 'Perlu ditinjau'}

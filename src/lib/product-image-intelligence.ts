@@ -3,12 +3,21 @@ import 'server-only';
 import { createHash, randomUUID } from 'node:crypto';
 import { headers } from 'next/headers';
 import { getToken, startAuthorization, UserAuthorizationRequiredError } from '@vercel/connect';
+import { del } from '@vercel/blob';
 import { Dropbox, type files } from 'dropbox';
-import { cmsDb, cmsSettings, markDropboxImageAssetsDeleted, upsertDropboxImageAssets } from '@/lib/cms-db';
+import {
+  clearProductImageAssetPublication,
+  clearProductImageIfMatches,
+  cmsDb,
+  cmsSettings,
+  hasOtherApprovedProductImageAsset,
+  markDropboxImageAssetsDeleted,
+  upsertDropboxImageAssets,
+} from '@/lib/cms-db';
 import { eq } from 'drizzle-orm';
 
 const CONNECTOR_UID = 'dropbox/digiman';
-const DROPBOX_SCOPES = ['files.metadata.read'];
+const DROPBOX_SCOPES = ['files.metadata.read', 'files.content.read'];
 const BATCH_SIZE = 200;
 const IMAGE_TYPES: Record<string, string> = {
   avif: 'image/avif',
@@ -176,14 +185,14 @@ export const PRODUCT_IMAGE_EXPERT_COUNCIL = [
   'Chief System Strategist',
 ] as const;
 
-export type ProductImageReviewStatus = 'PENDING_REVIEW' | 'OWNED' | 'LICENSED' | 'SUPPLIER_AUTHORIZED' | 'PARTNER_AUTHORIZED' | 'REJECTED';
+export type ProductImageReviewStatus = 'PENDING_REVIEW' | 'OWNED' | 'LICENSED' | 'SUPPLIER_AUTHORIZED' | 'MANUFACTURER_AUTHORIZED' | 'PARTNER_AUTHORIZED' | 'PUBLIC_REUSE_PERMITTED' | 'REJECTED';
 
 export const PRODUCT_IMAGE_REVIEW_STATUSES: ProductImageReviewStatus[] = [
-  'PENDING_REVIEW', 'OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'REJECTED',
+  'PENDING_REVIEW', 'OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED', 'REJECTED',
 ];
 
 export function requiresRightsEvidence(status: ProductImageReviewStatus) {
-  return ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED'].includes(status);
+  return ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED'].includes(status);
 }
 
 export function isProductImageReviewStatus(value: string): value is ProductImageReviewStatus {
@@ -263,10 +272,34 @@ export async function getProductImageIntelligenceOverview(userId: string) {
   return { assets, stats };
 }
 
+export class ProductImagePublicationWithdrawalError extends Error {
+  constructor() {
+    super('Status aset tersimpan, tetapi penghapusan salinan publik gagal. Simpan ulang tinjauan untuk mencoba lagi.');
+    this.name = 'ProductImagePublicationWithdrawalError';
+  }
+}
+
 export async function updateProductImageReview(userId: string, assetId: string, status: ProductImageReviewStatus, rightsBasis: string) {
   if (!isProductImageReviewStatus(status)) throw new Error('Status review tidak valid.');
   if (requiresRightsEvidence(status) && rightsBasis.trim().length < 20) {
     throw new Error('Catatan dasar hak penggunaan harus berisi minimal 20 karakter.');
   }
-  return saveProductImageRightsReview(userId, assetId, status, rightsBasis.trim().slice(0, 2000));
+
+  const previousPublication = await saveProductImageRightsReview(userId, assetId, status, rightsBasis.trim().slice(0, 2000));
+  if (!previousPublication) return false;
+  if (requiresRightsEvidence(status) || !previousPublication.storagePath) return true;
+
+  try {
+    const retainedByAnotherApprovedAsset = await hasOtherApprovedProductImageAsset(userId, assetId, previousPublication.storagePath);
+    if (!retainedByAnotherApprovedAsset) {
+      if (previousPublication.productId) {
+        await clearProductImageIfMatches(previousPublication.productId, previousPublication.storagePath);
+      }
+      await del(previousPublication.storagePath);
+    }
+    await clearProductImageAssetPublication(userId, assetId, previousPublication.storagePath);
+  } catch {
+    throw new ProductImagePublicationWithdrawalError();
+  }
+  return true;
 }

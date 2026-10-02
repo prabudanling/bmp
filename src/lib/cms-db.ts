@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { and, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm';
+import { and, eq, exists, inArray, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { bigint, boolean, doublePrecision, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
@@ -169,7 +169,8 @@ export async function getProductImageAssetsForReview(ownerUserId: string, limit 
 }
 
 export async function getProductImageAssetStats(ownerUserId: string) {
-  const [rightsRows, processingRows] = await Promise.all([
+  const approvedStatuses = ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED'];
+  const [rightsRows, processingRows, actionableRows] = await Promise.all([
     cmsDb.select({ status: productImageAssets.rightsStatus, count: sql<number>`count(*)::int` })
       .from(productImageAssets)
       .where(and(eq(productImageAssets.ownerUserId, ownerUserId), isNull(productImageAssets.sourceDeletedAt)))
@@ -178,29 +179,44 @@ export async function getProductImageAssetStats(ownerUserId: string) {
       .from(productImageAssets)
       .where(and(eq(productImageAssets.ownerUserId, ownerUserId), isNull(productImageAssets.sourceDeletedAt)))
       .groupBy(productImageAssets.processingStatus),
+    cmsDb.select({ status: productImageAssets.processingStatus, count: sql<number>`count(*)::int` })
+      .from(productImageAssets)
+      .where(and(
+        eq(productImageAssets.ownerUserId, ownerUserId),
+        isNull(productImageAssets.sourceDeletedAt),
+        inArray(productImageAssets.rightsStatus, approvedStatuses),
+        inArray(productImageAssets.processingStatus, ['DISCOVERED', 'FAILED']),
+      ))
+      .groupBy(productImageAssets.processingStatus),
   ]);
   const rights = Object.fromEntries(rightsRows.map(({ status, count }) => [status, count]));
   const processing = Object.fromEntries(processingRows.map(({ status, count }) => [status, count]));
+  const actionable = Object.fromEntries(actionableRows.map(({ status, count }) => [status, count]));
   return {
     total: Object.values(rights).reduce((sum, count) => sum + count, 0),
     pending: rights.PENDING_REVIEW ?? 0,
-    approved: ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED'].reduce((sum, status) => sum + (rights[status] ?? 0), 0),
+    approved: ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED'].reduce((sum, status) => sum + (rights[status] ?? 0), 0),
     rejected: rights.REJECTED ?? 0,
-    ready: processing.DISCOVERED ?? 0,
+    ready: actionable.DISCOVERED ?? 0,
+    retryable: actionable.FAILED ?? 0,
     processed: processing.PROCESSED ?? 0,
     failed: processing.FAILED ?? 0,
+    invalid: processing.INVALID ?? 0,
+    duplicates: processing.DUPLICATE ?? 0,
+    processing: processing.PROCESSING ?? 0,
   };
 }
 
-export async function claimProductImageAssets(ownerUserId: string, limit = 10) {
+export async function claimProductImageAssets(ownerUserId: string, limit = 10, retryFailed = false) {
   const staleBefore = new Date(Date.now() - 20 * 60 * 1000);
+  const claimableStatuses = retryFailed ? ['DISCOVERED', 'FAILED'] : ['DISCOVERED'];
   return cmsDb.transaction(async (transaction) => {
     const assets = await transaction.select().from(productImageAssets).where(and(
       eq(productImageAssets.ownerUserId, ownerUserId),
       isNull(productImageAssets.sourceDeletedAt),
-      inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED']),
+      inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']),
       or(
-        inArray(productImageAssets.processingStatus, ['DISCOVERED', 'FAILED']),
+        inArray(productImageAssets.processingStatus, claimableStatuses),
         and(eq(productImageAssets.processingStatus, 'PROCESSING'), lt(productImageAssets.updatedAt, staleBefore)),
       ),
     )).orderBy(productImageAssets.createdAt).limit(Math.min(Math.max(limit, 1), 10)).for('update', { skipLocked: true });
@@ -219,6 +235,7 @@ export async function findProductImageBySha256(ownerUserId: string, imageSha256:
     eq(productImageAssets.imageSha256, imageSha256),
     eq(productImageAssets.watermarkVersion, 'bmp-product-catalog-v1'),
     isNull(productImageAssets.sourceDeletedAt),
+    inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']),
     sql`${productImageAssets.storagePath} IS NOT NULL`,
     sql`${productImageAssets.id} <> ${excludeAssetId}`,
   )).limit(1);
@@ -240,6 +257,7 @@ export async function saveProductImageProcessingResult(
     eq(productImageAssets.processingStatus, 'PROCESSING'),
     revisionFilter,
     isNull(productImageAssets.sourceDeletedAt),
+    inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']),
   )).returning({ id: productImageAssets.id });
   return Boolean(updated);
 }
@@ -249,28 +267,87 @@ export async function findProductByExactSlug(slug: string) {
   return product ?? null;
 }
 
-export async function setProductImageIfEmpty(productId: string, imageUrl: string) {
+export async function setProductImageIfEmpty(productId: string, imageUrl: string, ownerUserId: string, assetId: string) {
+  const eligibleAsset = cmsDb.select({ id: productImageAssets.id }).from(productImageAssets).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    eq(productImageAssets.id, assetId),
+    eq(productImageAssets.productId, productId),
+    eq(productImageAssets.storagePath, imageUrl),
+    inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']),
+    inArray(productImageAssets.processingStatus, ['PROCESSED', 'DUPLICATE']),
+    isNull(productImageAssets.sourceDeletedAt),
+  )).limit(1);
   const [updated] = await cmsDb.update(products).set({ images: imageUrl, updatedAt: new Date() }).where(and(
     eq(products.id, productId),
     or(isNull(products.images), eq(products.images, '')),
+    exists(eligibleAsset),
   )).returning({ id: products.id });
   return Boolean(updated);
 }
 
 export async function updateProductImageRightsReview(ownerUserId: string, assetId: string, rightsStatus: string, rightsBasis: string) {
   const now = new Date();
-  const [updated] = await cmsDb.update(productImageAssets).set({
-    rightsStatus,
-    rightsBasis,
-    reviewedBy: ownerUserId,
-    reviewedAt: now,
-    updatedAt: now,
+  const approved = ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED'].includes(rightsStatus);
+  return cmsDb.transaction(async (transaction) => {
+    const [current] = await transaction.select({
+      storagePath: productImageAssets.storagePath,
+      productId: productImageAssets.productId,
+    }).from(productImageAssets).where(and(
+      eq(productImageAssets.ownerUserId, ownerUserId),
+      eq(productImageAssets.id, assetId),
+      isNull(productImageAssets.sourceDeletedAt),
+    )).for('update');
+    if (!current) return null;
+
+    await transaction.update(productImageAssets).set({
+      rightsStatus,
+      rightsBasis,
+      reviewedBy: ownerUserId,
+      reviewedAt: now,
+      ...(approved ? { processingError: null } : {
+        processingStatus: 'DISCOVERED',
+        processingError: current.storagePath ? 'Hak penggunaan dicabut; salinan publik sedang ditarik.' : null,
+      }),
+      updatedAt: now,
+    }).where(and(eq(productImageAssets.ownerUserId, ownerUserId), eq(productImageAssets.id, assetId)));
+    return current;
+  });
+}
+
+export async function hasOtherApprovedProductImageAsset(ownerUserId: string, assetId: string, storagePath: string) {
+  const [asset] = await cmsDb.select({ id: productImageAssets.id }).from(productImageAssets).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    ne(productImageAssets.id, assetId),
+    eq(productImageAssets.storagePath, storagePath),
+    inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']),
+    isNull(productImageAssets.sourceDeletedAt),
+  )).limit(1);
+  return Boolean(asset);
+}
+
+export async function clearProductImageIfMatches(productId: string, imageUrl: string) {
+  await cmsDb.update(products).set({ images: null, updatedAt: new Date() }).where(and(
+    eq(products.id, productId),
+    eq(products.images, imageUrl),
+  ));
+}
+
+export async function clearProductImageAssetPublication(ownerUserId: string, assetId: string, storagePath: string) {
+  await cmsDb.update(productImageAssets).set({
+    storagePath: null,
+    productId: null,
+    processingStatus: 'DISCOVERED',
+    processingError: null,
+    processedAt: null,
+    watermarkStatus: 'NOT_APPLIED',
+    watermarkVersion: null,
+    updatedAt: new Date(),
   }).where(and(
     eq(productImageAssets.ownerUserId, ownerUserId),
     eq(productImageAssets.id, assetId),
-    sql`${productImageAssets.sourceDeletedAt} IS NULL`,
-  )).returning({ id: productImageAssets.id });
-  return Boolean(updated);
+    eq(productImageAssets.storagePath, storagePath),
+    notInArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']),
+  ));
 }
 
 export type CmsArticle = typeof cmsArticles.$inferSelect;

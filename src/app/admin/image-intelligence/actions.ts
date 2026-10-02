@@ -3,7 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { getAdminUser } from '@/lib/auth';
+import { processNextProductImageBatch } from '@/lib/product-image-processing';
 import {
+  ProductImagePublicationWithdrawalError,
   disconnectDropbox,
   getDropboxConsentUrl,
   isProductImageReviewStatus,
@@ -65,12 +67,46 @@ export async function saveProductImageReviewAction(formData: FormData) {
       typeof rawRightsBasis === 'string' ? rawRightsBasis.slice(0, 2000) : '',
     );
     if (!saved) redirect(`${PAGE_PATH}?error=review&folder=${encodeURIComponent(folderPath)}`);
-  } catch {
+  } catch (error) {
+    if (error instanceof ProductImagePublicationWithdrawalError) {
+      redirect(`${PAGE_PATH}?error=withdraw&folder=${encodeURIComponent(folderPath)}`);
+    }
     redirect(`${PAGE_PATH}?error=review&folder=${encodeURIComponent(folderPath)}`);
   }
 
   revalidatePath(PAGE_PATH);
+  revalidatePath('/');
+  revalidatePath('/produk');
+  revalidatePath('/produk/[slug]', 'page');
   redirect(`${PAGE_PATH}?reviewed=1&folder=${encodeURIComponent(folderPath)}`);
+}
+
+export async function processProductImageBatchAction(formData: FormData) {
+  const user = await getAdminUser();
+  if (!user) redirect('/admin/login');
+
+  const retryFailed = formData.get('retryFailed') === '1';
+  let result: Awaited<ReturnType<typeof processNextProductImageBatch>>;
+  try {
+    result = await processNextProductImageBatch(user.id, retryFailed);
+  } catch {
+    redirect(`${PAGE_PATH}?error=process`);
+  }
+
+  revalidatePath(PAGE_PATH);
+  revalidatePath('/');
+  revalidatePath('/produk');
+  revalidatePath('/produk/[slug]', 'page');
+  const query = new URLSearchParams({
+    processed: '1',
+    attempted: String(result.attempted),
+    completed: String(result.processed),
+    duplicates: String(result.duplicates),
+    failed: String(result.failed),
+    invalid: String(result.invalid),
+    remaining: String(result.remaining),
+  });
+  redirect(`${PAGE_PATH}?${query.toString()}`);
 }
 
 export async function disconnectDropboxAction() {

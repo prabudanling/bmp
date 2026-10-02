@@ -19,7 +19,7 @@ const MAX_PIXELS = 40_000_000;
 const OUTPUT_EDGE = 1600;
 const WATERMARK_VERSION = 'bmp-product-catalog-v1';
 const WATERMARK_LABEL = 'BERKAT MANDIRI PENDINGIN · PRODUCT CATALOG';
-const APPROVED_RIGHTS = new Set(['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED']);
+const APPROVED_RIGHTS = new Set(['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'MANUFACTURER_AUTHORIZED', 'PARTNER_AUTHORIZED', 'PUBLIC_REUSE_PERMITTED']);
 const EXPECTED_FORMATS: Record<string, string> = {
   avif: 'avif', bmp: 'bmp', gif: 'gif', jpeg: 'jpeg', jpg: 'jpeg', png: 'png', tif: 'tiff', tiff: 'tiff', webp: 'webp',
 };
@@ -36,12 +36,12 @@ function createWatermarkSvg(width: number) {
   };
 }
 
-function createPerceptualHash(input: Buffer) {
-  const { data } = sharp(input, { limitInputPixels: MAX_PIXELS }).rotate().resize(9, 8, { fit: 'fill' }).greyscale().raw().toBuffer({ resolveWithObject: true }) as unknown as { data: Buffer };
-  let hash = 0n;
+async function createPerceptualHash(input: Buffer) {
+  const { data } = await sharp(input, { limitInputPixels: MAX_PIXELS }).rotate().resize(9, 8, { fit: 'fill' }).greyscale().raw().toBuffer({ resolveWithObject: true });
+  let hash = BigInt(0);
   for (let row = 0; row < 8; row += 1) {
     for (let column = 0; column < 8; column += 1) {
-      hash = (hash << 1n) | (data[row * 9 + column] > data[row * 9 + column + 1] ? 1n : 0n);
+      hash = (hash << BigInt(1)) | (data[row * 9 + column] > data[row * 9 + column + 1] ? BigInt(1) : BigInt(0));
     }
   }
   return hash.toString(16).padStart(16, '0');
@@ -70,7 +70,9 @@ async function processAsset(userId: string, asset: Awaited<ReturnType<typeof cla
 
   const client = await getDropboxClientForAdmin({ id: userId });
   const download = await client.filesDownload({ path: asset.sourceFileId });
-  const input = Buffer.from(download.result.fileBinary);
+  const fileBinary = download.result.fileBinary;
+  if (!fileBinary) throw new InvalidImageError('Dropbox tidak mengembalikan isi berkas gambar.');
+  const input = Buffer.from(fileBinary);
   if (!input.length || input.length > MAX_FILE_BYTES) {
     throw new InvalidImageError('File kosong atau melebihi batas pemrosesan 20 MB.');
   }
@@ -98,35 +100,34 @@ async function processAsset(userId: string, asset: Awaited<ReturnType<typeof cla
   const dimensions = { width: metadata.width, height: metadata.height };
 
   const duplicate = await findProductImageBySha256(userId, imageSha256, asset.id);
+  const slug = getProductSlugFromFilename(asset.fileName);
+  const product = slug ? await findProductByExactSlug(slug) : null;
   if (duplicate?.storagePath) {
-    const slug = getProductSlugFromFilename(asset.fileName);
-    const product = slug ? await findProductByExactSlug(slug) : null;
-    if (product) await setProductImageIfEmpty(product.id, duplicate.storagePath);
-    await saveProductImageProcessingResult(userId, asset.id, asset.revision, {
+    const saved = await saveProductImageProcessingResult(userId, asset.id, asset.revision, {
       processingStatus: 'DUPLICATE', imageSha256, perceptualHash, ...dimensions,
       storagePath: duplicate.storagePath, productId: product?.id ?? duplicate.productId,
       processedAt: new Date(), qualityScore, watermarkStatus: 'APPLIED', watermarkVersion: WATERMARK_VERSION,
     });
+    if (!saved) throw new Error('Sumber berubah saat diproses; jalankan batch berikutnya untuk revisi terbaru.');
+    if (product) await setProductImageIfEmpty(product.id, duplicate.storagePath, userId, asset.id);
     return 'duplicate' as const;
   }
 
-  const blob = await put(`product-catalog/${userId}/${imageSha256.slice(0, 2)}/${imageSha256}-${WATERMARK_VERSION}.webp`, finalImage, {
+  const ownerFolder = createHash('sha256').update(userId).digest('hex').slice(0, 24);
+  const blob = await put(`product-catalog/${ownerFolder}/${imageSha256.slice(0, 2)}/${imageSha256}-${WATERMARK_VERSION}.webp`, finalImage, {
     access: 'public',
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'image/webp',
     cacheControlMaxAge: 31_536_000,
   });
-  const slug = getProductSlugFromFilename(asset.fileName);
-  const product = slug ? await findProductByExactSlug(slug) : null;
-  if (product) await setProductImageIfEmpty(product.id, blob.url);
-
   const saved = await saveProductImageProcessingResult(userId, asset.id, asset.revision, {
     processingStatus: 'PROCESSED', imageSha256, perceptualHash, ...dimensions,
     storagePath: blob.url, productId: product?.id ?? null,
     processedAt: new Date(), qualityScore, watermarkStatus: 'APPLIED', watermarkVersion: WATERMARK_VERSION,
   });
   if (!saved) throw new Error('Sumber berubah saat diproses; jalankan batch berikutnya untuk revisi terbaru.');
+  if (product) await setProductImageIfEmpty(product.id, blob.url, userId, asset.id);
   return 'processed' as const;
 }
 
@@ -156,7 +157,7 @@ export async function processNextProductImageBatch(userId: string, retryFailed =
   }
 
   const stats = await getProductImageAssetStats(userId);
-  return { ...result, remaining: retryFailed ? stats.ready + stats.failed : stats.ready };
+  return { ...result, remaining: retryFailed ? stats.ready + stats.retryable : stats.ready };
 }
 
 export const PRODUCT_IMAGE_WATERMARK_VERSION = WATERMARK_VERSION;
