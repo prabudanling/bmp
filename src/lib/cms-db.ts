@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
+import { and, eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { boolean, doublePrecision, integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { bigint, boolean, doublePrecision, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const cmsArticles = pgTable('cms_articles', {
   id: text('id').primaryKey(),

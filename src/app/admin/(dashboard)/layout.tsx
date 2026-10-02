@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { FileText, Globe2, LayoutDashboard, LogOut, PackageSearch, Settings2, Snowflake } from 'lucide-react';
+import { FileText, Globe2, Images, LayoutDashboard, LogOut, PackageSearch, Settings2, Snowflake } from 'lucide-react';
 import { getAdminUser, signOutAction } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
