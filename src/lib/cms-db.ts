@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { bigint, boolean, doublePrecision, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
@@ -44,6 +44,18 @@ export const productImageAssets = pgTable('product_image_assets', {
   sourceDeletedAt: timestamp('source_deleted_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+  processingStatus: text('processing_status').notNull().default('DISCOVERED'),
+  imageSha256: text('image_sha256'),
+  perceptualHash: text('perceptual_hash'),
+  width: integer('width'),
+  height: integer('height'),
+  storagePath: text('storage_path'),
+  productId: text('product_id'),
+  processingError: text('processing_error'),
+  processedAt: timestamp('processed_at', { withTimezone: true }),
+  qualityScore: doublePrecision('quality_score'),
+  watermarkStatus: text('watermark_status').notNull().default('NOT_APPLIED'),
+  watermarkVersion: text('watermark_version'),
 }, (table) => [
   uniqueIndex('product_image_assets_owner_source_unique').on(table.ownerUserId, table.sourceFileId),
 ]);
@@ -123,6 +135,18 @@ export async function upsertDropboxImageAssets(assets: (typeof productImageAsset
       rightsBasis: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN '' ELSE product_image_assets.rights_basis END`,
       reviewedBy: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.reviewed_by END`,
       reviewedAt: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.reviewed_at END`,
+      processingStatus: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN 'DISCOVERED' ELSE product_image_assets.processing_status END`,
+      imageSha256: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.image_sha256 END`,
+      perceptualHash: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.perceptual_hash END`,
+      width: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.width END`,
+      height: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.height END`,
+      storagePath: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.storage_path END`,
+      productId: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.product_id END`,
+      processingError: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.processing_error END`,
+      processedAt: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.processed_at END`,
+      qualityScore: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.quality_score END`,
+      watermarkStatus: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN 'NOT_APPLIED' ELSE product_image_assets.watermark_status END`,
+      watermarkVersion: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.watermark_version END`,
       sourceDeletedAt: null,
       updatedAt: sql`excluded.updated_at`,
     },
@@ -145,20 +169,92 @@ export async function getProductImageAssetsForReview(ownerUserId: string, limit 
 }
 
 export async function getProductImageAssetStats(ownerUserId: string) {
-  const rows = await cmsDb.select({
-    status: productImageAssets.rightsStatus,
-    count: sql<number>`count(*)::int`,
-  }).from(productImageAssets).where(and(
-    eq(productImageAssets.ownerUserId, ownerUserId),
-    sql`${productImageAssets.sourceDeletedAt} IS NULL`,
-  )).groupBy(productImageAssets.rightsStatus);
-  const counts = Object.fromEntries(rows.map(({ status, count }) => [status, count]));
+  const [rightsRows, processingRows] = await Promise.all([
+    cmsDb.select({ status: productImageAssets.rightsStatus, count: sql<number>`count(*)::int` })
+      .from(productImageAssets)
+      .where(and(eq(productImageAssets.ownerUserId, ownerUserId), isNull(productImageAssets.sourceDeletedAt)))
+      .groupBy(productImageAssets.rightsStatus),
+    cmsDb.select({ status: productImageAssets.processingStatus, count: sql<number>`count(*)::int` })
+      .from(productImageAssets)
+      .where(and(eq(productImageAssets.ownerUserId, ownerUserId), isNull(productImageAssets.sourceDeletedAt)))
+      .groupBy(productImageAssets.processingStatus),
+  ]);
+  const rights = Object.fromEntries(rightsRows.map(({ status, count }) => [status, count]));
+  const processing = Object.fromEntries(processingRows.map(({ status, count }) => [status, count]));
   return {
-    total: Object.values(counts).reduce((sum, count) => sum + count, 0),
-    pending: counts.PENDING_REVIEW ?? 0,
-    approved: ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED'].reduce((sum, status) => sum + (counts[status] ?? 0), 0),
-    rejected: counts.REJECTED ?? 0,
+    total: Object.values(rights).reduce((sum, count) => sum + count, 0),
+    pending: rights.PENDING_REVIEW ?? 0,
+    approved: ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED'].reduce((sum, status) => sum + (rights[status] ?? 0), 0),
+    rejected: rights.REJECTED ?? 0,
+    ready: processing.DISCOVERED ?? 0,
+    processed: processing.PROCESSED ?? 0,
+    failed: processing.FAILED ?? 0,
   };
+}
+
+export async function claimProductImageAssets(ownerUserId: string, limit = 10) {
+  const staleBefore = new Date(Date.now() - 20 * 60 * 1000);
+  return cmsDb.transaction(async (transaction) => {
+    const assets = await transaction.select().from(productImageAssets).where(and(
+      eq(productImageAssets.ownerUserId, ownerUserId),
+      isNull(productImageAssets.sourceDeletedAt),
+      inArray(productImageAssets.rightsStatus, ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED']),
+      or(
+        inArray(productImageAssets.processingStatus, ['DISCOVERED', 'FAILED']),
+        and(eq(productImageAssets.processingStatus, 'PROCESSING'), lt(productImageAssets.updatedAt, staleBefore)),
+      ),
+    )).orderBy(productImageAssets.createdAt).limit(Math.min(Math.max(limit, 1), 10)).for('update', { skipLocked: true });
+
+    if (assets.length) {
+      await transaction.update(productImageAssets).set({ processingStatus: 'PROCESSING', processingError: null, updatedAt: new Date() })
+        .where(and(eq(productImageAssets.ownerUserId, ownerUserId), inArray(productImageAssets.id, assets.map((asset) => asset.id))));
+    }
+    return assets;
+  });
+}
+
+export async function findProductImageBySha256(ownerUserId: string, imageSha256: string, excludeAssetId: string) {
+  const [asset] = await cmsDb.select().from(productImageAssets).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    eq(productImageAssets.imageSha256, imageSha256),
+    eq(productImageAssets.watermarkVersion, 'bmp-product-catalog-v1'),
+    isNull(productImageAssets.sourceDeletedAt),
+    sql`${productImageAssets.storagePath} IS NOT NULL`,
+    sql`${productImageAssets.id} <> ${excludeAssetId}`,
+  )).limit(1);
+  return asset ?? null;
+}
+
+export async function saveProductImageProcessingResult(
+  ownerUserId: string,
+  assetId: string,
+  expectedRevision: string | null,
+  result: Partial<typeof productImageAssets.$inferInsert>,
+) {
+  const revisionFilter = expectedRevision === null
+    ? isNull(productImageAssets.revision)
+    : eq(productImageAssets.revision, expectedRevision);
+  const [updated] = await cmsDb.update(productImageAssets).set({ ...result, updatedAt: new Date() }).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    eq(productImageAssets.id, assetId),
+    eq(productImageAssets.processingStatus, 'PROCESSING'),
+    revisionFilter,
+    isNull(productImageAssets.sourceDeletedAt),
+  )).returning({ id: productImageAssets.id });
+  return Boolean(updated);
+}
+
+export async function findProductByExactSlug(slug: string) {
+  const [product] = await cmsDb.select({ id: products.id, images: products.images }).from(products).where(eq(products.slug, slug)).limit(1);
+  return product ?? null;
+}
+
+export async function setProductImageIfEmpty(productId: string, imageUrl: string) {
+  const [updated] = await cmsDb.update(products).set({ images: imageUrl, updatedAt: new Date() }).where(and(
+    eq(products.id, productId),
+    or(isNull(products.images), eq(products.images, '')),
+  )).returning({ id: products.id });
+  return Boolean(updated);
 }
 
 export async function updateProductImageRightsReview(ownerUserId: string, assetId: string, rightsStatus: string, rightsBasis: string) {
