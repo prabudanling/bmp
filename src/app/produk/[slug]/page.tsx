@@ -100,7 +100,6 @@ export default async function ProductDetailPage({ params }: RouteProps) {
         '@type': 'Product',
         name: product.name,
         model: product.model || undefined,
-        sku: product.id,
         brand: product.brand ? { '@type': 'Brand', name: product.brand } : undefined,
         category: category.name,
         description: product.description || product.shortDesc || product.name,

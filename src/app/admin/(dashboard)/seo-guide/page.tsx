@@ -42,13 +42,22 @@ const steps = [
   },
 ];
 
+const articleWorkflow = [
+  { title: 'Mulai dari kebutuhan pembaca', description: 'Tentukan satu pertanyaan pelanggan yang benar-benar bisa dijawab tim. Artikel yang fokus dan orisinal lebih bermanfaat daripada mengulang kata kunci atau membuat banyak halaman serupa.' },
+  { title: 'Tulis judul dan URL yang jelas', description: 'Judul artikel menjadi heading utama halaman. Gunakan slug pendek, huruf kecil, dan tanda hubung; setelah URL terbit, hindari mengubahnya karena CMS belum mengelola pengalihan URL otomatis.' },
+  { title: 'Lengkapi ringkasan dan metadata', description: 'Ringkasan menjelaskan isi untuk pembaca. Judul SEO boleh berbeda bila lebih jelas; deskripsi SEO sebaiknya merangkum manfaat secara akurat. CMS memakai judul/ringkasan sebagai fallback bila metadata kosong.' },
+  { title: 'Susun isi yang mudah dibaca', description: 'Gunakan heading berurutan, paragraf singkat, daftar bila membantu, dan tautan internal ke produk atau artikel yang relevan. Cantumkan sumber tepercaya untuk klaim teknis dan periksa fakta sebelum terbit.' },
+  { title: 'Tinjau media dan publikasi', description: 'Pastikan gambar relevan, bisa diakses publik, punya izin penggunaan, dan halaman nyaman dibaca di ponsel. Buka artikel setelah disimpan untuk memeriksa tampilan, tautan, dan metadata.' },
+  { title: 'Pantau setelah terbit', description: 'CMS menambahkan artikel terbit ke sitemap.xml. Daftarkan properti website yang tepat di Search Console, kirim sitemap, lalu pantau indeksasi dan kueri; permintaan indeksasi bukan jaminan halaman akan diindeks atau mendapat peringkat tertentu.' },
+];
+
 const checklist = [
-  'Konten menjawab pertanyaan pelanggan dengan informasi yang akurat dan bermanfaat.',
-  'Judul, slug URL, dan ringkasan mewakili isi halaman; slug yang sudah terbit tidak diubah tanpa rencana pengalihan.',
-  'Artikel memakai struktur heading yang runtut, paragraf mudah dibaca, dan tautan internal yang relevan.',
+  'Konten menjawab pertanyaan pelanggan dengan informasi yang akurat, orisinal, dan bermanfaat.',
+  'Judul, slug URL, ringkasan, judul SEO, dan deskripsi SEO sesuai isi; deskripsi SEO artikel terbit minimal 40 karakter.',
+  'Heading runtut, paragraf mudah dibaca, serta tautan internal dan sumber teknis relevan sudah diperiksa.',
   'Foto relevan, dapat diakses publik, dan penggunaannya telah mendapat izin.',
-  'Halaman publik terbuka normal di ponsel dan tidak berisi placeholder atau klaim yang belum terverifikasi.',
-  'Sitemap hanya memuat halaman publik; artikel draft tidak dipublikasikan ke mesin pencari.',
+  'Halaman publik terbuka normal di ponsel, canonical mengarah ke URL utama, dan tidak ada klaim yang belum terverifikasi.',
+  'Draft tetap privat; setelah publikasi, periksa URL artikel dan sitemap.xml lalu pantau Search Console.',
 ];
 
 export default function SeoGuidePage() {
@@ -76,6 +85,24 @@ export default function SeoGuidePage() {
         </ol>
       </section>
 
+      <section aria-labelledby="article-workflow-heading" className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-800">Tutorial artikel</p>
+        <h2 id="article-workflow-heading" className="mt-2 text-2xl font-semibold tracking-tight">Dari ide sampai pemantauan</h2>
+        <ol className="mt-5 flex flex-col gap-4">
+          {articleWorkflow.map((step, index) => (
+            <li key={step.title} className="flex gap-4 rounded-xl bg-muted/40 p-4 sm:p-5">
+              <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-teal-900 text-xs font-semibold text-white">{index + 1}</span>
+              <div><h3 className="font-semibold">{step.title}</h3><p className="mt-1 text-sm leading-6 text-muted-foreground">{step.description}</p></div>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-5 rounded-xl border border-border p-4">
+          <h3 className="font-semibold">Apa yang CMS kelola untuk produk?</h3>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">Judul dan deskripsi pencarian produk dibentuk dari merek, model, dan deskripsi katalog. Halaman produk yang tampil menyertakan canonical, breadcrumb, dan data terstruktur Product; produk tersembunyi tidak dimasukkan ke sitemap. Harga atau penawaran tidak dibuat-buat karena harus dikonfirmasi langsung.</p>
+          <Link href="/admin/products" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal-800 hover:text-teal-950">Tinjau katalog<ArrowUpRight aria-hidden="true" className="size-4" /></Link>
+        </div>
+      </section>
+
       <section aria-labelledby="checklist-heading" className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-7">
         <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800"><CheckCircle2 aria-hidden="true" className="size-5" /></span><div><h2 id="checklist-heading" className="text-xl font-semibold tracking-tight">Checklist publikasi</h2><p className="mt-1 text-sm leading-6 text-muted-foreground">Tinjau setiap poin sebelum mengubah status artikel menjadi terbit.</p></div></div>
         <ul className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -95,14 +122,4 @@ export default function SeoGuidePage() {
       </section>
     </div>
   );
-}
-
-export const dynamic = 'force-dynamic';
-
-export function generateStaticParams() {
-  return [];
-}
-
-export function generateMetadata() {
-  return metadata;
 }

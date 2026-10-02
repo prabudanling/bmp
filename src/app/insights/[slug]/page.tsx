@@ -41,17 +41,30 @@ export default async function InsightArticlePage({ params }: PageProps) {
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
+  const articleUrl = `${siteUrl}/insights/${article.slug}`;
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: article.seoTitle || article.title,
-    description: article.seoDescription || article.excerpt,
-    datePublished: article.publishedAt?.toISOString(),
-    dateModified: article.updatedAt.toISOString(),
-    author: { '@type': 'Organization', name: article.authorName },
-    publisher: { '@type': 'Organization', name: 'PT Berkat Mandiri Pendingin', url: siteUrl },
-    mainEntityOfPage: `${siteUrl}/insights/${article.slug}`,
-    image: article.coverImage ? [article.coverImage] : undefined,
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: article.seoTitle || article.title,
+        description: article.seoDescription || article.excerpt,
+        datePublished: article.publishedAt?.toISOString(),
+        dateModified: article.updatedAt.toISOString(),
+        author: { '@type': 'Organization', name: article.authorName },
+        publisher: { '@type': 'Organization', name: 'PT Berkat Mandiri Pendingin', url: siteUrl },
+        mainEntityOfPage: articleUrl,
+        image: article.coverImage ? [article.coverImage] : undefined,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Beranda', item: siteUrl },
+          { '@type': 'ListItem', position: 2, name: 'Insight', item: `${siteUrl}/insights` },
+          { '@type': 'ListItem', position: 3, name: article.title, item: articleUrl },
+        ],
+      },
+    ],
   };
 
   return (

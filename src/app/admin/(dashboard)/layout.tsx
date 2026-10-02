@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { FileText, Globe2, Images, LayoutDashboard, LogOut, PackageSearch, Settings2, Snowflake } from 'lucide-react';
+import { BookOpenText, FileText, Globe2, Images, LayoutDashboard, LogOut, PackageSearch, Settings2, Snowflake } from 'lucide-react';
 import { getAdminUser, signOutAction } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -12,6 +12,7 @@ const navigation = [
   { href: '/admin/products', label: 'Produk katalog', icon: PackageSearch },
   { href: '/admin/image-intelligence', label: 'Aset & hak gambar', icon: Images },
   { href: '/admin/settings', label: 'SEO website', icon: Settings2 },
+  { href: '/admin/seo-guide', label: 'Panduan SEO', icon: BookOpenText },
 ];
 
 export default async function AdminDashboardLayout({ children }: { children: ReactNode }) {

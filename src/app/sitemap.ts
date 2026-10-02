@@ -8,9 +8,9 @@ const SITE_URL = 'https://www.berkatmandiripendingin.com';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, products] = await Promise.all([getPublishedArticleSlugs(), getPublishedCatalogSlugs()]);
   return [
-    { url: `${SITE_URL}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
-    { url: `${SITE_URL}/produk`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: `${SITE_URL}/insights`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+    { url: `${SITE_URL}/`, changeFrequency: 'weekly', priority: 1 },
+    { url: `${SITE_URL}/produk`, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${SITE_URL}/insights`, changeFrequency: 'daily', priority: 0.8 },
     ...products.map(({ slug, updatedAt }) => ({
       url: `${SITE_URL}/produk/${slug}`,
       lastModified: updatedAt,

@@ -14,7 +14,6 @@ export const metadata: Metadata = {
     template: '%s | Berkat Mandiri Pendingin',
   },
   description: 'PT Berkat Mandiri Pendingin — Distributor HVAC resmi sejak 2010 di Kawasan MM2100 Bekasi. Pusat penjualan AC, kompresor, refrigerant, spare part, chiller, VRV/VRF, dan sistem pendingin gedung terlengkap. Harga kompetitif, garansi resmi, pengiriman ke 34 provinsi Indonesia.',
-  keywords: ['AC', 'pendingin udara', 'kompresor AC', 'refrigerant', 'spare part AC', 'chiller', 'VRV', 'VRF', 'mesin pendingin', 'HVAC', 'distributor HVAC Indonesia', 'distributor AC Bekasi', 'jual AC murah', 'spare part pendingin', 'freon AC', 'Daikin', 'Panasonic', 'Samsung', 'LG', 'Gree', 'Mitsubishi', 'Copeland', 'Danfoss', 'Berkat Mandiri Pendingin', 'PT Berkat Mandiri Pendingin'],
   authors: [{ name: 'PT Berkat Mandiri Pendingin', url: SITE_URL }],
   creator: 'PT Digital Bisnis Manajemen',
   publisher: 'PT Berkat Mandiri Pendingin',
