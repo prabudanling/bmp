@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ShoppingCart, Eye, Zap, Snowflake } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Eye, Zap, Snowflake, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
@@ -14,13 +14,21 @@ import { useT, type DictKey } from '@/lib/i18n';
 type Product = {
   id: string;
   name: string;
+  slug?: string;
   price: number;
   originalPrice?: number | null;
   shortDesc?: string | null;
+  description?: string | null;
   brand?: string | null;
+  model?: string | null;
+  specifications?: string | null;
   isNew: boolean;
+  isFeatured: boolean;
+  inStock: boolean;
+  minOrder: number;
+  unit: string;
   images?: string | null;
-  category?: { name: string } | null;
+  category?: { id?: string; name: string; slug?: string } | null;
 };
 
 interface Props {
@@ -43,7 +51,7 @@ const cardVariants = {
     y: 0,
     transition: { type: 'spring', stiffness: 180, damping: 18 },
   },
-};
+} as const;
 
 export function FeaturedProducts({ products, onProductClick }: Props) {
   const t = useT();
@@ -51,6 +59,10 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
+    if (product.price <= 0) {
+      toast.info('Harga melalui penawaran', { description: 'Buka detail untuk menanyakan harga dan ketersediaan.' });
+      return;
+    }
     addItem({
       productId: product.id,
       name: product.name,
@@ -67,6 +79,8 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
   const scrollToProducts = () => {
     document.querySelector('#produk')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  if (!products.length) return null;
 
   return (
     <section className="py-16 lg:py-24 bg-gray-50">
@@ -166,9 +180,10 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                         <Button
                           size="icon"
                           className="h-8 w-8 rounded-full bg-teal-600 hover:bg-teal-700 shadow-sm"
-                          onClick={(e) => handleAddToCart(e, product)}
+                          onClick={(e) => product.price > 0 ? handleAddToCart(e, product) : (e.stopPropagation(), onProductClick(product))}
+                          aria-label={product.price > 0 ? 'Tambahkan ke keranjang' : 'Tanyakan harga dan ketersediaan'}
                         >
-                          <ShoppingCart className="h-3.5 w-3.5 text-white" />
+                          {product.price > 0 ? <ShoppingCart className="h-3.5 w-3.5 text-white" /> : <MessageCircle className="h-3.5 w-3.5 text-white" />}
                         </Button>
                       </motion.div>
                     </div>
@@ -184,7 +199,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                     </h3>
                     <div className="flex items-baseline gap-2">
                       <span className="text-base font-bold text-teal-800">
-                        {formatRupiah(product.price)}
+                        {product.price > 0 ? formatRupiah(product.price) : 'Harga melalui penawaran'}
                       </span>
                       {product.originalPrice && product.originalPrice > product.price && (
                         <span className="text-xs text-red-500 line-through font-medium">

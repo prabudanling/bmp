@@ -147,9 +147,15 @@ export function Header() {
                   {t(item.labelKey)}
                 </button>
               ))}
-            </nav>
-
-            {/* Actions */}
+  </nav>
+              <a href="/produk" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-700 rounded-lg hover:bg-teal-50 transition-all duration-200">
+                Katalog kompresor
+              </a>
+              <a href="/insights" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-700 rounded-lg hover:bg-teal-50 transition-all duration-200">
+                Insight HVAC
+              </a>
+              
+              {/* Actions */}
             <div className="flex items-center gap-2">
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Button
@@ -273,6 +279,7 @@ export function Header() {
                           {t(item.labelKey)}
                         </motion.button>
                       ))}
+                      <a href="/insights" onClick={() => setMobileOpen(false)} className="block w-full rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-800 transition-colors hover:bg-teal-50 hover:text-teal-700">Insight HVAC</a>
                       <motion.div
                         className="mt-3 px-4 flex flex-col gap-3"
                         initial={{ opacity: 0, y: 10 }}

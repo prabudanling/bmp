@@ -248,9 +248,14 @@ export function Footer() {
                     {t(link.labelKey)}
                   </button>
                 </li>
-              ))}
-            </ul>
-            <ul className="space-y-2.5 mt-5 pt-4 border-t border-gray-800">
+                  ))}
+                    <li>
+                      <a href="/insights" className="text-sm text-gray-400 hover:text-teal-300 transition-colors">
+                        Insight HVAC
+                      </a>
+                    </li>
+                  </ul>
+                  <ul className="space-y-2.5 mt-5 pt-4 border-t border-gray-800">
               {infoLinks.map((link) => (
                 <li key={link.route}>
                   <a
