@@ -25,6 +25,29 @@ export const cmsSettings = pgTable('cms_settings', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
 });
 
+export const productImageAssets = pgTable('product_image_assets', {
+  id: text('id').primaryKey(),
+  ownerUserId: text('owner_user_id').notNull(),
+  sourceFileId: text('source_file_id').notNull(),
+  sourcePath: text('source_path').notNull(),
+  sourcePathLower: text('source_path_lower').notNull(),
+  fileName: text('file_name').notNull(),
+  mimeType: text('mime_type').notNull(),
+  sizeBytes: bigint('size_bytes', { mode: 'number' }).notNull(),
+  revision: text('revision'),
+  providerContentHash: text('provider_content_hash'),
+  sourceModifiedAt: timestamp('source_modified_at', { withTimezone: true }),
+  rightsStatus: text('rights_status').notNull(),
+  rightsBasis: text('rights_basis').notNull(),
+  reviewedBy: text('reviewed_by'),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+  sourceDeletedAt: timestamp('source_deleted_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+}, (table) => [
+  uniqueIndex('product_image_assets_owner_source_unique').on(table.ownerUserId, table.sourceFileId),
+]);
+
 export const categories = pgTable('categories', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -81,7 +104,78 @@ const pool = globalForCms.cmsPool ?? new Pool({
 
 if (process.env.NODE_ENV !== 'production') globalForCms.cmsPool = pool;
 
-export const cmsDb = drizzle(pool, { schema: { cmsArticles, cmsSettings, categories, products, testimonials } });
+export const cmsDb = drizzle(pool, { schema: { cmsArticles, cmsSettings, categories, products, testimonials, productImageAssets } });
+
+export async function upsertDropboxImageAssets(assets: (typeof productImageAssets.$inferInsert)[]) {
+  if (assets.length === 0) return;
+  await cmsDb.insert(productImageAssets).values(assets).onConflictDoUpdate({
+    target: [productImageAssets.ownerUserId, productImageAssets.sourceFileId],
+    set: {
+      sourcePath: sql`excluded.source_path`,
+      sourcePathLower: sql`excluded.source_path_lower`,
+      fileName: sql`excluded.file_name`,
+      mimeType: sql`excluded.mime_type`,
+      sizeBytes: sql`excluded.size_bytes`,
+      revision: sql`excluded.revision`,
+      providerContentHash: sql`excluded.provider_content_hash`,
+      sourceModifiedAt: sql`excluded.source_modified_at`,
+      rightsStatus: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN 'PENDING_REVIEW' ELSE product_image_assets.rights_status END`,
+      rightsBasis: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN '' ELSE product_image_assets.rights_basis END`,
+      reviewedBy: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.reviewed_by END`,
+      reviewedAt: sql`CASE WHEN product_image_assets.provider_content_hash IS DISTINCT FROM excluded.provider_content_hash OR product_image_assets.revision IS DISTINCT FROM excluded.revision THEN NULL ELSE product_image_assets.reviewed_at END`,
+      sourceDeletedAt: null,
+      updatedAt: sql`excluded.updated_at`,
+    },
+  });
+}
+
+export async function markDropboxImageAssetsDeleted(ownerUserId: string, pathLower: string) {
+  const now = new Date();
+  await cmsDb.update(productImageAssets).set({ sourceDeletedAt: now, updatedAt: now }).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    sql`(${productImageAssets.sourcePathLower} = ${pathLower} OR ${productImageAssets.sourcePathLower} LIKE ${pathLower.replace(/[\\%_]/g, '\\$&')} || '/%')`,
+  ));
+}
+
+export async function getProductImageAssetsForReview(ownerUserId: string, limit = 50) {
+  return cmsDb.select().from(productImageAssets).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    sql`${productImageAssets.sourceDeletedAt} IS NULL`,
+  )).orderBy(sql`${productImageAssets.sourceModifiedAt} DESC NULLS LAST`).limit(Math.min(Math.max(limit, 1), 100));
+}
+
+export async function getProductImageAssetStats(ownerUserId: string) {
+  const rows = await cmsDb.select({
+    status: productImageAssets.rightsStatus,
+    count: sql<number>`count(*)::int`,
+  }).from(productImageAssets).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    sql`${productImageAssets.sourceDeletedAt} IS NULL`,
+  )).groupBy(productImageAssets.rightsStatus);
+  const counts = Object.fromEntries(rows.map(({ status, count }) => [status, count]));
+  return {
+    total: Object.values(counts).reduce((sum, count) => sum + count, 0),
+    pending: counts.PENDING_REVIEW ?? 0,
+    approved: ['OWNED', 'LICENSED', 'SUPPLIER_AUTHORIZED', 'PARTNER_AUTHORIZED'].reduce((sum, status) => sum + (counts[status] ?? 0), 0),
+    rejected: counts.REJECTED ?? 0,
+  };
+}
+
+export async function updateProductImageRightsReview(ownerUserId: string, assetId: string, rightsStatus: string, rightsBasis: string) {
+  const now = new Date();
+  const [updated] = await cmsDb.update(productImageAssets).set({
+    rightsStatus,
+    rightsBasis,
+    reviewedBy: ownerUserId,
+    reviewedAt: now,
+    updatedAt: now,
+  }).where(and(
+    eq(productImageAssets.ownerUserId, ownerUserId),
+    eq(productImageAssets.id, assetId),
+    sql`${productImageAssets.sourceDeletedAt} IS NULL`,
+  )).returning({ id: productImageAssets.id });
+  return Boolean(updated);
+}
 
 export type CmsArticle = typeof cmsArticles.$inferSelect;
 export type CmsCategory = typeof categories.$inferSelect;

@@ -1,10 +1,10 @@
 import 'server-only';
 
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { headers } from 'next/headers';
 import { getToken, startAuthorization, UserAuthorizationRequiredError } from '@vercel/connect';
 import { Dropbox, type files } from 'dropbox';
-import { cmsDb, cmsSettings, ensureProductImageAssetStorage, upsertDropboxImageAssets } from '@/lib/cms-db';
+import { cmsDb, cmsSettings, markDropboxImageAssetsDeleted, upsertDropboxImageAssets } from '@/lib/cms-db';
 import { eq } from 'drizzle-orm';
 
 const CONNECTOR_UID = 'dropbox/digiman';
@@ -102,7 +102,6 @@ async function saveSyncState(key: string, state: SyncState) {
 
 export async function syncDropboxImageFolder(user: DropboxUser, requestedPath: string) {
   const folderPath = normalizeDropboxFolderPath(requestedPath);
-  await ensureProductImageAssetStorage();
   const client = await getDropboxClient(user);
   const settingKey = getSyncSettingKey(user.id, folderPath);
   const previousState = await readSyncState(settingKey, folderPath);
@@ -110,24 +109,40 @@ export async function syncDropboxImageFolder(user: DropboxUser, requestedPath: s
     ? await client.filesListFolderContinue({ cursor: previousState.cursor })
     : await client.filesListFolder({ path: folderPath, recursive: true, limit: BATCH_SIZE });
   const result = response.result;
+  const now = new Date();
+  const deletedPaths = result.entries.flatMap((entry) => (
+    entry['.tag'] === 'deleted' && 'path_lower' in entry && entry.path_lower
+      ? [entry.path_lower]
+      : []
+  ));
+  for (const path of deletedPaths) await markDropboxImageAssetsDeleted(user.id, path);
+
   const imageFiles = result.entries.flatMap((entry) => {
     if (entry['.tag'] !== 'file') return [];
     const file = entry as files.FileMetadata;
     const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
     const mimeType = IMAGE_TYPES[extension];
     if (!mimeType) return [];
+    const sourcePath = file.path_display ?? `/${file.name}`;
     return [{
-      ownerId: user.id,
+      id: randomUUID(),
+      ownerUserId: user.id,
       sourceFileId: file.id,
-      sourcePath: file.path_display ?? `/${file.name}`,
-      sourcePathLower: file.path_lower ?? (file.path_display ?? `/${file.name}`).toLowerCase(),
+      sourcePath,
+      sourcePathLower: file.path_lower ?? sourcePath.toLowerCase(),
       fileName: file.name,
       mimeType,
       sizeBytes: file.size,
       revision: file.rev,
       providerContentHash: file.content_hash ?? null,
       sourceModifiedAt: file.server_modified ? new Date(file.server_modified) : null,
-      updatedAt: new Date(),
+      rightsStatus: 'PENDING_REVIEW',
+      rightsBasis: '',
+      reviewedBy: null,
+      reviewedAt: null,
+      sourceDeletedAt: null,
+      createdAt: now,
+      updatedAt: now,
     }];
   });
 
@@ -200,10 +215,6 @@ export async function getDropboxClientForAdmin(user: DropboxUser) {
   return getDropboxClient(user);
 }
 
-export async function prepareProductImageAssets() {
-  await ensureProductImageAssetStorage();
-}
-
 export async function clearDropboxCursorForUser(userId: string, folderPath: string) {
   await removeDropboxSyncState(userId, folderPath);
 }
@@ -213,19 +224,16 @@ export async function getDropboxStatusForAdmin(user: DropboxUser) {
 }
 
 export async function listProductImageAssets(userId: string) {
-  await ensureProductImageAssetStorage();
   const { getProductImageAssetsForReview } = await import('@/lib/cms-db');
   return getProductImageAssetsForReview(userId, 50);
 }
 
 export async function getProductImageAssetSummary(userId: string) {
-  await ensureProductImageAssetStorage();
   const { getProductImageAssetStats } = await import('@/lib/cms-db');
   return getProductImageAssetStats(userId);
 }
 
 export async function saveProductImageRightsReview(userId: string, assetId: string, status: ProductImageReviewStatus, rightsBasis: string) {
-  await ensureProductImageAssetStorage();
   const { updateProductImageRightsReview } = await import('@/lib/cms-db');
   return updateProductImageRightsReview(userId, assetId, status, rightsBasis);
 }
@@ -253,10 +261,6 @@ export async function getProductImageIntelligenceOverview(userId: string) {
     getProductImageAssetSummary(userId),
   ]);
   return { assets, stats };
-}
-
-export async function initializeProductImageIntelligence() {
-  await ensureProductImageAssetStorage();
 }
 
 export async function updateProductImageReview(userId: string, assetId: string, status: ProductImageReviewStatus, rightsBasis: string) {

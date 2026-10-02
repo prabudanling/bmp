@@ -10,6 +10,7 @@ const navigation = [
   { href: '/admin', label: 'Ringkasan', icon: LayoutDashboard },
   { href: '/admin/articles', label: 'Artikel', icon: FileText },
   { href: '/admin/products', label: 'Produk katalog', icon: PackageSearch },
+  { href: '/admin/image-intelligence', label: 'Aset & hak gambar', icon: Images },
   { href: '/admin/settings', label: 'SEO website', icon: Settings2 },
 ];
 
