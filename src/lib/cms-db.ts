@@ -118,6 +118,116 @@ if (process.env.NODE_ENV !== 'production') globalForCms.cmsPool = pool;
 
 export const cmsDb = drizzle(pool, { schema: { cmsArticles, cmsSettings, categories, products, testimonials, productImageAssets } });
 
+export const CMS_BACKUP_PUBLIC_TABLES = [
+  'articles',
+  'categories',
+  'cms_articles',
+  'cms_settings',
+  'product_image_assets',
+  'products',
+  'site_settings',
+  'testimonials',
+] as const;
+
+export type CmsDatabaseBackupSnapshot = {
+  format: 'berkat-mandiri-cms-backup';
+  version: 1;
+  capturedAt: string;
+  database: 'postgres';
+  schema: 'public';
+  tables: Array<{
+    name: string;
+    columns: Array<{
+      name: string;
+      type: string;
+      nullable: boolean;
+      default: string | null;
+    }>;
+    primaryKey: string[];
+    rowCount: number;
+    rows: Record<string, unknown>[];
+  }>;
+};
+
+function quotePostgresIdentifier(identifier: string) {
+  return `"${identifier.replaceAll('"', '""')}"`;
+}
+
+export async function exportCmsDatabaseSnapshot(): Promise<CmsDatabaseBackupSnapshot> {
+  const client = await pool.connect();
+  const capturedAt = new Date().toISOString();
+  let transactionOpen = false;
+
+  try {
+    await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+    transactionOpen = true;
+
+    const { rows: liveTables } = await client.query<{ table_name: string }>(
+      'SELECT table_name FROM information_schema.tables WHERE table_schema = $1 AND table_type = $2 ORDER BY table_name',
+      ['public', 'BASE TABLE'],
+    );
+    const liveTableNames = new Set(liveTables.map(({ table_name }) => table_name));
+    const expectedTableNames = new Set<string>(CMS_BACKUP_PUBLIC_TABLES);
+    const missingTables = CMS_BACKUP_PUBLIC_TABLES.filter((tableName) => !liveTableNames.has(tableName));
+    const unexpectedTables = liveTables.map(({ table_name }) => table_name).filter((tableName) => !expectedTableNames.has(tableName));
+
+    if (missingTables.length || unexpectedTables.length) {
+      throw new Error(`CMS_BACKUP_SCHEMA_MISMATCH: missing=${missingTables.join(',')} unexpected=${unexpectedTables.join(',')}`);
+    }
+
+    const tables: CmsDatabaseBackupSnapshot['tables'] = [];
+
+    for (const tableName of CMS_BACKUP_PUBLIC_TABLES) {
+      const [{ rows: columnRows }, { rows: keyRows }, { rows }] = await Promise.all([
+        client.query<{
+          column_name: string;
+          data_type: string;
+          is_nullable: 'YES' | 'NO';
+          column_default: string | null;
+        }>(
+          'SELECT column_name, data_type, is_nullable, column_default FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2 ORDER BY ordinal_position',
+          ['public', tableName],
+        ),
+        client.query<{ column_name: string }>(
+          'SELECT key_column_usage.column_name FROM information_schema.table_constraints JOIN information_schema.key_column_usage USING (constraint_catalog, constraint_schema, constraint_name, table_name) WHERE table_constraints.table_schema = $1 AND table_constraints.table_name = $2 AND table_constraints.constraint_type = $3 ORDER BY key_column_usage.ordinal_position',
+          ['public', tableName, 'PRIMARY KEY'],
+        ),
+        client.query<Record<string, unknown>>(`SELECT * FROM "public".${quotePostgresIdentifier(tableName)}`),
+      ]);
+
+      tables.push({
+        name: tableName,
+        columns: columnRows.map((column) => ({
+          name: column.column_name,
+          type: column.data_type,
+          nullable: column.is_nullable === 'YES',
+          default: column.column_default,
+        })),
+        primaryKey: keyRows.map(({ column_name }) => column_name),
+        rowCount: rows.length,
+        rows,
+      });
+    }
+
+    await client.query('COMMIT');
+    transactionOpen = false;
+
+    return {
+      format: 'berkat-mandiri-cms-backup',
+      version: 1,
+      capturedAt,
+      database: 'postgres',
+      schema: 'public',
+      tables,
+    };
+  } catch (error) {
+    if (transactionOpen) await client.query('ROLLBACK').catch(() => undefined);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 export async function upsertDropboxImageAssets(assets: (typeof productImageAssets.$inferInsert)[]) {
   if (assets.length === 0) return;
   await cmsDb.insert(productImageAssets).values(assets).onConflictDoUpdate({

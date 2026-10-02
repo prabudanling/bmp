@@ -17,7 +17,7 @@ import {
 import { eq } from 'drizzle-orm';
 
 const CONNECTOR_UID = 'dropbox/digiman';
-const DROPBOX_SCOPES = ['files.metadata.read', 'files.content.read'];
+const DROPBOX_SCOPES = ['files.metadata.read', 'files.content.read', 'files.content.write'];
 const BATCH_SIZE = 200;
 const IMAGE_TYPES: Record<string, string> = {
   avif: 'image/avif',

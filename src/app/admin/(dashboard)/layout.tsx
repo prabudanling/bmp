@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { BookOpenText, FileText, Globe2, Images, LayoutDashboard, LogOut, PackageSearch, Settings2, Snowflake } from 'lucide-react';
+import { BookOpenText, DatabaseBackup, FileText, Globe2, Images, LayoutDashboard, LogOut, PackageSearch, Settings2, Snowflake } from 'lucide-react';
 import { getAdminUser, signOutAction } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -11,6 +11,7 @@ const navigation = [
   { href: '/admin/articles', label: 'Artikel', icon: FileText },
   { href: '/admin/products', label: 'Produk katalog', icon: PackageSearch },
   { href: '/admin/image-intelligence', label: 'Aset & hak gambar', icon: Images },
+  { href: '/admin/backups', label: 'Cadangan CMS', icon: DatabaseBackup },
   { href: '/admin/settings', label: 'SEO website', icon: Settings2 },
   { href: '/admin/seo-guide', label: 'Panduan SEO', icon: BookOpenText },
 ];
